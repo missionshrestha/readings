@@ -1,0 +1,80 @@
+---
+title: "BOOK TITLE"
+description: "A reference. Opened against a specific problem, never read through."
+author: "AUTHOR"
+domain: DOMAIN_SLUG
+cluster: CLUSTER_SLUG
+book: BOOK_SLUG
+kind: reference
+tier: reference
+weight: M
+status: reading
+private: false
+sidebar:
+  order: 0
+  label: The book
+---
+import { Aside } from '@astrojs/starlight/components';
+import { Passage } from '@components';
+
+{/* ONE OF THE 96 REFERENCE BOOKS. kind: reference.
+
+    WHAT IS DIFFERENT, and every line of it is deliberate:
+
+    · NO CHAPTERS, no `chapters` array in book.json, no chapter pages. The
+      scaffolder refuses one: `kind "reference" carries no chapters`.
+    · NO PIPELINE. P3-P7 do not run. There is no explanation layer, no recall
+      and no dialogue, because none of those apply to a book you open against
+      a problem rather than read.
+    · THE COMPLETION INSTINCT NEVER TOUCHES IT. There is no progress here to
+      be behind on. A reference book with a percentage against it has been
+      misfiled as a `read`.
+    · `exitCondition` MEASURES USE, NOT COVERAGE. "Three consultations logged,
+      each with the question that sent me there and what I did differently."
+      Writing "finish it" would quietly convert this into a `read` book.
+    · ACTIONS ARE STILL ALLOWED, in frontmatter, if a consultation produced
+      one. They are usually `tier: reference` — a rule to apply when the
+      situation arises, not a habit with a day-30 review.
+
+    context/book-spec.md §2b has the worked book.json for this shape. */}
+
+<Aside type="note">
+**Never cover to cover.** This page is a log, not a summary. It grows one entry at a time,
+each time the book is actually opened against something real.
+</Aside>
+
+## What it is for
+
+TODO — the shape of problem this book answers, in one paragraph.
+
+{/* Write this so that in a year, reading it alone tells you whether to open
+    this book or a different one. "A book about typography" fails that. "The
+    rules behind measure, leading and scale, argued from perception rather
+    than convention" passes it. */}
+
+## Problems I brought to it
+
+{/* NEWEST FIRST. One `###` per consultation, and the date is not decoration —
+    an entry with no date is an entry that will not be trusted in a year.
+
+    THE THIRD FIELD IS THE ONE THAT MATTERS AND THE ONE THAT GETS SKIPPED.
+    "What it said" is retrievable from the book. "What I did" is the only
+    thing on this page that could not be reconstructed without you, and a log
+    of consultations with no outcomes is a reading list. */}
+
+### YYYY-MM-DD — TODO the problem, in your own words
+
+**What sent me here**
+
+TODO — the situation, not the topic. "Setting the measure on the chapter
+pages and not knowing whether 68 characters was a rule or a habit."
+
+**What it said**
+
+TODO — with the section or page. Quote it in a `<Passage at="...">` if the
+wording matters.
+
+**What I did**
+
+TODO — the change, and whether it survived. "Nothing, it confirmed what I had"
+is an honest entry and worth recording.

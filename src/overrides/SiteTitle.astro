@@ -1,0 +1,82 @@
+---
+/**
+ * SiteTitle — the site name plus the top navigation.
+ *
+ * Starlight ships nothing for a top nav, and the four computed views
+ * (/shelf, /ledger, /review) are otherwise unreachable: they are .astro routes,
+ * so no sidebar or card grid links them and the link validator would never
+ * notice they had become orphans.
+ *
+ * Registered here rather than overriding `Header` wholesale, which would mean
+ * owning Starlight's search, theme select and mobile-menu layout forever, for
+ * four links.
+ */
+/*
+ * No `import type { Props }`. That export is deprecated on starlight@0.41 —
+ * route data now comes from Astro.locals.starlightRoute, which is what this
+ * file already reads.
+ */
+const path = Astro.url.pathname;
+
+/*
+ * `/` would match every path with a startsWith test, so the map is special-cased
+ * as "not one of the others" instead.
+ */
+const NAV = [
+	{ href: '/', label: 'Map' },
+	{ href: '/shelf/', label: 'Shelf' },
+	{ href: '/ledger/', label: 'Ledger' },
+	{ href: '/review/', label: 'Review' },
+];
+const OTHERS = NAV.slice(1).map((n) => n.href);
+const isActive = (href: string) =>
+	href === '/' ? !OTHERS.some((o) => path.startsWith(o)) : path.startsWith(href);
+---
+
+<div class="rd-brand">
+	<a href="/" class="rd-brand__name">{Astro.locals.starlightRoute.siteTitle}</a>
+	<nav class="rd-nav" aria-label="Sections">
+		{
+			NAV.map((n) => (
+				<a href={n.href} aria-current={isActive(n.href) ? 'page' : undefined}>
+					{n.label}
+				</a>
+			))
+		}
+	</nav>
+</div>
+
+<style>
+	.rd-brand { display: flex; align-items: center; gap: 1.25rem; }
+	.rd-brand__name {
+		font-family: var(--rd-font-serif);
+		font-size: var(--sl-text-h4);
+		font-weight: 700;
+		color: var(--rd-accent);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+	.rd-nav { display: flex; gap: 0.9rem; }
+	.rd-nav a {
+		font-family: var(--rd-font-ui);
+		font-size: 0.875rem;
+		font-weight: 550;
+		color: var(--rd-muted);
+		text-decoration: none;
+		padding-block: 0.15rem;
+	}
+	.rd-nav a:hover { color: var(--rd-ink); }
+	/* State is shape AND colour — a colour-only cue is invisible to reduced
+	   colour vision. */
+	.rd-nav a[aria-current='page'] {
+		color: var(--rd-accent);
+		font-weight: 700;
+		box-shadow: inset 0 -2px 0 var(--rd-accent);
+	}
+	/* Below Starlight's own breakpoint a fourth header element wraps the row.
+	   Every destination stays reachable through the site title and search. */
+	@media (max-width: 50em) {
+		.rd-nav { display: none; }
+	}
+	/* Focus mode hides the header entirely; nothing to do here. */
+</style>

@@ -1,0 +1,413 @@
+---
+/**
+ * /ledger — every action from every chapter, computed.
+ *
+ * The drafts call this "the actual output of the whole system" and "the
+ * metric — not books read, not chapters published". So this page shows actions
+ * and never a book count, and the honest number is how many are still running.
+ *
+ * COMPUTED FROM FRONTMATTER, NEVER HAND-KEPT. A hand-maintained ledger drifts
+ * from the chapters the moment one is edited, and the drafts' own failure-modes
+ * table predicts it goes stale first.
+ *
+ * IT STATES ITS OWN LIMITATION IN WORDS. The evidence is specific that
+ * behaviour change needs a human who knows what you are attempting and a record
+ * that is physical and public (Harkin, d = 0.40, larger when reported and
+ * physically recorded). A private page satisfies neither. That is said here
+ * rather than papered over with a streak counter — a website cannot supply a
+ * person, and pretending otherwise is the exact failure the system exists to
+ * avoid.
+ */
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { ledger, runningCount } from '../lib/ledger';
+
+const rows = await ledger();
+const running = runningCount(rows);
+const committed = rows.filter((r) => r.committed);
+const byTier = (t: string) => rows.filter((r) => (r.tier ?? 'reference') === t);
+
+const TIERS = [
+	['now', 'Now', 'Started this week. Small by choice — three simultaneous new behaviours is usually the ceiling before none survive.'],
+	['next', 'Next', 'Real, but queued behind something.'],
+	['later', 'Later', 'Depends on a life stage not yet arrived.'],
+	['reference', 'Reference', 'Not habits. Rules to apply when the situation arises, and they need a place to be found rather than daily tracking.'],
+] as const;
+
+/*
+ * THE STARTED COLUMN WAS A TRUNCATED Date.toString().
+ *
+ * It rendered `String(r.started).slice(0, 10)`. When frontmatter parses a date
+ * into a real Date — which the collection schema does — String() gives
+ * "Tue Jul 07 2026 00:00:00 GMT+0545 (…)", and the first ten characters of that
+ * are "Tue Jul 07". So the column showed a weekday nobody asked for, dropped the
+ * YEAR, and — measured 2026-09-01 — wrapped to two lines in a 60px cell, which
+ * is what made it visible at all. The slice only looked right because a string
+ * date is already ISO for its first ten characters.
+ *
+ * ISO here, deliberately: it is what the frontmatter carries, what /review/
+ * computes from, and what sorts. `/review/` says "78 days ago" because there the
+ * question is how overdue; here the question is when, exactly.
+ */
+const isoDate = (v: string | Date): string => {
+	const d = v instanceof Date ? v : new Date(String(v));
+	if (Number.isNaN(d.getTime())) return String(v).slice(0, 10);
+	const p = (n: number) => String(n).padStart(2, '0');
+	return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+};
+
+const DAY30: Record<string, string> = {
+	'not-yet': 'not yet due',
+	running: 'still running',
+	adapted: 'adapted',
+	dropped: 'dropped',
+};
+
+// Books with more than one committed `now`. Reconciliation row 2 — reported,
+// never enforced: it is his life, not a build.
+// Keyed on the slug, which is unique; LABELLED with the title, which is what a
+// reader recognises. The warning used to render the slug — "deep-work has 2
+// actions committed at Now".
+const overCommitted = new Map<string, { n: number; title: string }>();
+for (const r of rows)
+	if (r.committed && r.tier === 'now')
+		overCommitted.set(r.book, {
+			n: (overCommitted.get(r.book)?.n ?? 0) + 1,
+			title: r.bookTitle,
+		});
+const crowded = [...overCommitted.values()].filter((c) => c.n > 1);
+
+/*
+ * THE TOTAL WAS NEVER CHECKED, ONLY THE PER-BOOK COUNT.
+ *
+ * `crowded` catches two commitments in the SAME book. It does not catch five
+ * books each carrying one — MEASURED 2026-09-01: 16 actions sat at tier `now`
+ * with `committed: true` at once, `crowded` stayed empty because none of them
+ * shared a book, and the page's own Now-tier hint says "three simultaneous new
+ * behaviours is usually the ceiling before none survive". The page was
+ * contradicting its own copy and saying nothing about it.
+ *
+ * THREE IS NOT A GUESS: it is the number already printed in `TIERS` above,
+ * quoting reconciliation row 2 / evidence/reading.md:568. One constant, so the
+ * two places it appears cannot drift apart.
+ */
+const NOW_CEILING = 3;
+const nowCommitted = rows.filter((r) => r.committed && r.tier === 'now').length;
+---
+
+<StarlightPage
+	frontmatter={{
+		title: 'The ledger',
+		description: 'Every action from every chapter, and whether it is still running.',
+		template: 'splash',
+		tableOfContents: false,
+	}}
+>
+	<div class="ds-head">
+		<div class="ds-head__lede">
+			Not books read. Not chapters published. This is the only number that says whether
+			reading changed anything.
+		</div>
+		<div class="ds-head__meta">
+			<span class="ds-chip ds-chip--live">{running} still running</span>
+			<span class="ds-chip ds-chip--count">{committed.length} committed</span>
+			<span class="ds-chip ds-chip--count">{rows.length} extracted</span>
+		</div>
+	</div>
+
+	{
+		/*
+		 * A PLAIN-TEXT FILTER, ADDED 2026-09-01 — 86 rows across four sections
+		 * with no way to narrow them. It matches against the text already on
+		 * the page (the rule, the trigger, the obstacle, the book and chapter
+		 * titles), client-side, no server round trip, no library. Rows this
+		 * page did not build cannot be found by it, and it never touches
+		 * `obstacle` or `trigger` beyond reading what is already rendered —
+		 * this is presentation, not another place an action gets written.
+		 */
+		rows.length > 0 && (
+			<div class="rd-filter">
+				<input
+					type="search"
+					id="rd-ledger-filter"
+					placeholder="Filter by book, trigger, obstacle…"
+					aria-controls="rd-ledger-sections"
+					autocomplete="off"
+				/>
+				<span class="rd-filter__count" data-rd-filter-count aria-live="polite" />
+			</div>
+		)
+	}
+
+	<div id="rd-ledger-sections">
+
+	{
+		(crowded.length > 0 || nowCommitted > NOW_CEILING) && (
+			<div class="rd-warn">
+				{nowCommitted > NOW_CEILING && (
+					<p>
+						<b>{nowCommitted} actions</b> are committed at <b>Now</b> across the whole ledger —
+						over the ceiling stated below. Three simultaneous new behaviours is usually where
+						conversion starts to fail; this many is not more discipline, it is more to forget.
+					</p>
+				)}
+				{crowded.map((c) => (
+					<p>
+						<b>{c.title}</b> has {c.n} actions committed at <b>Now</b>. One at a time converts;
+						several divide the same attention, and adding intentions does not raise the
+						conversion rate.
+					</p>
+				))}
+			</div>
+		)
+	}
+
+	{
+		rows.length === 0 ? (
+			<div class="rd-empty">
+				<p><b>Nothing here yet, and that is the honest state.</b></p>
+				<p>
+					Actions arrive from chapter frontmatter as they are extracted. This page is
+					computed, so it cannot show something the chapters do not.
+				</p>
+			</div>
+		) : (
+			TIERS.map(([key, label, hint]) => {
+				const set = byTier(key);
+				if (!set.length) return null;
+				return (
+					<section class="rd-ledger" data-rd-ledger-section>
+						<h2>{label} <span class="rd-ledger__n" data-rd-ledger-n>{set.length}</span></h2>
+						<p class="rd-ledger__hint">{hint}</p>
+						<div class="rd-ledger__scroll">
+							<table>
+								<thead>
+									<tr>
+										<th>Action</th><th>Trigger</th><th>Obstacle</th>
+										<th>Started</th><th>Day 30</th><th>From</th>
+									</tr>
+								</thead>
+								<tbody>
+									{set.map((r) => (
+										<tr
+											data-committed={r.committed ? '' : undefined}
+											data-rd-ledger-row
+											data-rd-search={`${r.if ?? ''} ${r.then ?? ''} ${r.trigger ?? ''} ${r.obstacle ?? ''} ${r.chapterTitle} ${r.bookTitle} ${r.id}`.toLowerCase()}
+										>
+											<td>
+												<span class="rd-if">If</span> {r.if}{' '}
+												<span class="rd-if">then</span> {r.then}
+												<code>{r.id}</code>
+											</td>
+											<td>{r.trigger ?? '—'}</td>
+											<td>{r.obstacle ?? (r.committed ? 'NOT NAMED' : '—')}</td>
+											<td class="rd-when">{r.started ? isoDate(r.started) : '—'}</td>
+											<td>{r.day30 ? DAY30[r.day30] ?? r.day30 : '—'}</td>
+											<td>
+												<a href={r.href}>{r.chapterTitle}</a>
+												<span class="rd-from__book">{r.bookTitle}</span>
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</div>
+					</section>
+				);
+			})
+		)
+	}
+
+	</div>
+
+	<section class="rd-limitation">
+		<h2>What this page cannot do</h2>
+		<p>
+			The evidence on whether an intention becomes a behaviour is specific about what makes
+			the difference, and two of the three strongest moderators are things a website cannot
+			supply: progress that is <b>reported to a person</b>, and a record that is
+			<b>physical and visible</b>. Harkin's meta-analysis puts monitoring at <i>d</i> = 0.40,
+			larger on both counts.
+		</p>
+		<p>
+			A private page ticked by the person who wrote it satisfies neither. That is stated here
+			rather than hidden behind a streak or a badge, because simulating accountability is
+			worse than admitting there is none — it would make the page feel like it was working.
+		</p>
+		<p><b>If you want the effect the evidence describes, tell someone.</b> That happens outside this repository.</p>
+	</section>
+</StarlightPage>
+
+{/*
+  A PLAIN <script>, matching ReaderControls.astro's pattern — content here is
+  a real module, bundled once by Astro, NOT raw text the way <style> is. An
+  earlier fix in this same session (the no-JS mermaid note in Head.astro)
+  shipped a template-literal wrapper into a <style> tag verbatim because
+  <style> does not evaluate a JSX expression; the same mistake here would ship
+  `{`` into a script tag. So: no wrapper, just code.
+
+  Guarded to a no-op when the filter input is absent — which is exactly the
+  `rows.length === 0` case, where the markup above never renders it. */}
+<script>
+	const input = document.getElementById('rd-ledger-filter') as HTMLInputElement | null;
+	const countEl = document.querySelector<HTMLElement>('[data-rd-filter-count]');
+	const sections = document.querySelectorAll<HTMLElement>('[data-rd-ledger-section]');
+
+	function apply() {
+		if (!input || !countEl) return;
+		const q = input.value.trim().toLowerCase();
+		let shown = 0;
+		let total = 0;
+		sections.forEach((sec) => {
+			const rows = sec.querySelectorAll<HTMLElement>('[data-rd-ledger-row]');
+			let visible = 0;
+			rows.forEach((row) => {
+				total++;
+				const match = !q || (row.getAttribute('data-rd-search') ?? '').includes(q);
+				row.hidden = !match;
+				if (match) {
+					visible++;
+					shown++;
+				}
+			});
+			sec.hidden = visible === 0;
+			const n = sec.querySelector('[data-rd-ledger-n]');
+			if (n) n.textContent = String(visible);
+		});
+		countEl.textContent = q ? `${shown} of ${total} match` : '';
+	}
+
+	input?.addEventListener('input', apply);
+	apply();
+</script>
+
+<style>
+	.rd-filter {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-block: 1.5rem 0.5rem;
+	}
+	.rd-filter input {
+		flex: 1 1 22rem;
+		max-inline-size: 26rem;
+		padding: 0.55rem 0.85rem;
+		font-family: var(--rd-font-ui);
+		font-size: 0.9375rem;
+		color: var(--rd-ink);
+		background: var(--rd-surface);
+		border: 1px solid var(--rd-border);
+		border-radius: var(--ds-r-md, 0.75rem);
+	}
+	.rd-filter input:focus-visible {
+		outline: 2px solid var(--rd-accent);
+		outline-offset: 2px;
+	}
+	.rd-filter__count {
+		font-family: var(--rd-font-ui);
+		font-size: 0.8125rem;
+		color: var(--rd-muted);
+	}
+	.rd-warn, .rd-empty, .rd-limitation {
+		padding: 1rem 1.25rem;
+		border-radius: var(--ds-r-md, 0.75rem);
+		font-family: var(--rd-font-ui);
+		font-size: 0.9375rem;
+		line-height: 1.6;
+	}
+	.rd-warn {
+		margin-block-end: 2rem;
+		border-inline-start: 3px solid var(--rd-tier-deepen);
+		background: color-mix(in srgb, var(--rd-tier-deepen) 9%, transparent);
+	}
+	.rd-warn p:last-child, .rd-empty p:last-child, .rd-limitation p:last-child { margin-block-end: 0; }
+	.rd-empty {
+		border: 1px dashed var(--rd-border-strong);
+		color: var(--rd-muted);
+	}
+	.rd-limitation {
+		margin-block-start: 3rem;
+		border: 1px solid var(--rd-border);
+		background: var(--rd-surface);
+		color: var(--rd-muted);
+	}
+	.rd-limitation h2 { margin-block-start: 0; font-size: 1rem; color: var(--rd-ink); }
+	.rd-limitation b { color: var(--rd-ink); }
+
+	.rd-ledger { margin-block-end: 2.5rem; }
+	.rd-ledger h2 { display: flex; align-items: baseline; gap: 0.6rem; margin-block-end: 0.2rem; }
+	/* The "From" link measured 162x16 at a wide viewport — under the 24px tap
+	   floor, and the most-repeated link on the page at up to 86 rows. Same
+	   inline padding-block fix used on the eyebrow, shelf and review links. */
+	.rd-ledger td:last-child a {
+		display: inline-block;
+		padding-block: 0.3rem;
+		margin-block: -0.3rem;
+	}
+	/* The book under the chapter. One book made this redundant; three make the
+	   column meaningless without it. */
+	.rd-from__book {
+		display: block;
+		margin-block-start: 0.15rem;
+		font-size: 0.75rem;
+		color: var(--rd-muted);
+	}
+	.rd-ledger__n {
+		font-family: var(--rd-font-ui);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: var(--rd-muted);
+	}
+	.rd-ledger__hint {
+		margin: 0 0 0.75rem;
+		font-family: var(--rd-font-ui);
+		font-size: 0.875rem;
+		color: var(--rd-muted);
+		max-width: 46rem;
+	}
+	/* Wide content scrolls inside its own container; the page body never scrolls
+	   horizontally. */
+	.rd-ledger__scroll { overflow-x: auto; }
+	.rd-ledger table {
+		inline-size: 100%;
+		border-collapse: collapse;
+		font-family: var(--rd-font-ui);
+		font-size: 0.875rem;
+	}
+	.rd-ledger th {
+		text-align: start;
+		font-size: 0.6875rem;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		color: var(--rd-muted);
+		border-block-end: 1px solid var(--rd-border-strong);
+		padding: 0.4rem 0.6rem;
+	}
+	.rd-ledger td {
+		vertical-align: top;
+		padding: 0.6rem;
+		border-block-end: 1px solid var(--rd-border);
+	}
+	/* A date is one token. It was breaking across two lines in a 60px cell —
+	   the table already scrolls inside .rd-ledger__scroll, so a column that
+	   refuses to wrap costs nothing and the page body still never scrolls. */
+	.rd-ledger .rd-when {
+		white-space: nowrap;
+		font-variant-numeric: tabular-nums lining-nums;
+	}
+	.rd-ledger tr[data-committed] td:first-child { box-shadow: inset 3px 0 0 var(--rd-accent); }
+	.rd-ledger code {
+		display: block;
+		margin-block-start: 0.3rem;
+		font-size: 0.6875rem;
+		color: var(--rd-muted);
+		background: none;
+		border: 0;
+	}
+	.rd-if {
+		font-size: 0.75em;
+		font-weight: 700;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		color: var(--rd-accent);
+	}
+</style>

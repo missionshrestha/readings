@@ -1,0 +1,327 @@
+/*
+ * design-system.css — the map surfaces.
+ *
+ * ONE grid, ONE card, ONE chip, and the tokens they read. It is not a framework
+ * and must not become one. Every colour is a var(--rd-*) from reading.css, so
+ * all four themes are free.
+ *
+ * Scope: `/`, `/<domain>/` and `/<domain>/<cluster>/`. The reader — anything at
+ * segment depth 3 or more — is reading.css and shares none of this.
+ */
+
+/* ---- 1 · tokens that are not colours ----------------------------------- */
+:root {
+	/* 4px base, eight steps. A ninth would be indecision. */
+	--ds-1: 0.25rem;
+	--ds-2: 0.5rem;
+	--ds-3: 0.75rem;
+	--ds-4: 1rem;
+	--ds-5: 1.5rem;
+	--ds-6: 2rem;
+	--ds-7: 3rem;
+	--ds-8: 4.5rem;
+
+	/* Three radii only. */
+	--ds-r-sm: 0.375rem;
+	--ds-r-md: 0.75rem;
+	--ds-r-lg: 1.25rem;
+
+	/* ONE duration and ONE curve, everywhere. */
+	--ds-dur: 160ms;
+	--ds-ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+/* ---- 2 · page header --------------------------------------------------- */
+.ds-head {
+	display: flex;
+	flex-direction: column;
+	gap: var(--ds-3);
+	margin-block-end: var(--ds-6);
+	padding-block-end: var(--ds-5);
+	border-block-end: 1px solid var(--rd-border);
+}
+.ds-head__eyebrow {
+	font-size: 0.8125rem;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--rd-muted);
+}
+/*
+ * The eyebrow carries the way back up — the domain from a cluster, the part
+ * from a domain. It stays quiet until it is pointed at: a breadcrumb that
+ * shouts competes with the title directly beneath it.
+ */
+.ds-head__eyebrow a {
+	color: inherit;
+	text-decoration: none;
+	/* A 13px uppercase label is a 19px-tall tap target, and this one is a
+	   standalone control rather than a link inside a sentence, so it takes the
+	   24px floor. Padding grows an INLINE box's hit area without touching the
+	   line box, so nothing on the page moves. */
+	padding-block: 0.35rem;
+	border-block-end: 1px solid transparent;
+	transition: color var(--ds-dur, 160ms) var(--ds-ease, ease),
+		border-color var(--ds-dur, 160ms) var(--ds-ease, ease);
+}
+.ds-head__eyebrow a:hover,
+.ds-head__eyebrow a:focus-visible {
+	color: var(--rd-accent);
+	border-block-end-color: currentColor;
+}
+.ds-head__lede {
+	font-size: 1.125rem;
+	line-height: 1.6;
+	color: var(--rd-ink);
+	max-width: 46rem;
+}
+.ds-head__meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--ds-2);
+}
+
+/* ---- 3 · the legend ---------------------------------------------------- */
+.ds-legend {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+	gap: var(--ds-2) var(--ds-5);
+	margin-block-end: var(--ds-7);
+	padding: var(--ds-4);
+	border: 1px dashed var(--rd-border);
+	border-radius: var(--ds-r-md);
+	font-size: 0.875rem;
+	line-height: 1.55;
+	color: var(--rd-muted);
+}
+.ds-legend b {
+	color: var(--rd-ink);
+	font-weight: 650;
+}
+
+.ds-note {
+	font-size: 0.9375rem;
+	color: var(--rd-muted);
+	margin-block-end: var(--ds-4);
+}
+
+/* ---- 4 · the grid ------------------------------------------------------ */
+.ds-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+	gap: var(--ds-4);
+	margin-block-end: var(--ds-6);
+}
+/*
+ * A grid item's default `min-width: auto` lets an unwrappable string blow the
+ * track out past the page. The <pre>'s own overflow-x never engages, because
+ * the blowout happens one level up.
+ */
+.ds-grid > * {
+	min-width: 0;
+	/*
+	 * AND NO MARGIN, WHICH IS A BUG FIX RATHER THAN A RESET.
+	 *
+	 * Starlight's markdown.css carries a GENERAL SIBLING rule:
+	 *
+	 *   .sl-markdown-content :not(a,strong,em,…) + :not(a,strong,em,…) {
+	 *     margin-top: var(--sl-content-gap-y);   // 1rem
+	 *   }
+	 *
+	 * Every card except the first in a grid is a sibling of the one before it,
+	 * so it picked up 16px of margin-top. A grid item's default `align-self` is
+	 * `stretch`, so the row stayed the same height and the SECOND AND THIRD CARDS
+	 * WERE PUSHED DOWN 16px while the first was not — the row came out
+	 * bottom-aligned and visibly staggered, on `/`, every domain page and every
+	 * cluster page.
+	 *
+	 * MEASURED 2026-09-01, home page, first grid:
+	 *   card[0] y=588 h=157 margin-top 0px
+	 *   card[1] y=604 h=141 margin-top 16px
+	 *   card[2] y=604 h=141 margin-top 16px
+	 *
+	 * It is invisible to every check this project has: it builds, it validates,
+	 * it passes contrast, and it is obvious on sight. A grid owns the spacing
+	 * between its own children — that is what `gap` is.
+	 */
+	margin-block-start: 0;
+}
+
+/* ---- 5 · the card ------------------------------------------------------ */
+.ds-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: var(--ds-2);
+	padding: var(--ds-4) var(--ds-4) var(--ds-3);
+	background: var(--rd-surface);
+	border: 1px solid var(--rd-border);
+	border-radius: var(--ds-r-md);
+	box-shadow: var(--rd-shadow);
+	transition: transform var(--ds-dur) var(--ds-ease),
+		border-color var(--ds-dur) var(--ds-ease);
+}
+.ds-card:has(.ds-card__link:hover),
+.ds-card:has(.ds-card__link:focus-visible) {
+	transform: translateY(-2px);
+	border-color: var(--rd-border-strong);
+}
+
+.ds-card__title {
+	margin: 0;
+	font-size: 1.0625rem;
+	line-height: 1.35;
+	font-weight: 640;
+	color: var(--rd-heading);
+}
+/* The whole card is the click target, and the accessible name stays the title. */
+.ds-card__link {
+	color: inherit;
+	text-decoration: none;
+}
+/*
+ * A NAVIGABLE CARD HAD NO AFFORDANCE UNTIL IT WAS HOVERED OR FOCUSED.
+ *
+ * `.ds-card:has(.ds-card__link:hover)` above is the only thing that ever said
+ * "this leads somewhere" — a mouse-and-keyboard-only signal. On a touchscreen,
+ * hover never fires, so every started book, cluster and domain card looked
+ * exactly like the plain, dead ones (an unstarted book, "0 core" — before the
+ * count itself was fixed to omit the zero — everything the reader cannot open)
+ * until the moment of the tap itself.
+ *
+ * A quiet arrow, always present when the title carries a link, costs nothing
+ * on desktop — it just sits there — and on a phone is the only thing telling
+ * the two kinds of card apart before you commit to a tap.
+ */
+.ds-card__title:has(.ds-card__link)::after {
+	content: '→';
+	margin-inline-start: 0.35em;
+	color: var(--rd-muted);
+	font-weight: 400;
+}
+.ds-card__link::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+}
+.ds-card__byline {
+	font-size: 0.875rem;
+	color: var(--rd-muted);
+}
+.ds-card__body {
+	font-size: 0.9375rem;
+	line-height: 1.55;
+	color: var(--rd-ink);
+	overflow-wrap: anywhere;
+}
+.ds-card__meta {
+	/* Pinned to the foot of the card, so the chips line up across a row even
+	   when one title wraps to two lines and its neighbours do not. */
+	margin-block-start: auto;
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--ds-1);
+	margin-block-start: auto;
+	padding-block-start: var(--ds-2);
+}
+
+/*
+ * NOT done with opacity.
+ *
+ * `opacity: 0.72` on the container measured 3.78:1 and 3.05:1 for description
+ * text in the sibling project — both under the 4.5:1 floor. Opacity dims the
+ * text along with the chrome, so "slightly recessed" and "illegible" are the
+ * same slider. Recessing the SURFACE and dashing the border says the same thing
+ * and costs no contrast at all.
+ */
+.ds-card--empty {
+	background: color-mix(in srgb, var(--rd-surface) 55%, var(--rd-ground));
+	border-style: dashed;
+	box-shadow: none;
+}
+
+/* ---- 6 · chips --------------------------------------------------------- */
+.ds-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--ds-1);
+	padding: 0.1rem 0.5rem;
+	border: 1px solid currentColor;
+	border-radius: 999px;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	line-height: 1.6;
+	white-space: nowrap;
+	color: var(--rd-muted);
+}
+/* Tier is an IDENTITY: the hue is the same in all four themes. */
+.ds-chip--tier-core { color: var(--rd-tier-core); }
+.ds-chip--tier-deepen { color: var(--rd-tier-deepen); }
+.ds-chip--tier-reference { color: var(--rd-tier-reference); }
+.ds-chip--weight {
+	color: var(--rd-muted);
+	font-variant-numeric: tabular-nums;
+}
+.ds-chip--flag {
+	color: var(--rd-muted);
+	border-style: dashed;
+}
+.ds-chip--count {
+	border-color: color-mix(in srgb, currentColor 35%, transparent);
+	font-weight: 550;
+}
+.ds-chip--live {
+	color: var(--rd-accent);
+	border-color: var(--rd-accent);
+}
+
+/* ---- 7 · density ------------------------------------------------------- */
+/* Splash pages get their full width back for the grid. */
+.ds-grid,
+.ds-head,
+.ds-legend {
+	max-width: 100%;
+}
+
+@media (max-width: 34rem) {
+	.ds-grid {
+		grid-template-columns: 1fr;
+	}
+	.ds-card {
+		padding: var(--ds-3);
+	}
+}
+
+/* ==========================================================================
+ * SECTION LABELS ON THE MAP PAGES
+ *
+ * A part heading — THE ENGINE, THE INSTRUMENT — is a GROUPING, not content.
+ * It was rendering at Starlight's stock h2 (30px, heavy, near-black) and was
+ * the loudest thing on a page whose actual content is the cards beneath it:
+ * the label for a group out-shouted every group.
+ *
+ * Selected by what FOLLOWS it rather than by page, so it can never reach a
+ * prose h2 on /method/ or in a chapter: an h2 immediately followed by a card
+ * grid is a section label and nothing else is. Starlight wraps every heading in
+ * .sl-heading-wrapper, so the :has() sits on the wrapper.
+ * ========================================================================== */
+:root:not([data-reader]) .sl-heading-wrapper.level-h2:has(+ .ds-grid) {
+	margin-block: var(--ds-7) var(--ds-3);
+	padding-block-end: var(--ds-2);
+	border-block-end: 1px solid var(--rd-border);
+}
+:root:not([data-reader]) .sl-heading-wrapper.level-h2:has(+ .ds-grid) h2 {
+	margin: 0;
+	font-family: var(--rd-font-ui);
+	font-size: 0.8125rem;
+	font-weight: 700;
+	line-height: 1.2;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--rd-muted);
+}
+/* The anchor link Starlight adds beside every heading is noise at label size. */
+:root:not([data-reader]) .sl-heading-wrapper.level-h2:has(+ .ds-grid) .sl-anchor-link {
+	display: none;
+}

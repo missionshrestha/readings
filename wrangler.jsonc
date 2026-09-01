@@ -1,0 +1,31 @@
+{
+	// Assets-only Worker: there is deliberately NO `main`.
+	//
+	// Cloudflare bills per Worker *invocation*. With no script nothing is invoked,
+	// so static requests are free and the 100k/day free-plan cap never applies.
+	// Adding `main` silently converts every page view into a billable invocation.
+	// An adapter is only needed if a route must render per request, and none does.
+	"$schema": "node_modules/wrangler/config-schema.json",
+
+	// Must equal the dashboard Worker name or Workers Builds refuses the deploy.
+	// name + account subdomain = the served URL = what `site` in astro.config.mjs
+	// must be. Set the name first, then `site`.
+	"name": "readings",
+
+	"compatibility_date": "2026-08-31",
+	"workers_dev": true,
+	"preview_urls": true,
+
+	"assets": {
+		"directory": "./dist",
+
+		// Matches what Astro emits (`about/index.html` reached at `/about/`), which
+		// is what <link rel="canonical"> already claims. `drop-trailing-slash`
+		// would put every URL one 307 away from its own canonical.
+		"html_handling": "auto-trailing-slash",
+
+		// Serves dist/404.html with a real 404. NEVER "single-page-application" —
+		// that answers every typo with HTTP 200 and the home page.
+		"not_found_handling": "404-page"
+	}
+}

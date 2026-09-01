@@ -1,0 +1,301 @@
+---
+/**
+ * Ambience — sound for reading, synthesised in the browser.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY THERE ARE NO AUDIO FILES
+ *
+ * Nothing is shipped. Four soundscapes are generated live with the Web Audio
+ * API, which buys three things a file cannot:
+ *
+ *   · ZERO BYTES over the wire, and no third-party host.
+ *   · NO LICENSING QUESTION. Nothing is distributed that anyone owns.
+ *   · IT NEVER LOOPS, because nothing is a loop. A thirty-second rain loop
+ *     becomes audible as a loop within about ten minutes, and then it is worse
+ *     than silence.
+ *
+ * You can still add your own: drop a file into public/audio/ and list it in
+ * AMBIENCE_FILES below. That licence decision is yours.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY IT SURVIVES A CHAPTER TURN
+ *
+ * A FULL page navigation creates a new document whose AudioContext starts
+ * suspended and cannot legally resume without a fresh user gesture — so sound
+ * would stop at every chapter. <ClientRouter /> never tears the JS context
+ * down, so the AudioContext held on `window.__rdAmb` simply keeps running.
+ *
+ * NOTE WHAT IS *NOT* NEEDED: no transition:persist node. An earlier version
+ * created a hidden persisted div for this and it was dead code — the context
+ * lives in a JS variable, not in the DOM, and it is the JS context that
+ * persists. Measured across a real link click: the AudioContext clock ran
+ * 0.587s -> 1.845s straight through the navigation, state 'running' throughout.
+ *
+ * (Measuring this needs a real CLICK. page.goto() is a full navigation, which
+ * ClientRouter never intercepts, and it will report a false failure.)
+ *
+ * IT NEVER AUTOPLAYS. Browsers block it, and it would be hostile regardless.
+ */
+const AMBIENCE_FILES: { id: string; label: string; src: string }[] = [
+	// { id: 'my-track', label: 'My track', src: '/audio/my-track.ogg' },
+];
+---
+
+<div class="rd-amb" data-rd-amb>
+	<button
+		type="button"
+		class="rd-amb__btn"
+		data-rd-amb-toggle
+		aria-expanded="false"
+		title="Ambient sound"
+	>
+		<svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none"
+			stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+			<path d="M11 5 6 9H3v6h3l5 4z" />
+			<path d="M16.5 8.5a5 5 0 0 1 0 7" data-rd-amb-wave />
+		</svg>
+		<span class="sr-only">Ambient sound</span>
+	</button>
+
+	<div class="rd-amb__panel" hidden data-rd-amb-panel>
+		<div class="rd-amb__row" role="group" aria-label="Soundscape">
+			<button type="button" data-rd-amb-pick="off">Off</button>
+			<button type="button" data-rd-amb-pick="rain">Rain</button>
+			<button type="button" data-rd-amb-pick="noise">Noise</button>
+			<button type="button" data-rd-amb-pick="fire">Fire</button>
+			<button type="button" data-rd-amb-pick="drone">Drone</button>
+			{AMBIENCE_FILES.map((f) => (
+				<button type="button" data-rd-amb-pick={f.id} data-rd-amb-src={f.src}>{f.label}</button>
+			))}
+		</div>
+		<label class="rd-amb__vol">
+			<span>Volume</span>
+			<input type="range" min="0" max="100" value="35" data-rd-amb-vol />
+		</label>
+		<p class="rd-amb__hint">Generated in your browser. Nothing is downloaded, and it never repeats.</p>
+	</div>
+</div>
+
+<script>
+	/*
+	 * Registered once. The listeners live on document and the JS context is
+	 * never torn down by a client-side navigation, so this must not re-register
+	 * per swap or every handler would double-fire.
+	 */
+	interface Amb {
+		ctx: AudioContext;
+		out: GainNode;
+		nodes: AudioNode[];
+		timers: number[];
+	}
+	const W = window as unknown as { __rdAmb?: Amb; __rdAmbInit?: boolean };
+	if (!W.__rdAmbInit) {
+		W.__rdAmbInit = true;
+
+		const KEY = { pick: 'rd-amb', vol: 'rd-amb-vol' };
+		const get = (k: string) => { try { return localStorage.getItem(k); } catch { return null; } };
+		const set = (k: string, v: string | null) => {
+			try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {}
+		};
+
+		function stop() {
+			const a = W.__rdAmb;
+			if (!a) return;
+			for (const t of a.timers) clearTimeout(t);
+			a.out.gain.setTargetAtTime(0, a.ctx.currentTime, 0.08);
+			const ctx = a.ctx;
+			setTimeout(() => ctx.close().catch(() => {}), 400);
+			W.__rdAmb = undefined;
+		}
+
+		/** Pink-ish noise. Voss-McCartney is overkill; a filtered white source
+		 *  is indistinguishable at these volumes and costs a fraction. */
+		function noiseBuffer(ctx: AudioContext, seconds = 4) {
+			const len = ctx.sampleRate * seconds;
+			const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+			const d = buf.getChannelData(0);
+			let b0 = 0, b1 = 0, b2 = 0;
+			for (let i = 0; i < len; i++) {
+				const white = Math.random() * 2 - 1;
+				b0 = 0.99765 * b0 + white * 0.099046;
+				b1 = 0.963 * b1 + white * 0.2965164;
+				b2 = 0.57 * b2 + white * 1.0526913;
+				d[i] = (b0 + b1 + b2 + white * 0.1848) * 0.11;
+			}
+			return buf;
+		}
+
+		function start(kind: string, src?: string) {
+			stop();
+			const ctx = new AudioContext();
+			const out = ctx.createGain();
+			out.gain.value = 0;
+			out.connect(ctx.destination);
+			const a: Amb = { ctx, out, nodes: [], timers: [] };
+
+			if (src) {
+				const el = new Audio(src);
+				el.loop = true;
+				el.crossOrigin = 'anonymous';
+				const node = ctx.createMediaElementSource(el);
+				node.connect(out);
+				el.play().catch(() => {});
+				a.nodes.push(node);
+			} else if (kind === 'drone') {
+				// Three detuned oscillators through a low-pass, with a slow LFO on
+				// the cutoff. Warm, and it genuinely never repeats.
+				const filt = ctx.createBiquadFilter();
+				filt.type = 'lowpass';
+				filt.frequency.value = 420;
+				filt.Q.value = 0.7;
+				filt.connect(out);
+				for (const f of [55, 82.5, 110.3]) {
+					const o = ctx.createOscillator();
+					o.type = 'sine';
+					o.frequency.value = f;
+					const g = ctx.createGain();
+					g.gain.value = 0.22;
+					o.connect(g).connect(filt);
+					o.start();
+					a.nodes.push(o);
+				}
+				const lfo = ctx.createOscillator();
+				lfo.frequency.value = 0.045;
+				const lg = ctx.createGain();
+				lg.gain.value = 140;
+				lfo.connect(lg).connect(filt.frequency);
+				lfo.start();
+				a.nodes.push(lfo);
+			} else {
+				const srcNode = ctx.createBufferSource();
+				srcNode.buffer = noiseBuffer(ctx);
+				srcNode.loop = true;
+				const filt = ctx.createBiquadFilter();
+				if (kind === 'rain') { filt.type = 'bandpass'; filt.frequency.value = 1400; filt.Q.value = 0.5; }
+				else if (kind === 'fire') { filt.type = 'lowpass'; filt.frequency.value = 620; }
+				else { filt.type = 'lowpass'; filt.frequency.value = 900; }
+				srcNode.connect(filt).connect(out);
+				srcNode.start();
+				a.nodes.push(srcNode);
+
+				// Rain gets droplets; fire gets crackle. Random impulses, which is
+				// what stops either sounding like a machine.
+				if (kind === 'rain' || kind === 'fire') {
+					const tick = () => {
+						const t = ctx.currentTime;
+						const g = ctx.createGain();
+						const b = ctx.createBufferSource();
+						b.buffer = noiseBuffer(ctx, 0.06);
+						const bp = ctx.createBiquadFilter();
+						bp.type = kind === 'rain' ? 'bandpass' : 'highpass';
+						bp.frequency.value = kind === 'rain' ? 2600 + Math.random() * 1800 : 900;
+						g.gain.setValueAtTime(kind === 'rain' ? 0.16 : 0.3, t);
+						g.gain.exponentialRampToValueAtTime(0.0001, t + (kind === 'rain' ? 0.08 : 0.16));
+						b.connect(bp).connect(g).connect(out);
+						b.start(t);
+						a.timers.push(
+							window.setTimeout(tick, kind === 'rain' ? 40 + Math.random() * 120 : 180 + Math.random() * 900)
+						);
+					};
+					tick();
+				}
+			}
+
+			const vol = Number(get(KEY.vol) ?? 35) / 100;
+			out.gain.setTargetAtTime(vol * 0.5, ctx.currentTime, 0.5); // fade in
+			W.__rdAmb = a;
+		}
+
+		function mark() {
+			const cur = get(KEY.pick) ?? 'off';
+			for (const b of document.querySelectorAll<HTMLElement>('[data-rd-amb-pick]'))
+				b.setAttribute('aria-pressed', String(b.dataset.rdAmbPick === cur));
+			for (const w of document.querySelectorAll<SVGElement>('[data-rd-amb-wave]'))
+				w.style.opacity = cur === 'off' ? '0.25' : '1';
+		}
+
+		document.addEventListener('click', (e) => {
+			const el = e.target as HTMLElement;
+			const toggle = el.closest<HTMLElement>('[data-rd-amb-toggle]');
+			if (toggle) {
+				const p = toggle.parentElement?.querySelector<HTMLElement>('[data-rd-amb-panel]');
+				if (p) {
+					p.hidden = !p.hidden;
+					toggle.setAttribute('aria-expanded', String(!p.hidden));
+					if (!p.hidden) mark();
+				}
+				return;
+			}
+			const pick = el.closest<HTMLElement>('[data-rd-amb-pick]');
+			if (pick?.dataset.rdAmbPick) {
+				const kind = pick.dataset.rdAmbPick;
+				set(KEY.pick, kind === 'off' ? null : kind);
+				if (kind === 'off') stop();
+				else start(kind, pick.dataset.rdAmbSrc);
+				mark();
+				return;
+			}
+			if (!el.closest('[data-rd-amb]'))
+				for (const p of document.querySelectorAll<HTMLElement>('[data-rd-amb-panel]')) p.hidden = true;
+		});
+
+		document.addEventListener('input', (e) => {
+			const v = (e.target as HTMLInputElement).closest<HTMLInputElement>('[data-rd-amb-vol]');
+			if (!v) return;
+			set(KEY.vol, v.value);
+			const a = W.__rdAmb;
+			if (a) a.out.gain.setTargetAtTime((Number(v.value) / 100) * 0.5, a.ctx.currentTime, 0.05);
+		});
+
+		/*
+		 * NO AUTOPLAY, EVER — not even to restore a previous choice. Browsers
+		 * block it, and a page that starts making noise on load is hostile. The
+		 * choice is remembered and the button shows it; the reader presses play.
+		 */
+		mark();
+		document.addEventListener('astro:after-swap', mark);
+	}
+</script>
+
+<style>
+	.rd-amb { position: relative; display: inline-flex; }
+	.rd-amb__btn {
+		display: inline-flex; align-items: center; justify-content: center;
+		inline-size: 2rem; block-size: 2rem;
+		background: none; border: 1px solid transparent;
+		border-radius: var(--ds-r-sm, 0.375rem);
+		color: var(--rd-ink); cursor: pointer;
+	}
+	.rd-amb__btn:hover { border-color: var(--rd-border); background: var(--rd-surface); }
+	.rd-amb__panel {
+		position: absolute; inset-block-start: calc(100% + 0.5rem); inset-inline-end: 0;
+		z-index: 80; inline-size: 16rem; padding: 0.75rem;
+		background: var(--rd-surface); border: 1px solid var(--rd-border-strong);
+		border-radius: var(--ds-r-md, 0.75rem); box-shadow: var(--rd-shadow);
+		font-family: var(--rd-font-ui);
+	}
+	.rd-amb__panel[hidden] { display: none; }
+	.rd-amb__row { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+	.rd-amb__row button {
+		flex: 1 0 auto; padding: 0.25rem 0.5rem;
+		background: var(--rd-ground); border: 1px solid var(--rd-border);
+		border-radius: var(--ds-r-sm, 0.375rem);
+		color: var(--rd-ink); font: inherit; font-size: 0.8125rem; cursor: pointer;
+	}
+	.rd-amb__row button[aria-pressed='true'] {
+		border-color: var(--rd-accent); color: var(--rd-accent);
+		font-weight: 700; box-shadow: inset 0 -2px 0 var(--rd-accent);
+	}
+	.rd-amb__vol {
+		display: flex; align-items: center; gap: 0.5rem;
+		margin-block-start: 0.6rem; font-size: 0.75rem; color: var(--rd-muted);
+	}
+	.rd-amb__vol input { flex: 1; accent-color: var(--rd-accent); }
+	.rd-amb__hint {
+		margin: 0.5rem 0 0; font-size: 0.6875rem; line-height: 1.45; color: var(--rd-muted);
+	}
+	.sr-only {
+		position: absolute; inline-size: 1px; block-size: 1px;
+		overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+	}
+</style>

@@ -1,0 +1,36 @@
+{
+	"name": "readings",
+	"type": "module",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "astro dev",
+		"start": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro",
+		"check": "astro check",
+		"ci": "astro check && astro build",
+		"universe": "node scripts/universe.mjs",
+		"pages": "node scripts/gen-pages.mjs",
+		"audit": "node scripts/audit.mjs",
+		"synth": "node scripts/synth-corpus.mjs",
+		"synth:clean": "node scripts/synth-corpus.mjs --clean",
+		"contrast": "node scripts/contrast.mjs",
+		"words": "node scripts/prompt-words.mjs"
+	},
+	"dependencies": {
+		"@astrojs/starlight": "^0.41.10",
+		"@mermaid-js/layout-elk": "^0.2.3",
+		"astro": "^7.1.6",
+		"astro-mermaid": "^2.1.0",
+		"mermaid": "^11.17.0",
+		"sharp": "^0.35.3"
+	},
+	"devDependencies": {
+		"@astrojs/check": "^0.9.10",
+		"starlight-links-validator": "^0.25.3",
+		"typescript": "^6.0.3",
+		"wrangler": "^4.125.0"
+	}
+}

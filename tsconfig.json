@@ -1,0 +1,21 @@
+{
+	"extends": "astro/tsconfigs/strict",
+	"include": [".astro/types.d.ts", "**/*"],
+	"exclude": ["dist"],
+	"compilerOptions": {
+		// vite-plugin-config-alias reads `compilerOptions.paths` off this file and
+		// defaults `baseUrl` to "." when `paths` is present, so this single entry
+		// drives the editor, `astro check` and the bundler alike. There is no
+		// top-level `resolve.alias` in Astro 7.
+		//
+		// The target MUST be a file, not a directory: resolveWithAlias() calls
+		// statSync().isFile() and returns null otherwise.
+		//
+		// It exists so the import line in context/md-spec.md is byte-identical at
+		// every file depth — a relative ../../../ chain is a guess a chat session
+		// has no way to verify.
+		"paths": {
+			"@components": ["./src/components/index.ts"]
+		}
+	}
+}

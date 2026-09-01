@@ -1,0 +1,681 @@
+
+# How to Read, Understand, and Implement Self-Help Books
+
+**A merged, evidence-based report**
+*Compiled 30 August 2026 · consolidated from two prior drafts, deduplicated, with conflicts reconciled*
+
+Drawn from meta-analyses and randomised trials in bibliotherapy, learning science, and behaviour change. Every claim carries a source. Every limit is stated.
+
+---
+
+## Executive summary
+
+Self-help reading usually fails for three separable reasons, and it is worth knowing which one is yours:
+
+1. **The book may not be built for change** — it argues a thesis instead of supplying a procedure.
+2. **The reading method produces an illusion of learning** — fluency mistaken for retention.
+3. **Nothing converts reading into behaviour** — the intention forms and then dissolves.
+
+Only the third is universal. The findings below are ordered by how much they should change what you do.
+
+| #  | Finding                                                                                                                                                                            | Effect                                       | Source                                 |
+| -- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | -------------------------------------- |
+| 1  | **Structured self-help genuinely works** — roughly as well as therapist-delivered treatment, for certain problems                                                           | d = 0.57, 70 samples, no decay at follow-up  | Marrs (1995)                           |
+| 2  | **But almost none of that research studied trade self-help books.** "Bibliotherapy" in the literature means a protocol-driven clinical workbook                              | —                                           | See §1.2                              |
+| 3  | **It works for knowledge gaps, not execution gaps.** Assertiveness, anxiety, sexual dysfunction respond; weight loss, impulse control, study habits largely don't            | Differential by problem type                 | Marrs (1995)                           |
+| 4  | **Book quality varies and popularity doesn't track it.** ~48% of bestsellers used evidence-based techniques; ~19% of rated books judged "very helpful," ~1% actively harmful | —                                           | Redding et al. (2008); Norcross et al. |
+| 5  | **The binding constraint is completion, not comprehension.** Dropout in unsupported self-help runs roughly double the control rate                                           | RR ≈ 2.0                                    | Multiple meta-analyses                 |
+| 6  | **Intentions convert to action about half the time.** Reading produces intentions; intentions are not the thing                                                              | 28% of variance; acted on ~53% of the time   | Sheeran (2002)                         |
+| 7  | **Converting one idea into an IF–THEN plan is the highest-leverage single act** available to a reader                                                                       | **d = 0.65**, 94 tests, 8,000+ people  | Gollwitzer & Sheeran (2006)            |
+| 8  | **Tracking progress works, and works better written down and visible to someone**                                                                                            | **d = 0.40**, 138 studies, N ≈ 20,000 | Harkin et al. (2016)                   |
+| 9  | **Retrieval beats rereading** — and rereading produces more confidence with less retention                                                                                  | 61% vs 40% at one week                       | Roediger & Karpicke (2006)             |
+| 10 | **Vividly imagining success makes you less likely to achieve it.** The single most-violated finding in the genre                                                             | Negative                                     | Oettingen & Mayer (2002)               |
+| 11 | **Highlighting, rereading and summarising rate "low utility."** Practice testing and spaced review rate "high utility"                                                       | —                                           | Dunlosky et al. (2013)                 |
+| 12 | **Habit formation takes ~66 days on median, ranging 18–254 — and missing one day does not derail it**                                                                      | Median 66 days                               | Lally et al. (2010)                    |
+| 13 | **Guidance mainly buys adherence, not better outcomes.** Unguided readers catch up by follow-up                                                                              | g ≈ 0.26 favouring guided                   | Karyotaki et al. (2021)                |
+| 14 | **Speed reading trades comprehension for speed.** There is no shortcut around language processing                                                                            | 200–400 wpm ceiling for skilled readers     | Rayner et al. (2016)                   |
+
+> **The single-sentence version:** the return on *choosing a better book* is small; the return on *converting one idea into a written IF–THEN plan you track* is large. Most readers invert this.
+>
+> Put in hours: the hour you spend turning one idea into a scheduled, cued, tracked action is worth more than the ten hours you spend reading three more books.
+
+---
+
+# Part 1 — Does it work at all?
+
+## 1.1 The headline number
+
+The foundational meta-analysis is **Marrs (1995)**, in the *American Journal of Community Psychology*. It pooled **70 samples** of bibliotherapy — written material used as the primary treatment — and found:
+
+- Mean effect size **d = 0.565** (moderate); other analyses report the same figure as d = 0.57, 95% CI 0.49–0.64
+- **No significant difference between bibliotherapy and therapist-administered treatment**
+- **No significant erosion of effects at follow-up**
+- Amount of therapist contact did not, overall, predict effectiveness
+
+The third point is the interesting one: where self-help worked, it *kept* working. This is not a placebo-shaped result that fades.
+
+Later domain-specific work found similar or larger effects:
+
+| Study                  | Domain                                      | Effect    |
+| ---------------------- | ------------------------------------------- | --------- |
+| Cuijpers (1997)        | Unipolar depression                         | d ≈ 0.82 |
+| Gould & Clum           | Depression bibliotherapy                    | d = 0.74  |
+| Den Boer et al. (2004) | Self-administered treatment vs no treatment | d = 1.00  |
+
+## 1.2 The caveat that changes everything
+
+**Almost none of this research studied the books in the self-help section of a bookshop.**
+
+"Bibliotherapy" in the clinical literature means something specific: a **structured, protocol-driven workbook**, usually cognitive-behavioural, with exercises, worksheets and a defined sequence. Such books exist to walk a reader through challenging unhelpful thoughts and behaviours until self-management improves — not merely to inform. That is not the same object as a trade paperback arguing a thesis across 250 pages.
+
+|                     | Clinical bibliotherapy          | Trade self-help                  |
+| ------------------- | ------------------------------- | -------------------------------- |
+| **Structure** | Sequenced protocol              | Argument or narrative            |
+| **Exercises** | Required, worksheeted           | Optional, often absent           |
+| **Basis**     | An evidence-based therapy       | Author's experience or synthesis |
+| **Tested**    | In RCTs, as the intervention    | Almost never                     |
+| **Dose**      | Defined ("complete weeks 1–8") | Undefined                        |
+
+**What transfers:** the general finding that written material *can* produce durable behaviour change without a therapist present.
+
+**What does not transfer:** the effect size. No meta-analysis shows that any particular bestseller produces d = 0.57 — nobody has run that study. Treating the bibliotherapy number as the expected return on any book you pick up is a misreading.
+
+> **The honest position:** self-help can work at a magnitude comparable to therapy, **when the book contains a protocol and you complete it.** The further a book sits from that description, the less the evidence base applies.
+
+## 1.3 A large share of trade books are not built for change
+
+A 2008 analysis (**Redding et al.**) had practising clinical psychologists evaluate the 50 top-selling self-help books for anxiety, depression and trauma, deliberately ignoring consumer reviews:
+
+- **48%** contained techniques supported by research evidence
+- **24%** told readers how to measure their own progress
+- **34%** addressed durable change rather than a short-term emotional lift
+
+Separately, the large ratings project behind **Norcross and colleagues'** *Authoritative Guide to Self-Help Resources in Mental Health* — drawing on national surveys of thousands of mental health professionals — found roughly **19% of rated books judged "very helpful"** and about **1% judged actively harmful.**
+
+The implication is uncomfortable but useful: **book selection is a real variable, not a formality.** Popularity and quality are only loosely coupled.
+
+---
+
+# Part 2 — The diagnostic that comes before everything
+
+Marrs's most useful finding is not the average. It's the variance.
+
+**Bibliotherapy produced reliable improvement for:**
+
+- Assertiveness and communication skills
+- Anxiety
+- Sexual dysfunction
+
+**Bibliotherapy produced little or no improvement for:**
+
+- Weight loss
+- Impulse control
+- Study habits
+
+## Why the split falls where it does
+
+**The successes are all skill-acquisition problems with a clear procedure.** Assertiveness has scripts. Anxiety has exposure hierarchies and thought records. Sexual dysfunction has sensate-focus protocols. In each case the book hands you a **procedure you did not previously know**, and executing it once is not especially hard.
+
+**The failures are all self-regulation problems against a strong competing drive.** Weight loss, impulse control and study habits don't fail for want of information — nobody eats badly because they never heard of vegetables. They fail because knowing isn't the constraint. **Sustained execution against appetite, boredom and immediate reward is the constraint**, and a book cannot supply that.
+
+> **The diagnostic question before opening any self-help book:**
+> **"Is my problem a knowledge gap, or an execution gap?"**
+>
+> Knowledge gap → a book is the right tool and the evidence supports it.
+> Execution gap → the book will feel useful and change little, and reading a second one will change less. What you need is structure, cueing, tracking and accountability (Parts 5–7), not more input.
+
+This single distinction predicts most of the disappointment people report with the genre. The books that "didn't work" were usually aimed at execution gaps and read as though they were solving knowledge gaps.
+
+---
+
+# Part 3 — Why reading rarely changes anything
+
+## 3.1 The follow-through data is grim
+
+In a 1981 study, **Kohlenberg** gave headache sufferers free copies of his migraine-relief self-help book. Only about **20% read it**, and **fewer than 5% applied the advice**. Reading is already a minority behaviour among people who acquire a book; application is a minority of that minority.
+
+## 3.2 The intention–behaviour gap
+
+Even when a book successfully changes what you *intend* to do, intention is a weak predictor of action.
+
+**Sheeran (2002)** synthesised 10 meta-analyses covering **422 studies**:
+
+- Goal intentions account for about **28% of the variance** in behaviour
+- People act on their good intentions only about **53% of the time**
+- Correlational studies **overestimate** the link; experiments that successfully changed intentions produced much smaller behaviour changes
+
+In physical-activity research specifically, around **54% of people who intended to act did not act**; Rhodes and de Bruijn's meta-analysis put the gap near **46%**. The figures converge on the same story: roughly half.
+
+The people responsible for this gap are not the unmotivated. Researchers call them ***inclined abstainers*** — people who genuinely want to change and don't. **Finishing an inspiring book reliably produces an inclined abstainer.** Twenty-eight percent of variance is a large effect by social-science standards, so reading is not nothing. But no amount of additional reading closes the other half.
+
+## 3.3 The illusion of learning
+
+**Dunlosky and colleagues (2013)** reviewed ten common learning techniques and found that the ones students use most — **highlighting, underlining, rereading and summarising** — received **low utility ratings**. Dunlosky noted his own surprise at how little benefit rereading and highlighting provided.
+
+**Roediger & Karpicke (2006)** showed the mechanism directly. Participants read prose passages, then either reread them or attempted free recall:
+
+- **Recall group: 61% retention at one week**
+- **Reread group: 40% retention at one week**
+- On an **immediate** test, rereading looked better; the advantage reversed with delay
+
+They also surveyed 117 students on study strategies. The majority chose rereading; very few used self-testing. They named this the **illusion of competence**: rereading increases familiarity, familiarity feels like knowledge, and the feeling is wrong. Meta-analytic estimates put the retrieval advantage at **g ≈ 0.50–0.61**, growing as the retention interval lengthens.
+
+This matters more in self-help than in most genres, because self-help prose is **professionally optimised for fluency**. It is edited to feel obvious. The sensation of "yes, of course, this is exactly right" is what the writing is engineered to produce — and it is precisely the sensation that predicts you will not remember it in a month.
+
+## 3.4 The real bottleneck: adherence
+
+If self-help works at d ≈ 0.57 in trials, why does the lived experience of most readers not match? **Because trials measure people who finished.**
+
+| Finding                                        | Figure                                     | Source                                        |
+| ---------------------------------------------- | ------------------------------------------ | --------------------------------------------- |
+| Dropout, unguided self-help vs control         | **RR ≈ 1.98** (roughly double)      | OCD meta-analysis, 11 RCTs, N = 983           |
+| Dropout, unguided digital self-help vs control | **OR = 2.10** (pre-selected samples) | Eating-disorder meta-analysis                 |
+| Received an adequate dose (≥4 of 5 sessions)  | **36%** (49/136)                     | Web-based problem-solving-therapy trial       |
+| Stopped using a self-help app by 8 weeks       | **24%**                              | Linardon & Fuller-Tyszkiewicz (2019), 70 RCTs |
+| Stopped by 12 weeks                            | **36%**                              | *ibid.*                                     |
+
+**Reported reasons for dropping out**, from one trial, in order: lack of energy, the course not being a priority, technical problems, no perceived benefit. Note that *"the content was wrong"* does not appear near the top.
+
+## 3.5 Does guidance help?
+
+Yes — modestly, and mainly in the short run.
+
+- Across several meta-analyses (Spek 2007; Andersson & Cuijpers 2009; Richards & Richardson 2012; Baumeister 2014; Karyotaki 2021), **guided participants improve more than unguided participants.**
+- Direct head-to-head pooling of 10–12 trials found **g ≈ 0.26 in favour of guided self-help** — small but consistent.
+- Guided participants are **more likely to stay in the programme** and adhere to its recommendations.
+
+**But there is a twist worth sitting with. Karyotaki et al. (2021)** found that by follow-up, unguided participants had **caught up** — they continued improving after the intervention period while guided participants plateaued. The advantage of guidance appears to be largely about **getting you through the material**, not about the material working better on you.
+
+> **The bottleneck is not comprehension. It is completion.**
+> An average book fully worked through beats an excellent book abandoned at chapter four, every single time.
+
+Guidance doesn't require a therapist. A friend doing the same book, a monthly check-in, a coach, a group, a public commitment, a tracker you can't quietly abandon — anything that makes abandonment visible captures most of the benefit. The mechanism is accountability and adherence, not expertise.
+
+One further finding worth internalising: self-help works best for people who are **already motivated and resourceful.** If you are reading a book *in order to* find motivation, the odds are poor and external support matters more, not less.
+
+---
+
+# Part 4 — Before you read: selection and framing
+
+## 4.1 Start with the problem, not the book
+
+The most common failure is choosing a book and then looking for a problem it might solve. Reverse it. Write one sentence:
+
+> "I want to change ______, which currently shows up as ______, and I'd know it changed if ______."
+
+The third clause is the important one. Without a stated observable you cannot evaluate whether the book worked — and only about a quarter of books will supply that measure for you.
+
+Then apply the Part 2 diagnostic: knowledge gap or execution gap?
+
+## 4.2 Screen the book — five minutes
+
+**Green flags**
+
+| Signal                                                                                           | Why it predicts effect                                                                                             |
+| ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| **Contains a defined procedure**, not just a thesis                                        | The entire evidence base is on protocol-driven material                                                            |
+| **Exercises with a specified sequence and dose**                                           | "Complete weeks 1–8" is testable; "reflect on this" is not                                                        |
+| **Names its evidence base** — CBT, ACT, behavioural activation, motivational interviewing | These have research behind them; a book citing only the author's biography is a case study with a marketing budget |
+| **The method has been trialled**, ideally by someone other than the author                 | Almost no trade self-help clears this bar; the few that do are worth prioritising                                  |
+| **Names its failure conditions** — who this doesn't work for                              | Books that specify boundary conditions are describing a real mechanism                                             |
+| **Cites primary research accurately**                                                      | Checkable. Spot-check two claims before committing three weeks                                                     |
+| **Tells you how to know if it's working**                                                  | Progress measurement is present in under a quarter of bestsellers                                                  |
+| **Targets a knowledge gap**                                                                | Where bibliotherapy demonstrably works                                                                             |
+
+**Red flags**
+
+| Signal                                                                          | Why it predicts failure                                                                                                                                                                                                                                  |
+| ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Recommends visualising success**                                        | Directly contradicted — see §8.1                                                                                                                                                                                                                       |
+| **The mechanism is the author's biography**                               | n = 1, with survivorship bias and hindsight attribution. A successful person looking backward and attributing their outcome to remembered behaviours is not causal evidence — and you never read the books by people who did the same things and failed |
+| **Promises transformation without a procedure**                           | Targets an execution gap with information: the documented failure mode                                                                                                                                                                                   |
+| **One idea repeated across fifteen chapters**                             | Publishing economics, not content. Read the summary; buy back the time                                                                                                                                                                                   |
+| **Cites research loosely, or in one direction only**                      | Selective citation is the most common defect in the genre                                                                                                                                                                                                |
+| **Unfalsifiable** — every outcome confirms the thesis                    | Then the thesis says nothing                                                                                                                                                                                                                             |
+| **Targets weight, impulse control or study habits through insight alone** | The three areas where bibliotherapy specifically did*not* work                                                                                                                                                                                         |
+
+## 4.3 One book at a time
+
+Reading three books on a topic simultaneously produces a sense of expertise and no behaviour. Adler's **syntopical** reading — comparing multiple books on a subject — is genuinely valuable, but it is a **research** activity, not a **change** activity. Do it after you've implemented, not instead of implementing.
+
+---
+
+# Part 5 — The comprehension layer
+
+*How to actually understand what you read, rather than feel that you have.*
+
+## 5.1 Two passes, not one
+
+Mortimer Adler's *How to Read a Book* distinguishes four levels: elementary, **inspectional**, **analytical**, and syntopical. The practical core for self-help:
+
+**Pass 1 — Inspectional (20–40 minutes).** Systematically skim: title, subtitle, contents, preface, index, the chapter that seems most central, and the conclusion. Then read the whole thing quickly without stopping at difficulties. The goal is to learn what the book claims and how it is structured *before* trying to understand it in detail.
+
+Adler's argument: most people read cover-to-cover on the first pass, forcing themselves to work out what the book is about at the same time as understanding it — two jobs at once, done badly.
+
+The inspectional pass also answers the question that saves the most time: **should I read this at all?** Many self-help books are one idea and 250 pages of anecdote. If the inspectional pass gives you the idea, you can stop.
+
+**Pass 2 — Analytical.** Only for books that survive Pass 1. Adler's four questions:
+
+1. What is the book about as a whole?
+2. What is being said in detail, and how?
+3. Is it true, in whole or part?
+4. What of it? *(This last one is where self-help lives or dies.)*
+
+## 5.2 Speed reading will not help you
+
+A comprehensive review by **Rayner, Schotter, Masson, Potter & Treiman (2016)** concluded there is a genuine **speed–accuracy trade-off**:
+
+- Skilled readers already read at roughly **200–400 words per minute**
+- **Eye movements account for no more than about 10%** of total reading time — so techniques that eliminate them (RSVP apps) target the wrong bottleneck
+- **Regressions — looking back at earlier text — support comprehension** rather than impeding it. Technologies that prevent rereading make understanding worse
+- The real constraint is language processing, not visual intake
+
+Comprehension degrades sharply on dense text past roughly 500–600 wpm. The one thing that reliably improves reading ability is **reading widely for comprehension**, which builds vocabulary and contextual anticipation. There is no shortcut.
+
+## 5.3 Match explanation depth to what you already know
+
+**McNamara, Kintsch, Songer & Kintsch (1996); McNamara (2001)** — the **reverse cohesion effect**:
+
+- **Low-knowledge readers learn more from high-coherence text** — explicit, well-connected, gap-free prose
+- **High-knowledge readers learn more from *low*-coherence text.** The gaps force them to fill in from prior knowledge, and that gap-filling *is* the learning
+
+**O'Reilly & McNamara (2007)** qualified it: the low-coherence advantage was restricted to *less skilled* high-knowledge readers. Skilled comprehenders with high knowledge benefited from clear text again.
+
+**Kalyuga, Ayres, Chandler & Sweller (2003)** found the parallel in instructional design — the **expertise reversal effect**: scaffolding that is essential for novices can actively impair more experienced learners, for whom **removing** redundant explanation outperformed providing it.
+
+> **Applied:** in a genuinely new domain, seek the clearest explanation available — summaries, explainers, a good teacher. In a domain you already know, extra explanation is redundant load; you learn more wrestling with the original and its gaps.
+
+## 5.4 Read slowly on the passages that matter
+
+The inspectional pass should be fast. But once you hit the passage that actually addresses your problem, slow down radically.
+
+One approach adapted from the monastic practice of *lectio divina*: read until a sentence catches, then stop. Reread that sentence. Reread it again. Let your mind connect it to what you already know and to your own situation. The mechanism is elaboration — you are building retrieval routes from the new idea to existing knowledge.
+
+The asymmetry is the point: **skim 90% of the book, and chew the 10% that applies to you.**
+
+## 5.5 Interrogate as you go
+
+Two techniques Dunlosky's team rated more favourably than passive rereading:
+
+- **Elaborative interrogation** — ask "*why* would this be true?" of each claim
+- **Self-explanation** — explain how the new information relates to what you already know
+
+Concretely, for each significant claim:
+
+- Why would this be true? What's the mechanism?
+- What would have to be true about *me* for this to apply?
+- Where in my last month would this have made a difference?
+- What's the strongest argument against it?
+
+## 5.6 Notes: generative, not verbatim
+
+The distinction that matters is **generative** note-taking (summarising, paraphrasing, concept-mapping in your own words) versus **non-generative** (copying verbatim). Verbatim transcription is associated with shallow processing; generative note-taking with deeper encoding. Highlighting is the extreme case of non-generative note-taking — it produces zero words of your own — which is consistent with its low utility rating.
+
+Mark passages that suggest **actions** distinctly from passages that are merely interesting. This separation is what makes Part 7 possible.
+
+**On the handwriting question, be careful.** Mueller and Oppenheimer's widely cited 2014 finding that longhand beats laptops has a contested replication history: **Morehead, Dunlosky & Rawson (2019)** ran a preregistered replication that did not cleanly reproduce it, and concluded it was premature to declare a winner. A 2024 meta-analysis across 24 studies did find an advantage for handwriting, but a small one (**Hedges' g ≈ 0.25**).
+
+The defensible takeaway: **what matters is whether you're rephrasing or transcribing, not which implement you hold.** Handwriting helps mainly because it is too slow to transcribe with — if you paraphrase deliberately, you can type.
+
+## 5.7 If you use AI to help you read, how you use it decides the outcome
+
+**Bastani, Bastani, Sungu, Ge, Kabakcı & Mariman (2024).** Randomised field experiment, ~1,000 high-school students:
+
+| Condition                                                | On practice problems | On unassisted exam                  |
+| -------------------------------------------------------- | -------------------- | ----------------------------------- |
+| Standard chatbot access                                  | **+48%**       | **−17%**                     |
+| Safeguarded tutor — refused to hand over direct answers | **+127%**      | **No significant difference** |
+
+The safeguarded prompt ran 500+ words; the harmful one about 50. The instruction not to give away answers was the entire mechanism.
+
+**Caveat:** high-school mathematics, not adult non-fiction reading. Use it for direction, not magnitude.
+
+> **Applied:** AI that explains a book to you is useful. AI that does your thinking about the book is not. The distinction is whether it hands you conclusions or makes you produce them.
+
+---
+
+# Part 6 — The retention layer
+
+## 6.1 Test yourself instead of rereading
+
+Dunlosky's team gave **high utility** ratings to exactly two techniques: **practice testing** and **distributed (spaced) practice.** Both generalised across ages, materials and test types. Combined with the 61%-vs-40% result in §3.3, this is about as settled as learning science gets.
+
+Applied to a book, this means closing it and asking:
+
+- What were the main claims?
+- What was the mechanism behind each?
+- What was I supposed to *do* differently?
+
+Do it from memory, on a blank page, badly. Ten minutes. Then check. The gaps you find are the actual state of your knowledge — the highlighted pages were telling you a comforting story.
+
+> It will feel considerably worse than rereading while you do it. That feeling is not a signal that it isn't working. It is the signal that it is.
+
+## 6.2 Space the reviews
+
+Cramming a book in a weekend and never revisiting it is the worst possible schedule.
+
+| Timing   | Action                                                                 |
+| -------- | ---------------------------------------------------------------------- |
+| Same day | Write a one-page summary from memory, then correct it against the book |
+| Day 3    | Recall the key actions without notes                                   |
+| Week 2   | Review notes; check whether the behaviour is actually happening        |
+| Week 6   | Review; decide what to keep, drop or adapt                             |
+| Month 3  | Reread only your own notes, not the book                               |
+
+## 6.3 Use the teaching test
+
+The **protégé effect** — learning more when you expect to teach, and more still when you actually teach — is well supported. A 1982 meta-analysis of 65 tutoring studies found tutors themselves gained understanding, not just tutees.
+
+The mechanism appears to be largely retrieval-based. In one study (**Koh et al., 2018**), participants who taught material **without notes** performed comparably to a retrieval-practice group, and both outperformed those who taught *with* notes or did neither, on a test a week later. Evidence also suggests actually delivering the explanation beats merely preparing to.
+
+**Practical version:** explain the book to someone in five minutes, out loud, without notes. Where you stall is where you don't understand it. If nobody's available, write the explanation as if for a specific person.
+
+---
+
+# Part 7 — The implementation layer
+
+*This is where the returns are, and where almost all readers under-invest.*
+
+## 7.1 Lever 1 · Implementation intentions — d = 0.65
+
+The best-evidenced tool for closing the intention–behaviour gap is the **implementation intention**:
+
+> **"IF [situation Y] occurs, THEN I will [behaviour X]."**
+
+**Gollwitzer & Sheeran (2006)**, meta-analysis of **94 independent tests, 8,000+ participants**:
+
+- Mean effect on goal attainment: **d = 0.65** (medium-to-large) over holding a goal intention alone
+- Effect on *preventing derailment* of ongoing goal striving: **d = 0.77**
+- **Sheeran, Listrom & Gollwitzer (2024)** updated across **642 independent tests**: effects ranged **d ≈ 0.27–0.66**, and were **stronger when the plan used an explicit contingent format, when motivation was high, and when the plan was rehearsed**
+
+One illustrative trial: in an exercise study, **91%** of participants who formed an if–then plan followed through, versus **35%** given motivational material alone.
+
+**Why it works:** the plan delegates initiation from conscious will to environmental cue. The behaviour fires on encountering the situation rather than requiring deliberation. Implementation intentions help with getting started, protecting a goal in progress, disengaging from failing approaches, and conserving effort.
+
+**The failure mode is vague triggers.** *"When I feel unmotivated"* is not a situation you will physically encounter. *"When I sit down at my desk at 9am"* is.
+
+**The translation step, concretely:**
+
+| Book says                          | Bad conversion           | Good conversion                                                                                            |
+| ---------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| "Be more present in conversations" | "I'll be more present"   | "If I sit down to talk with my partner, then I put my phone in the drawer first"                           |
+| "Deep work requires blocks"        | "I'll do deep work"      | "If it's 9:00 on a weekday, then I close email and work on one task until 10:30"                           |
+| "Reframe catastrophic thoughts"    | "I'll catch my thinking" | "If I notice my chest tighten before a meeting, then I write the thought down and ask what's the evidence" |
+
+The good versions share two properties: **an observable cue** (not a vague intention) and **a specific first action** (not an outcome). Write it down. Rehearse it.
+
+## 7.2 Lever 2 · Mental contrasting — name the obstacle, not the dream
+
+**Gabriele Oettingen's** research programme, running since the 1980s, produced a result so counterintuitive she replicated it repeatedly before publishing. It is covered in full in §8.1, because it is the strongest *negative* finding in this report. The constructive half belongs here.
+
+**The corrective is mental contrasting**, packaged as **WOOP**:
+
+|                         |                                                                                                                        |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **W** — Wish     | The goal. Meaningful, and genuinely achievable.                                                                        |
+| **O** — Outcome  | The best result. Imagine it fully —*then stop*.                                                                     |
+| **O** — Obstacle | **The inner obstacle.** Not circumstances — what in *you* stops this. This is the step everything turns on.   |
+| **P** — Plan     | IF [obstacle occurs], THEN I will [specific action]. An implementation intention aimed at the obstacle you just named. |
+
+**Evidence for the combination (MCII):**
+
+- **Stadler, Oettingen & Gollwitzer (2009):** participants trained in mental contrasting were **twice as physically active** as those given information alone
+- **Adriaanse et al. (2010):** MCII produced a **~30% improvement in diet** over control
+- Duckworth and colleagues found MCII improved school grades, attendance and conduct in disadvantaged children
+
+> **A feature, not a bug:** Oettingen specifies that mental contrasting works **only when the goal is genuinely achievable.** When it isn't, contrasting produces **disengagement** — a clean decision to redirect energy elsewhere. WOOP is a goal-*screening* tool as much as a goal-achievement tool, which makes it unusually valuable for anyone who accumulates aspirations faster than they retire them.
+
+## 7.3 Lever 3 · Progress monitoring — d = 0.40
+
+**Harkin, Webb, Chang, Prestwich, Conner, Kellar, Benn & Sheeran (2016)**, *Psychological Bulletin*. **138 studies, N = 19,951**, all randomised:
+
+- Interventions successfully increased monitoring frequency: **d+ = 1.98**
+- Monitoring promoted goal attainment: **d+ = 0.40** (95% CI 0.32–0.48)
+- Change in monitoring frequency **mediated** the effect — monitoring is doing the causal work
+
+**Two moderators, both actionable:**
+
+- Larger effects when outcomes were **reported or made public**
+- Larger effects when the information was **physically recorded**
+
+> A tick on a piece of paper that someone else might see outperforms a mental note. This is close to free, and it is the second-largest documented lever after the if–then plan. A paper tracker, a spreadsheet, or a habit app — and someone who sees it.
+
+## 7.4 One behaviour per book
+
+Only about a third of top-selling books focus on long-term change rather than an emotional boost. Given that, extracting a **single durable behaviour** from a book is a good outcome, not a poor one.
+
+If a book gives you fifteen ideas, pick one. Fifteen implementation intentions compete with each other and with everything else in your life; one has a chance. Adding intentions does not raise the ~53% conversion rate — it divides the same attention. The rest go in your notes for the next cycle.
+
+## 7.5 Lever 4 · Set a realistic timeline
+
+**Lally, van Jaarsveld, Potts & Wardle (2010)**, *European Journal of Social Psychology*. 96 volunteers, one new daily behaviour each, tracked over 84 days:
+
+- **Median time to 95% of asymptotic automaticity: 66 days**
+- **Range: 18 to 254 days** — enormous variation
+- **About half had not reached automaticity by day 84**
+- **Missing a single day did not derail the curve** — automaticity dipped fractionally and recovered
+
+**Two corrections this delivers:**
+
+1. **"21 days to form a habit" is a myth.** It originates in Maxwell Maltz's 1960 *Psycho-Cybernetics* — an observation about plastic-surgery patients adjusting to a new face, not a habit study.
+2. **The all-or-nothing instinct is empirically wrong.** Treating one missed day as a broken streak and restarting from zero is not supported by the data. Resuming the next day is.
+
+Lally herself has noted the "66 days" figure is usually stripped of context; what the study really demonstrated is **how variable** the process is. Plan for 2–3 months minimum, expect variation, treat a missed day as noise. Simple behaviours in stable contexts form fastest — and these were simple behaviours (drinking water, eating fruit), so a complex change driven by a book will likely take longer.
+
+---
+
+# Part 8 — What actively backfires
+
+*Not "doesn't help." Makes things worse.*
+
+## 8.1 Vivid positive visualisation
+
+> **Oettingen & Mayer (2002)** and subsequent work, across weight-loss patients, hip-replacement and MS patients, graduating job-seekers, students, and people trying to drink less:
+>
+> **The more vividly someone fantasised about the desired outcome, the worse they did.** Less weight lost. Slower recovery. Fewer job offers. Lower starting salaries. Smaller relationship progress.
+>
+> **Mechanism:** the fantasy delivers the pleasant feeling that success was supposed to deliver. Having been rewarded, the system stops mobilising — the enjoyment of imagining the outcome does the work that pursuing it was supposed to do.
+
+This is not a fringe result. It is one of the more robust findings in motivation research — and it **directly contradicts a technique promoted by a large fraction of the self-help genre.** Any book recommending that you visualise success as already accomplished is recommending something the evidence contradicts. Use WOOP (§7.2) instead.
+
+## 8.2 Affirmations, for the people most likely to use them
+
+**Wood, Perunovic & Lee (2009)** found that people with **low self-esteem felt worse** after repeating a positive self-statement ("I'm a lovable person"). People with high self-esteem felt somewhat better. Their conclusion: positive self-statements may help some people but backfire for exactly the people most likely to reach for them.
+
+The technique that fared better in their work was allowing the statement to be **both true and not true** — permitting the counter-evidence rather than suppressing it. This is much closer to CBT and ACT practice than to affirmation culture. Note the family resemblance to Oettingen: in both cases, the intervention that admits the obstacle beats the one that overwrites it.
+
+## 8.3 Rereading as a study method
+
+Produces higher confidence and lower retention than retrieval (§3.3). **The confidence is the harm** — it's what stops you doing the thing that would have worked.
+
+## 8.4 Reading the next book instead of doing the last one
+
+There is no direct experimental evidence on this — nobody has randomised people to "read one book and apply it" versus "read five books." But the components are established:
+
+- Intentions predict behaviour ~53% of the time (Sheeran 2002)
+- Positive fantasy about a future self *substitutes* for effort (Oettingen)
+- The fluency of well-written self-help produces an unearned sense of progress (illusion of competence)
+
+Reading about change produces many of the emotional rewards of changing — a sense of progress, direction and self-improvement — at none of the cost. Under Oettingen's mechanism, that feeling is exactly what discharges the motivation to do the improving. **The genre's central risk is that consuming it feels like doing it**, and this is the most insidious failure mode because it is indistinguishable from productive effort while it is happening.
+
+> **The diagnostic question:** what did I do differently in the last 30 days as a result of the last book I read?
+> If the answer is nothing, more reading is not the intervention.
+
+## 8.5 One-size-fits-all advice fits nobody exactly
+
+Much self-help generalises from a single author's circumstances. Assess whether the author's starting conditions — resources, obligations, health, context — resemble yours. Where they don't, the advice may be sound and still inapplicable.
+
+## 8.6 Confirmation bias in selection
+
+Readers tend to select books that confirm what they already believe, which is comfortable and leaves the actual obstacle untouched. A useful discipline: occasionally read something that argues against your current approach.
+
+## 8.7 A note on the "self-help makes you worse" study
+
+**Raymond, Marin, Hand, Sindi, Juster & Lupien (2016)**, *Neural Plasticity*, compared 32 consumers and non-consumers of self-help books:
+
+- Readers of **growth-oriented** books showed **increased cortisol reactivity** to a lab stressor
+- Readers of **problem-focused** books showed **higher depressive symptomatology**
+- On personality, sense of control and self-esteem: **no difference** between readers and non-readers
+
+> **Read this one carefully. n = 32. A pilot study. Cross-sectional and correlational.**
+>
+> The direction of causation is completely undetermined, and the researchers say so. The far more plausible reading is **selection, not causation**: distressed people buy self-help books. The readership literature supports this — many adults use self-help to self-diagnose and self-treat psychological distress, largely because of the stigma attached to seeking formal help.
+>
+> This study is widely cited as proof that self-help books make you stressed. **It does not show that**, and treating it as though it does is the same uncritical reading the genre is accused of encouraging.
+
+**What it does usefully establish:** habitual self-help readers are not, on measured personality and self-esteem, distinguishable from non-readers. Whatever the genre is doing at population scale, it is not producing a visibly different kind of person.
+
+## 8.8 Know the limits of books
+
+Bibliotherapy's evidence base is strongest for **mild to moderate** difficulties, and stronger still when combined with some professional guidance. It is weaker for weight loss, study problems and impulse control. If you're dealing with something persistent or severe, the evidence favours guided support over solo reading — not because self-help is worthless, but because guidance substantially improves the odds of finishing and applying it.
+
+---
+
+# Part 9 — The end-to-end protocol
+
+*Assembled only from what is above.*
+
+### Stage 0 — Diagnose (5 minutes)
+
+| Step                        | What to do                                                                           | Why — and the number                                                                                          |
+| --------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| **0 · Name the gap** | Before opening anything:**is my problem a knowledge gap or an execution gap?** | Bibliotherapy works for skill acquisition and largely fails for self-regulation against drive.*Marrs (1995)* |
+
+### Stage 1 — Before you read (30 minutes)
+
+| Step                                              | What to do                                                                                                                               | Why                                                                                                                        |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **1 · Write the problem statement**        | "I want to change ___, which shows up as ___, and I'd know it changed if ___."                                                           | Only ~24% of books supply a progress measure for you.*Redding et al. (2008)*                                             |
+| **2 · Prefer protocol over argument**      | Given two books, choose the one with exercises, sequences and worksheets over the one with a thesis and anecdotes. Screen against §4.2. | The entire d = 0.57 evidence base is on structured material.*Marrs (1995)*                                               |
+| **3 · Build in whatever makes you finish** | A partner, a public commitment, a schedule, a deadline. Anything that makes abandonment visible.                                         | Dropout roughly doubles without support; guided beats unguided at g ≈ 0.26, mainly by getting people through the material |
+| **4 · Inspectional pass**                  | 20–40 minutes. Then decide: read fully, skim one chapter, or abandon.                                                                   | Adler. Many books are one idea and 250 pages of anecdote                                                                   |
+
+### Stage 2 — While reading (per session)
+
+| Step                                                     | What to do                                                                                                              | Why                                                                                                 |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **5 · Match explanation depth to your knowledge** | New domain → seek the clearest explanation available. Familiar domain → go to the original and wrestle with its gaps. | Reverse cohesion effect*(McNamara)*; expertise reversal *(Kalyuga et al. 2003)*                 |
+| **6 · Read with the four questions active**       | Why would this be true? Does it apply to me? Where would it have mattered last month? What's the counter-argument?      | Elaborative interrogation and self-explanation outrank passive rereading.*Dunlosky et al. (2013)* |
+| **7 · Take generative notes**                     | Your words, not the author's. Mark**action** passages separately from merely interesting ones.                    | Verbatim transcription → shallow processing. Method matters more than pen vs keyboard              |
+| **8 · Retrieve, don't reread**                    | After each chapter, close the book and write what it argued from memory. Ten minutes. Badly is fine.                    | **61% vs 40%** retention at one week. *Roediger & Karpicke (2006)*                          |
+
+### Stage 3 — Immediately after (60–90 minutes)
+
+| Step                                                 | What to do                                                                                                                              | Why                                                                                                                               |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **9 · Summarise from memory, then correct**   | One page, closed book, then check it against the text.                                                                                  | Practice testing + spacing are the only two "high utility" techniques.*Dunlosky et al. (2013)*                                  |
+| **10 · Explain it aloud, without notes**      | Five minutes, to a specific person. Where you stall is where you don't understand it.                                                   | Protégé effect; teaching without notes matched retrieval practice.*Koh et al. (2018)*                                         |
+| **11 · Choose ONE behaviour**                 | One active change at a time. The rest go in notes for the next cycle.                                                                   | Adding intentions doesn't raise the ~53% conversion rate; it divides attention                                                    |
+| **12 · Do NOT visualise success**             | Imagine the outcome briefly, then immediately name**the inner obstacle** and contrast the two.                                    | Positive fantasy predicts**worse** outcomes across two decades. *Oettingen & Mayer (2002)*                                |
+| **13 · Write ONE if–then plan**              | **IF [concrete situation], THEN I will [observable action].** Physical trigger, never a feeling. Written, not thought. Rehearsed. | **d = 0.65** across 94 tests; stronger with explicit contingent format and rehearsal. *Gollwitzer & Sheeran (2006, 2024)* |
+| **14 · Set up the tracker. Tell one person.** | One tick, one line, on paper or a shared doc. Every day.                                                                                | **d = 0.40**, N ≈ 20,000 — larger when publicly reported and physically recorded. *Harkin et al. (2016)*                |
+
+### Stage 4 — The following 90 days
+
+| Step                                                     | What to do                                                                                                                  | Why                                                                                                                  |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **15 · Track daily; record it physically**        | Don't rely on mental notes.                                                                                                 | See step 14                                                                                                          |
+| **16 · Review at day 3, week 2, week 6, month 3** | Recall without notes at day 3; check the behaviour is actually happening at week 2; review notes, not the book, at month 3. | Distributed practice, "high utility."*Dunlosky et al. (2013)*                                                      |
+| **17 · Run it ~66 days; forgive the misses**      | Don't judge at day 21. Don't restart after one miss.                                                                        | Median**66 days**, range 18–254; a single missed repetition did not derail the curve. *Lally et al. (2010)* |
+| **18 · At week 6, decide: keep, adapt, or drop**  | Dropping a behaviour that isn't working is a valid outcome, not a failure.                                                  | Mental contrasting doubles as goal screening.*Oettingen*                                                           |
+| **19 · Only then start the next book**            | One cycle at a time.                                                                                                        | §8.4                                                                                                                |
+
+> ## The whole protocol compressed
+>
+> **Diagnose the gap → pick a book with a procedure → build in whatever makes you finish → skim first, then chew the 10% that applies → retrieve rather than reread → teach it once → name the obstacle, never just the dream → write one IF–THEN → tick it daily where someone can see → give it two months.**
+
+**A rough allocation:** if a book takes six hours to read, budget at least two more for extraction and conversion, and treat the following 90 days as where the actual work happens.
+
+---
+
+# Part 10 — Quick reference
+
+**Five questions to ask of any self-help book**
+
+1. What exactly is the claim?
+2. What's the evidence behind it — research, or one person's memoir?
+3. Does it apply to my circumstances specifically?
+4. What is the single smallest action it implies?
+5. When and where will I do that action?
+
+**Three things that actually move the needle**
+
+- An **IF–THEN plan** with a concrete cue — d ≈ 0.65
+- A **physical, visible record** of progress — d ≈ 0.40
+- **Naming the obstacle** instead of imagining the outcome — reverses a documented negative effect
+
+*(Plus one structural condition: **someone who knows** what you're attempting.)*
+
+**Three things that feel productive and aren't**
+
+- Highlighting
+- Rereading
+- Reading the next book before implementing the last one
+
+---
+
+# Part 11 — What we don't know
+
+**Stated plainly, because the gaps matter as much as the findings.**
+
+1. **Nobody has tested trade self-help books.** The bibliotherapy evidence is on clinical workbooks. There is no RCT of any comparable bestseller. Every effect size here is being extended by analogy, and the analogy is imperfect.
+2. **Nobody has tested reading *volume*.** No study randomises people to read one book thoroughly versus five quickly. The claim that depth beats breadth is well-reasoned from adjacent findings — it is not directly demonstrated.
+3. **The clinical literature is about symptom reduction, not flourishing.** Outcomes measured are depression scores, anxiety scales, symptom counts. Almost nothing measures what trade self-help promises: better decisions, stronger relationships, career progress, a life you'd choose.
+4. **Almost all of it is Western.** Reviewers of retrieval-practice and behaviour-change research have specifically flagged the concentration of studies in Western countries. How much transfers across cultures with different norms around family obligation, autonomy and help-seeking is essentially untested.
+5. **Long-term outcomes are thin.** Marrs found no decay at follow-up, which is encouraging, but follow-up windows in this literature are typically months, not years.
+6. **Publication bias is unquantified for most of these.** The implementation-intentions literature has been checked and holds up. The bibliotherapy literature is older and less well-audited.
+7. **Two figures in this report are reconciled estimates.** Cuijpers's depression bibliotherapy effect is reported variously as d ≈ 0.82–0.83; the intention–behaviour gap as ~46–54% depending on domain and method. Both are given here as ranges rather than points.
+
+---
+
+# Part 12 — Source table
+
+| Finding                              | Source                                                                                                                                          | Design & scale                                        | Effect                                                                                                 | Key limit                                                |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| Bibliotherapy is broadly effective   | **Marrs, R. W. (1995)**, *Am J Community Psychol*                                                                                       | Meta-analysis, 70 samples                             | **d = 0.565** (0.57, CI 0.49–0.64); no difference vs therapist-delivered; no decay at follow-up | Studies clinical workbooks,**not** trade self-help |
+| Effective for depression             | **Cuijpers, P. (1997)**                                                                                                                   | Meta-analysis                                         | **d ≈ 0.82–0.83**                                                                              | Unipolar depression only                                 |
+| Self-help treatment approaches       | **Gould, R. A., & Clum, G. A.**                                                                                                           | Meta-analysis                                         | **d = 0.74** (depression bibliotherapy)                                                          | Small number of studies                                  |
+| Self-administered vs no treatment    | **Den Boer et al. (2004)**                                                                                                                | Meta-analysis                                         | **d = 1.00**                                                                                     | Heterogeneous interventions                              |
+| Works differentially by problem      | **Marrs (1995)**                                                                                                                          | *ibid.*                                             | Assertion / anxiety / sexual dysfunction ✅ · weight / impulse / study ❌                             | Moderator analysis; directional                          |
+| Book quality in the bestseller list  | **Redding, R. E. et al. (2008)**, *Prof Psychol: Res Pract*                                                                             | Clinician ratings of 50 top sellers                   | 48% evidence-based technique; 24% progress measurement; 34% durable change                             | Anxiety, depression, trauma only                         |
+| Professional ratings of self-help    | **Norcross, J. C. et al.**, *Authoritative Guide to Self-Help Resources*                                                                | National surveys of thousands of clinicians           | ~19% "very helpful"; ~1% harmful                                                                       | Expert opinion, not outcome data                         |
+| Real-world follow-through            | **Kohlenberg, R. (1981)**                                                                                                                 | Field study, free books to headache sufferers         | ~20% read; <5% applied                                                                                 | Single study, one domain                                 |
+| Guided beats unguided                | Spek 2007; Andersson & Cuijpers 2009; Richards & Richardson 2012; Baumeister 2014; Linardon et al.                                              | Multiple meta-analyses                                | **g ≈ 0.26** favouring guided                                                                   | Confounded with screening and programme length           |
+| …but unguided catches up            | **Karyotaki, E. et al. (2021)**                                                                                                           | IPD meta-analysis                                     | No difference at follow-up; unguided continued improving                                               | Mechanism unclear                                        |
+| Dropout ~doubles without support     | OCD meta-analysis, 11 RCTs (N = 983); ED meta-analysis                                                                                          | Meta-analyses                                         | **RR 1.98 / OR 2.10**                                                                            | Clinical populations                                     |
+| App abandonment                      | **Linardon & Fuller-Tyszkiewicz (2019)**                                                                                                  | 70 RCTs                                               | 24% by 8 wk; 36% by 12 wk                                                                              | Digital, not books                                       |
+| Learning-technique utility ratings   | **Dunlosky, J., Rawson, K., Marsh, E., Nathan, M., & Willingham, D. (2013)**, *Psych Sci Public Interest* 14(1)                         | Review of 10 techniques                               | Practice testing & distributed practice = high utility; highlighting, rereading, summarising = low     | Ratings, not a pooled effect size                        |
+| Retrieval beats rereading            | **Roediger, H. L., & Karpicke, J. D. (2006)**, *Psych Science*; **Roediger & Butler (2011)**, *TiCS*                            | Experimental                                          | **61% vs 40%** @ 1 week; meta g ≈ 0.50–0.61                                                    | Prose passages, lab setting                              |
+| Reverse cohesion                     | **McNamara et al. (1996)**; **McNamara (2001)**; **O'Reilly & McNamara (2007)**                                               | Experimental                                          | Text coherence × prior knowledge interaction                                                          | Text-based questions only                                |
+| Expertise reversal                   | **Kalyuga, Ayres, Chandler & Sweller (2003)**, *Educ Psychologist*                                                                      | Review of experimental literature                     | Support helps novices, harms experts                                                                   | Instructional design context                             |
+| Speed–accuracy trade-off in reading | **Rayner, K., Schotter, E., Masson, M., Potter, M., & Treiman, R. (2016)**, *Psych Sci Public Interest* 17                              | Comprehensive review                                  | 200–400 wpm typical; eye movements ≤10% of reading time; regressions aid comprehension               | Review, not a single trial                               |
+| Handwriting vs typing notes          | **Mueller & Oppenheimer (2014)**, *Psych Science*; **Morehead, Dunlosky & Rawson (2019)**, *Educ Psych Rev*; 2024 meta-analysis | Original + preregistered replication + 24-study meta  | Original effect not cleanly replicated; meta**g ≈ 0.25**                                        | Contested; generative vs verbatim is the real variable   |
+| Teaching aids the teacher            | 1982 meta-analysis of 65 tutoring studies;**Koh, A. W. L. et al. (2018)**                                                                 | Meta-analysis + experiment                            | Teaching without notes ≈ retrieval practice; both > teaching with notes                               | Lab tasks; delivery may beat preparation                 |
+| Reading framework                    | **Adler, M. J., & Van Doren, C.**, *How to Read a Book*                                                                                 | Conceptual                                            | Inspectional → analytical → syntopical                                                               | Not empirically tested                                   |
+| Intentions ≠ behaviour              | **Sheeran, P. (2002)**; **Sheeran & Webb (2016)**, *Soc Personal Psychol Compass*; Rhodes & de Bruijn                             | 10 meta-analyses, 422 studies                         | 28% of variance; acted on ~53% of the time; gap ~46–54%                                               | Correlational studies overestimate                       |
+| If–then plans work                  | **Gollwitzer, P. M., & Sheeran, P. (2006)**, *Adv Exp Soc Psychol* 38; **Sheeran, Listrom & Gollwitzer (2024)**                   | 94 tests / 8,000+; updated to 642 tests               | **d = 0.65** (2006); derailment d = 0.77; **d ≈ 0.27–0.66** (2024)                       | Effect varies with format, motivation, rehearsal         |
+| Positive fantasy harms               | **Oettingen, G., & Mayer, D. (2002)** + 20-year programme                                                                                 | Multiple studies across health, career, relationships | Negative association with attainment                                                                   | Correlational in some studies, experimental in others    |
+| MCII / WOOP works                    | **Stadler, Oettingen & Gollwitzer (2009)**; **Adriaanse et al. (2010)**; Duckworth et al.                                           | RCTs                                                  | 2× physical activity; ~30% diet improvement; grades/attendance/conduct                                | Requires a genuinely achievable goal                     |
+| Progress monitoring works            | **Harkin, B. et al. (2016)**, *Psych Bulletin* 142(2), 198–229                                                                         | 138 studies,**N = 19,951**, all randomised      | **d+ = 0.40** (CI 0.32–0.48); monitoring d+ = 1.98; mediated                                    | Mostly health goals                                      |
+| Habits take ~66 days                 | **Lally, P., van Jaarsveld, C., Potts, H., & Wardle, J. (2010)**, *Eur J Soc Psychol* 40(6)                                             | 96 participants, 84 days                              | Median**66 d**, range **18–254**; one missed day non-fatal                                | ~Half didn't reach automaticity; simple behaviours       |
+| Affirmations can backfire            | **Wood, J. V., Perunovic, W. Q. E., & Lee, J. W. (2009)**, *Psych Science* 20(7)                                                        | Experimental                                          | Low self-esteem participants felt**worse** after positive self-statements                        | Lab mood measures                                        |
+| AI that answers harms learning       | **Bastani et al. (2024)**                                                                                                                 | RCT, ~1,000 students                                  | **−17%** unassisted with unguarded AI; **no loss** with safeguarded tutor                 | High-school maths, not reading                           |
+| Self-help readers vs non-readers     | **Raymond, C. et al. (2016)**, *Neural Plasticity*                                                                                      | Pilot,**n = 32**, cross-sectional               | Cortisol / depressive differences;**no personality or self-esteem difference**                   | Tiny, correlational, causation undetermined              |
+| Reader wellbeing overview            | **Bergsma, A.**, *J Happiness Studies*                                                                                                  | Review                                                | Mixed; benefit contingent on structure and completion                                                  | Narrative review                                         |
+
+---
+
+> ## The bottom line
+>
+> **Self-help works about as well as therapy — for knowledge-gap problems, when the book contains a protocol, and when you finish it.**
+>
+> Those three conditions eliminate most of what is sold as self-help, and most of how it is read.
+>
+> The three highest-return actions available to any reader, in order:
+>
+> 1. **Convert one idea into a written IF–THEN plan** — d = 0.65
+> 2. **Record your progress where someone else could see it** — d = 0.40
+> 3. **Name the obstacle instead of imagining the outcome** — reverses a documented negative effect
+>
+> All three are free, take under thirty minutes combined, and are skipped by nearly everyone.
+> **They are worth more than the next ten books.**

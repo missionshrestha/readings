@@ -1,0 +1,306 @@
+/*
+ * custom.css — the bridge from the four reading themes into Starlight's chrome.
+ *
+ * STARLIGHT TOKEN OVERRIDES ONLY. No component restyling lives here; that is
+ * design-system.css. No reader surfaces; those are reading.css.
+ *
+ * Every value below is `var(--rd-*)`, so Starlight's header, sidebar, search and
+ * asides follow the reading theme automatically and there is exactly ONE
+ * palette in this repository rather than two that drift.
+ *
+ * Doubled `:root:root` selectors are deliberate wherever Starlight sets the same
+ * token in a `[data-theme]` block: that block is more specific than a bare
+ * `:root`, and load order is a bundling decision rather than something to rely
+ * on. Doubling wins without !important.
+ */
+
+:root:root,
+:root:root[data-theme='light'],
+:root:root[data-theme='dark'] {
+	/* Ground and text */
+	--sl-color-bg: var(--rd-ground);
+	--sl-color-bg-nav: var(--rd-ground);
+	--sl-color-bg-sidebar: var(--rd-ground);
+	--sl-color-bg-inline-code: color-mix(in srgb, var(--rd-ink) 7%, transparent);
+	--sl-color-text: var(--rd-ink);
+	--sl-color-white: var(--rd-heading);
+	--sl-color-gray-1: var(--rd-heading);
+	--sl-color-gray-2: var(--rd-ink);
+	--sl-color-gray-3: var(--rd-muted);
+	--sl-color-gray-4: var(--rd-border-strong);
+	--sl-color-gray-5: var(--rd-border);
+	--sl-color-gray-6: color-mix(in srgb, var(--rd-border) 45%, var(--rd-ground));
+	--sl-color-gray-7: var(--rd-surface);
+	--sl-color-black: var(--rd-ground);
+
+	/* Accent */
+	--sl-color-accent: var(--rd-accent);
+	--sl-color-accent-low: color-mix(in srgb, var(--rd-accent) 18%, var(--rd-ground));
+	--sl-color-accent-high: var(--rd-accent);
+	--sl-color-text-accent: var(--rd-accent);
+	--sl-color-text-invert: var(--rd-on-accent);
+
+	/*
+	 * SEMANTIC HUES — asides never read the accent, and this is the single most
+	 * visible thing that goes wrong when a Starlight theme is re-coloured.
+	 *
+	 * asides.css maps note / tip / caution / danger onto blue / purple / orange /
+	 * red, each family derived from ONE hue variable. Restyle the accent and a
+	 * :::note still renders lavender, because it was never reading the accent in
+	 * the first place. Five variables fix thirty declarations.
+	 *
+	 * Pulled toward the warm, bookish end so a callout sits inside the page
+	 * rather than on top of it — but note stays cool and danger stays
+	 * unmistakably an alarm. A warning that blends in is not a warning.
+	 *
+	 * THESE NO LONGER REACH AN ASIDE. Starlight's hue arithmetic is keyed on
+	 * data-theme while the ink inside an aside follows data-reading-theme, and
+	 * MEASURED 2026-08-31 the two could disagree at 1.06:1. The four aside types
+	 * are now driven by --rd-aside-* literals — see the block comment in
+	 * reading.css and the override at the foot of this file. What still reads
+	 * these hues: badges, and Starlight's own success/tip colouring elsewhere.
+	 */
+	--sl-hue-blue: 205;   /* note    — cool, quiet, sits beside the bronze accent */
+	--sl-hue-purple: 275; /* tip     — pulled back from magenta */
+	--sl-hue-green: 145;  /* success */
+	--sl-hue-orange: 28;  /* caution — warmer, clearly not the accent */
+	--sl-hue-red: 5;      /* danger  — unmistakably an alarm */
+
+	--sl-color-hairline: var(--rd-border);
+	--sl-color-hairline-light: var(--rd-border);
+	--sl-color-hairline-shade: var(--rd-border);
+
+	/*
+	 * Wider than stock 45rem, narrower than a code-heavy docs site.
+	 * The reading column itself is set in reading.css and is narrower still —
+	 * this governs the MAP pages, which are card grids and want the room.
+	 */
+	--sl-content-width: 68rem;
+}
+
+/* ==========================================================================
+ * THE METHOD PAGES, which are the site's only long-form prose OUTSIDE the
+ * reading frame — context/ published verbatim, `template: doc`, with a table
+ * of contents that earns its place on a document that long.
+ *
+ * They inherited 68rem, which is right for a grid of cards and wrong for
+ * paragraphs: MEASURED 2026-09-01, `.sl-markdown-content` came out 989px wide
+ * on /method/protocol/, roughly 50% over a comfortable measure, on the four
+ * pages most likely to be read start to finish. They are wider than a chapter
+ * on purpose — the sources carry wide tables and 30 fenced blocks — but not
+ * this wide.
+ *
+ * The selector is what it says: a page that has a table of contents and is not
+ * a reading page. By construction that is these four and nothing else — every
+ * book and chapter route sets `route.toc = undefined` in
+ * src/starlightRouteData.ts, and every generated map page is `template: splash`
+ * with `tableOfContents: false`.
+ * ========================================================================== */
+:root[data-has-toc]:not([data-reader]) {
+	--sl-content-width: 48rem;
+}
+/*
+ * And a gutter on the TOC rail. Starlight's `.right-sidebar` is
+ * `position: fixed; width: 100%` (TwoColumnContent.astro:32-37), so its width
+ * resolves against the VIEWPORT rather than its 243px container — measured
+ * right edge 2317 against a 1280 viewport. That overflow is invisible, because
+ * the container's own right edge is the viewport's, and the entries wrap there;
+ * what it does cost is the last 12px of every long entry sitting hard against
+ * the window edge. Padding is the whole fix, and it needs no surgery on a
+ * stock rule that behaves the same way in every Starlight site.
+ */
+:root[data-has-toc]:not([data-reader]) .right-sidebar-panel {
+	padding-inline-end: 1.25rem;
+}
+
+/* ---- Focus. :focus-visible only, never :focus — a mouse click on a button
+   should not draw a ring, and a keyboard tab must. ---------------------- */
+:where(a, button, summary, input, select, textarea, [tabindex]):focus-visible {
+	outline: 2px solid var(--rd-accent);
+	outline-offset: 2px;
+	border-radius: 3px;
+}
+
+/* ---- Motion. !important so this beats any animation declared anywhere,
+   including ones added later by a component or an integration. ---------- */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+		scroll-behavior: auto !important;
+	}
+	/* A view transition must be ABSENT, not merely fast. */
+	::view-transition-group(*),
+	::view-transition-old(*),
+	::view-transition-new(*) {
+		animation: none !important;
+	}
+}
+
+/* ---- Print. Starlight's own print stylesheet re-declares colours and is NOT
+   inside a cascade layer, so it wins on source order — which is a bundling
+   decision. `:root:root` beats it without !important. ------------------- */
+@media print {
+	:root:root {
+		--sl-color-bg: #fff;
+		--sl-color-text: #000;
+		--rd-ground: #fff;
+		--rd-surface: #fff;
+		--rd-ink: #000;
+		--rd-heading: #000;
+		--rd-grain: 0;
+	}
+	.ds-card,
+	.rd-paper::after {
+		box-shadow: none !important;
+	}
+	pre,
+	blockquote,
+	.ds-card {
+		break-inside: avoid;
+	}
+
+	/*
+	 * WHAT ACTUALLY REACHES PAPER. Added 2026-09-01 — before it, nothing did
+	 * this, and the block above only recoloured what printed.
+	 *
+	 * MEASURED under `media: print` on a chapter: `.header` computed
+	 * `display: block` and `.sidebar-pane` computed `display: block`, so the
+	 * site navigation and a 300px drawer printed on every page; and the reading
+	 * column kept `--sl-content-width: var(--rd-measure)` — 627px on a sheet
+	 * roughly 794px wide, so a third of every page was blank margin that the
+	 * screen needs and paper does not.
+	 *
+	 * The measure exists because a screen line has no edge to stop it. A sheet
+	 * of A4 has one, so the column takes the page and the chrome does not
+	 * come at all.
+	 */
+	:is(.header, .sidebar-pane, .right-sidebar-container, .rd-controls, .rd-focus-exit, .rd-amb, .sl-skip-link, starlight-menu-button, site-search) {
+		display: none !important;
+	}
+	.main-frame {
+		padding-block-start: 0 !important;
+		padding-inline-start: 0 !important;
+	}
+	/* The [data-reader] half of this lives at the foot of reading.css, next to
+	   the measure it overrides — custom.css is loaded FIRST (astro.config.mjs
+	   customCss order), so at equal specificity a rule here loses to the one it
+	   is trying to override. Measured: the column stayed at 627px on paper. */
+	.rd-recall,
+	.rd-action,
+	.rd-passage,
+	table,
+	figure {
+		break-inside: avoid;
+	}
+	h1, h2, h3, h4 {
+		break-after: avoid;
+	}
+	.sl-markdown-content .sl-anchor-link {
+		display: none;
+	}
+}
+
+/* ==========================================================================
+ * ASIDES — the one Starlight surface that does NOT take its colour from
+ * data-theme, and the reason is a measured defect rather than a preference.
+ *
+ * Starlight computes an aside's ground from --sl-color-<hue>-low, defined
+ * twice in props.css (line 23 dark, line 143 light) and selected by
+ * data-theme. Its ink is --sl-color-white, which the block above maps to
+ * --rd-heading and which follows data-reading-theme. Two controls, one
+ * surface: night ink on light ground measured 1.06:1 and survived a reload.
+ *
+ * These rules are DELIBERATELY UNLAYERED. asides.css lives in
+ * @layer starlight.components, and an unlayered declaration beats a layered
+ * one no matter how specific the layered selector is — so this needs no
+ * !important and no doubled selector.
+ *
+ * Every value is checked by scripts/contrast.mjs, twelve pairs per
+ * theme: the title on its ground, the body on its ground, and the 4px edge
+ * against the page. A colour nobody can re-measure is a colour that drifts.
+ * ========================================================================== */
+.starlight-aside--note {
+	--sl-color-asides-text-accent: var(--rd-aside-note-title);
+	--sl-color-asides-border: var(--rd-aside-note-edge);
+	background-color: var(--rd-aside-note-bg);
+}
+.starlight-aside--tip {
+	--sl-color-asides-text-accent: var(--rd-aside-tip-title);
+	--sl-color-asides-border: var(--rd-aside-tip-edge);
+	background-color: var(--rd-aside-tip-bg);
+}
+.starlight-aside--caution {
+	--sl-color-asides-text-accent: var(--rd-aside-caution-title);
+	--sl-color-asides-border: var(--rd-aside-caution-edge);
+	background-color: var(--rd-aside-caution-bg);
+}
+.starlight-aside--danger {
+	--sl-color-asides-text-accent: var(--rd-aside-danger-title);
+	--sl-color-asides-border: var(--rd-aside-danger-edge);
+	background-color: var(--rd-aside-danger-bg);
+}
+/* The body copy. --sl-color-white is --rd-heading, which is what contrast.mjs
+   measures against each of the four grounds above. Stated rather than left
+   implicit, because the defect above was exactly an implicit inheritance. */
+.starlight-aside {
+	color: var(--rd-heading);
+}
+
+/* ==========================================================================
+ * THE READING CONTROLS MUST EXIST ON A PHONE.
+ *
+ * MEASURED 2026-09-01, 420px, and it is a functional hole rather than a
+ * cosmetic one.
+ *
+ * Starlight's Header.astro:24 renders the right-hand group as
+ *
+ *     <div class="sl-hidden md:sl-flex … right-group">
+ *
+ * so BELOW 50rem it is `display: none`, and SocialIcons — which is where this
+ * project mounts the ambience picker, the chapter drawer and the whole Aa panel
+ * (theme, text size, line width, focus, quiet, the session timer) — survives
+ * only in MobileMenuFooter, inside the sidebar drawer.
+ *
+ * A splash page has no sidebar, so it has no mobile menu, so it has no footer.
+ * On `/`, `/shelf/`, `/ledger/`, `/review/` and all 102 generated map pages,
+ * a reader on a phone could not change the theme or the text size AT ALL — the
+ * controls were not hidden behind a tap, they were absent.
+ *
+ * Unlayered, so it beats `.sl-hidden` in @layer starlight.utils without
+ * !important. The divider and the wide gaps go with it: 420px has no room for
+ * 1rem between three icon buttons.
+ * ========================================================================== */
+@media (max-width: 50rem) {
+	.header > .right-group {
+		display: flex;
+		gap: 0.125rem;
+	}
+	.header .social-icons {
+		gap: 0.125rem;
+	}
+	.header .social-icons::after {
+		display: none;
+	}
+	/*
+	 * And exactly one copy. With the header copy visible, the one Starlight
+	 * puts in the drawer footer is a second Aa button two centimetres away
+	 * from the first.
+	 */
+	.mobile-preferences .rd-controls {
+		display: none;
+	}
+	.mobile-preferences:has(.rd-controls) {
+		display: none;
+	}
+	/* The panel is 17.5rem wide and anchored to the right of a button that is
+	   now near the edge of a 420px screen. Clamp it to the viewport. */
+	.rd-panel,
+	.rd-amb__panel {
+		inline-size: min(17.5rem, calc(100vw - 1.5rem));
+		max-inline-size: calc(100vw - 1.5rem);
+	}
+}

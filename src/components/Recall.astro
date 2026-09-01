@@ -1,0 +1,114 @@
+---
+/**
+ * <Recall> — the closed-book section. RECONCILIATION ROW 1.
+ *
+ * This component exists because of the single largest gap between the protocol
+ * and the evidence. The pipeline as drafted went
+ *
+ *   GENERATE -> READ I -> EXPLAIN -> READ II -> DIALOGUE
+ *
+ * and never once asked the reader to produce anything from memory. The evidence
+ * is blunt about what that costs:
+ *
+ *   "AI off: write a one-page summary from memory, book closed, before any AI
+ *    contact. THIS STEP *IS* THE LEARNING."
+ *      -- evidence/reading-with-ai.md:485, Stage 5
+ *      -- 61% vs 40% (Roediger & Karpicke); 89% vs 73% with generated questions
+ *
+ *   "Never let AI do the retrieval. Attempt from memory first, every time.
+ *    This one rule prevents most of the crutch effect."
+ *      -- evidence/reading-with-ai.md:542, Guardrail 4
+ *
+ * SO IT IS DELIBERATELY A WALL, NOT A NOTE. A reader who scrolls past it should
+ * feel that they skipped something, which is the same reason the sibling
+ * project's <Attempt> is styled the way it is.
+ *
+ * NO TIMER. A live countdown needs state, an interval and a reset, and it still
+ * would not stop anybody. The hard stop is stated in words instead.
+ *
+ * The AI never writes inside this. /validate refuses to mark a chapter
+ * `status: complete` while it is empty.
+ */
+interface Props {
+	/** Minutes, as a hard stop. Omit for the default. */
+	minutes?: number;
+}
+const { minutes = 10 } = Astro.props;
+
+/*
+ * A PER-INSTANCE HEADING ID.
+ *
+ * The id was the literal `recall-heading`. MEASURED 2026-09-01 on /elements/,
+ * which renders two: both sections carried id="recall-heading" and both
+ * carried aria-labelledby="recall-heading", so the second section was announced
+ * with the FIRST section's label — invalid HTML and a wrong accessible name,
+ * from one hardcoded string.
+ *
+ * Same fix and same reason as the panel id in src/overrides/ReaderControls.astro:
+ * Astro.locals is per-page-render, so the counter resets on every page and the
+ * label and the aria-labelledby that points at it come from the same variable
+ * in the same render.
+ */
+const seq = Astro.locals as { rdRecallSeq?: number };
+seq.rdRecallSeq = (seq.rdRecallSeq ?? 0) + 1;
+const headingId = `rd-recall-heading-${seq.rdRecallSeq}`;
+---
+
+<section class="rd-recall" aria-labelledby={headingId}>
+	<header class="rd-recall__head">
+		<span class="rd-recall__label" id={headingId}>Closed book</span>
+		<span class="rd-recall__meta">{minutes} min · before you read on</span>
+	</header>
+	<p class="rd-recall__brief">
+		Book shut, page collapsed, assistant off. Write what the chapter argued, in your own
+		words. Then the questions you could not answer.
+	</p>
+	<div class="rd-recall__body">
+		<slot />
+	</div>
+</section>
+
+<style>
+	.rd-recall {
+		margin: var(--ds-6, 2rem) 0;
+		padding: var(--ds-4, 1rem) var(--ds-5, 1.5rem);
+		border-inline-start: 3px solid var(--rd-accent);
+		border-radius: 0 var(--ds-r-md, 0.75rem) var(--ds-r-md, 0.75rem) 0;
+		background: color-mix(in srgb, var(--rd-accent) 6%, var(--rd-surface));
+	}
+	.rd-recall__head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.75rem;
+		margin-block-end: 0.5rem;
+	}
+	/* Sizes are multiplied by --rd-scale so the text-size control reaches them.
+	   Measured before the change: 12px / 13px / 15px at both Small and Large. */
+	.rd-recall__label {
+		font-family: var(--rd-font-ui);
+		font-size: calc(0.75rem * var(--rd-scale, 1));
+		font-weight: 700;
+		letter-spacing: 0.09em;
+		text-transform: uppercase;
+		color: var(--rd-accent);
+	}
+	.rd-recall__meta {
+		font-family: var(--rd-font-ui);
+		font-size: calc(0.8125rem * var(--rd-scale, 1));
+		color: var(--rd-muted);
+	}
+	.rd-recall__brief {
+		margin: 0 0 var(--ds-3, 0.75rem);
+		font-family: var(--rd-font-ui);
+		font-size: calc(0.9375rem * var(--rd-scale, 1));
+		line-height: 1.55;
+		color: var(--rd-muted);
+	}
+	.rd-recall__body > :global(:first-child) {
+		margin-block-start: 0;
+	}
+	.rd-recall__body > :global(:last-child) {
+		margin-block-end: 0;
+	}
+</style>

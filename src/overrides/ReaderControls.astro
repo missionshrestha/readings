@@ -1,0 +1,676 @@
+---
+/**
+ * ReaderControls — theme, size, measure, focus, quiet, and the chapter drawer.
+ *
+ * SITE CHROME. Registered on the `SocialIcons` slot, which is empty in this
+ * project and renders in the header's `.right-group` beside the theme select.
+ * That placement is deliberate: the controls must stay reachable when the
+ * sidebar they can open is hidden, and anything rendered inside the `Sidebar`
+ * slot would disappear along with it.
+ *
+ * ---------------------------------------------------------------------------
+ * ONE POPOVER, NOT A SETTINGS PAGE
+ *
+ * Everything a reader changes mid-sitting is behind a single `Aa`. A control
+ * that takes a navigation to reach is a control nobody uses at eleven at night.
+ *
+ * NOTE THE SVG ATTRIBUTES BELOW ARE KEBAB-CASE. This is an .astro file, which
+ * is HTML — `stroke-width`. The rule INVERTS in .mdx, where JSX semantics apply
+ * and it must be `strokeWidth`. Asymmetric, and it matters which way you get it
+ * wrong: .astro fails loudly at `astro check`, while kebab-case in .mdx is
+ * silently dropped and leaves a diagram with hairline strokes and a green build.
+ *
+ * State lives in localStorage and is applied before first paint by the inline
+ * script in Head.astro, and re-applied after every client-side navigation by
+ * the same file's astro:after-swap handler — because swapRootAttributes()
+ * strips every attribute off <html> on the way through.
+ */
+import Ambience from './Ambience.astro';
+
+/*
+ * A PER-INSTANCE PANEL ID, because Starlight renders this component TWICE.
+ *
+ * SocialIcons is instantiated in components/Header.astro:26 AND in
+ * components/MobileMenuFooter.astro:9 — desktop header and mobile menu. A
+ * literal `id="rd-panel"` therefore appeared twice in every document: invalid
+ * HTML, and `aria-controls` resolves to the FIRST match, which at <=768px is
+ * the copy that is hidden.
+ *
+ * Astro.locals is per-page-render, so the counter resets on every page and both
+ * instances get a stable rd-panel-1 / rd-panel-2. The id and the aria-controls
+ * that points at it come from the SAME variable in the same render, so they are
+ * correctly paired whatever order Starlight instantiates them in.
+ */
+const seq = Astro.locals as { rdPanelSeq?: number };
+seq.rdPanelSeq = (seq.rdPanelSeq ?? 0) + 1;
+const panelId = `rd-panel-${seq.rdPanelSeq}`;
+
+/*
+ * The focus-mode exit is position: fixed, so exactly ONE may exist per page —
+ * two would stack in the same corner. The same counter decides which instance
+ * renders it, and the first one always does: it is in the document whichever
+ * copy of SocialIcons the viewport is showing, because `fixed` does not care
+ * that its ancestor is hidden... but a `display: none` ancestor DOES remove it,
+ * so it is emitted as a SIBLING of .rd-controls rather than inside it — focus
+ * mode sets the header to `display: none`, which would take the exit with it.
+ */
+const isFirstInstance = seq.rdPanelSeq === 1;
+---
+
+{
+	isFirstInstance && (
+		<button type="button" class="rd-focus-exit" data-rd-focus-exit>
+			<span aria-hidden="true">&#x2715;</span>
+			<span>Leave focus mode</span>
+		</button>
+	)
+}
+
+<div class="rd-controls" data-rd-controls>
+	<Ambience />
+	<button
+		type="button"
+		class="rd-controls__btn rd-controls__contents"
+		data-rd-contents
+		aria-expanded="false"
+		title="Chapters (c)"
+	>
+		<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"
+			stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+			<path d="M4 6h16M4 12h16M4 18h10" />
+		</svg>
+		<span class="sr-only">Chapters</span>
+	</button>
+
+	<button
+		type="button"
+		class="rd-controls__btn rd-controls__aa"
+		data-rd-toggle
+		aria-expanded="false"
+		aria-controls={panelId}
+		title="Reading settings"
+	>
+		<span aria-hidden="true">Aa</span>
+		<span class="sr-only">Reading settings</span>
+	</button>
+
+	<div class="rd-panel" id={panelId} hidden data-rd-panel>
+		<fieldset class="rd-panel__set">
+			<legend>Theme</legend>
+			<div class="rd-panel__row" role="group">
+				<button type="button" data-rd-theme="day">Day</button>
+				<button type="button" data-rd-theme="sepia">Sepia</button>
+				<button type="button" data-rd-theme="dusk">Dusk</button>
+				<button type="button" data-rd-theme="night">Night</button>
+			</div>
+			<p class="rd-panel__hint">Dusk pulls the blue right down. Night is for a dark room.</p>
+		</fieldset>
+
+		<fieldset class="rd-panel__set">
+			<legend>Text size</legend>
+			<div class="rd-panel__row" role="group">
+				<button type="button" data-rd-size="small">Small</button>
+				<button type="button" data-rd-size="normal">Normal</button>
+				<button type="button" data-rd-size="large">Large</button>
+			</div>
+		</fieldset>
+
+		<fieldset class="rd-panel__set">
+			<legend>Line width</legend>
+			<div class="rd-panel__row" role="group">
+				<button type="button" data-rd-measure="narrow">Narrow</button>
+				<button type="button" data-rd-measure="normal">Normal</button>
+				<button type="button" data-rd-measure="wide">Wide</button>
+			</div>
+		</fieldset>
+
+		<fieldset class="rd-panel__set">
+			<legend>The room</legend>
+			<div class="rd-panel__row rd-panel__row--stack">
+				<button type="button" data-rd-flag="focus">
+					Focus mode <kbd>f</kbd>
+				</button>
+				<button type="button" data-rd-flag="quiet">
+					Quiet — chrome fades when idle <kbd>q</kbd>
+				</button>
+			</div>
+		</fieldset>
+
+		<fieldset class="rd-panel__set" data-rd-timer-set hidden>
+			<legend>This sitting</legend>
+			<p class="rd-timer">
+				<span data-rd-timer-sitting>0 min</span>
+				<span class="rd-timer__sep">·</span>
+				<span class="rd-timer__today">today <span data-rd-timer-today>0 min</span></span>
+			</p>
+			<div class="rd-panel__row rd-panel__row--stack">
+				<button type="button" data-rd-timer-copy>Copy the last 14 days</button>
+			</div>
+			<p class="rd-panel__hint">
+				Minutes only, and only while you are actually here. Never leaves this browser.
+			</p>
+		</fieldset>
+	</div>
+</div>
+
+<script>
+	/*
+	 * Written as a module script, which Astro bundles ONCE per page and which
+	 * survives client-side navigation: the listeners are registered on document
+	 * and the JS context is never torn down. Re-registering per swap would
+	 * double-fire every handler.
+	 */
+	const KEY = {
+		theme: 'rd-theme',
+		size: 'rd-size',
+		measure: 'rd-measure',
+		focus: 'rd-focus',
+		quiet: 'rd-quiet',
+		// The timer. `sitAt` is the last tick, which is what distinguishes a pause
+		// in this sitting from a new one tomorrow morning.
+		sitSec: 'rd-sit-sec',
+		sitAt: 'rd-sit-at',
+		log: 'rd-log',
+	};
+	const root = document.documentElement;
+
+	/** localStorage THROWS on blocked-storage origins rather than returning null. */
+	const get = (k: string) => {
+		try {
+			return localStorage.getItem(k);
+		} catch {
+			return null;
+		}
+	};
+	const set = (k: string, v: string | null) => {
+		try {
+			if (v === null) localStorage.removeItem(k);
+			else localStorage.setItem(k, v);
+		} catch {
+			/* A reader in a private window still gets the change; it just does not
+			   outlive the tab. Better than throwing on every click. */
+		}
+	};
+
+	/**
+	 * Four reading themes map onto Starlight's two, because astro-mermaid's
+	 * autoTheme watches data-theme and nothing else.
+	 *
+	 * THIS IS NOW THE ONLY PLACE IN THE APPLICATION THAT WRITES data-theme, other
+	 * than the two derived writes in Head.astro. Starlight's own light/dark picker
+	 * was removed (src/overrides/ThemeSelect.astro) because two writers of one
+	 * piece of state produced a :::note body at 1.06:1 when they disagreed, and
+	 * the disagreement survived a reload.
+	 */
+	function applyTheme(t: string) {
+		root.setAttribute('data-reading-theme', t);
+		const sl = t === 'day' || t === 'sepia' ? 'light' : 'dark';
+		root.dataset.theme = sl;
+		set(KEY.theme, t);
+		set('starlight-theme', sl);
+		// Keep Starlight's own picker showing the truth.
+		(window as unknown as { StarlightThemeProvider?: { updatePickers: (t: string) => void } })
+			.StarlightThemeProvider?.updatePickers(sl);
+		mark();
+	}
+
+	function applyScale(attr: string, key: string, v: string) {
+		root.setAttribute(attr, v);
+		set(key, v);
+		mark();
+	}
+
+	function toggleFlag(name: 'focus' | 'quiet') {
+		const attr = name === 'focus' ? 'data-focus' : 'data-quiet';
+		const on = root.hasAttribute(attr);
+		if (on) {
+			root.removeAttribute(attr);
+			set(KEY[name], null);
+		} else {
+			root.setAttribute(attr, '');
+			set(KEY[name], '1');
+		}
+		mark();
+	}
+
+	/*
+	 * Pulled out so the `c` shortcut below and the click handler drive the
+	 * SAME code path — a keyboard toggle that forgot to update
+	 * `aria-expanded` would tell a screen reader the drawer is still closed
+	 * after it opened.
+	 */
+	function toggleContents() {
+		const on = root.hasAttribute('data-contents');
+		root.toggleAttribute('data-contents', !on);
+		for (const btn of document.querySelectorAll<HTMLElement>('[data-rd-contents]'))
+			btn.setAttribute('aria-expanded', String(!on));
+	}
+
+	/** Show which option is current. aria-pressed, not a class, so it is
+	 *  announced rather than merely visible. */
+	function mark() {
+		const cur = {
+			theme: get(KEY.theme) ?? 'day',
+			size: root.getAttribute('data-reading-size') ?? 'normal',
+			measure: root.getAttribute('data-reading-measure') ?? 'normal',
+		};
+		for (const b of document.querySelectorAll<HTMLButtonElement>('[data-rd-theme]'))
+			b.setAttribute('aria-pressed', String(b.dataset.rdTheme === cur.theme));
+		for (const b of document.querySelectorAll<HTMLButtonElement>('[data-rd-size]'))
+			b.setAttribute('aria-pressed', String(b.dataset.rdSize === cur.size));
+		for (const b of document.querySelectorAll<HTMLButtonElement>('[data-rd-measure]'))
+			b.setAttribute('aria-pressed', String(b.dataset.rdMeasure === cur.measure));
+		for (const b of document.querySelectorAll<HTMLButtonElement>('[data-rd-flag]')) {
+			const attr = b.dataset.rdFlag === 'focus' ? 'data-focus' : 'data-quiet';
+			b.setAttribute('aria-pressed', String(root.hasAttribute(attr)));
+		}
+	}
+
+	/**
+	 * Closes the Aa panel — and the AMBIENCE panel with it.
+	 *
+	 * Two popovers live in the same header group, and each used to ignore the
+	 * other: opening Aa left an open ambience panel underneath it, and clicking
+	 * the ambience button never closed Aa, because the ambience button sits
+	 * INSIDE [data-rd-controls] and this file's outside-click guard therefore
+	 * treated it as a click on itself. Two overlapping popovers, at eleven at
+	 * night, over a page of prose.
+	 */
+	/** The Aa panel only. */
+	function closeAa() {
+		for (const p of document.querySelectorAll<HTMLElement>('[data-rd-panel]')) p.hidden = true;
+		for (const t of document.querySelectorAll<HTMLElement>('[data-rd-toggle]'))
+			t.setAttribute('aria-expanded', 'false');
+	}
+
+	/** The ambience panel only. Ambience.astro owns opening it; this only shuts it. */
+	function closeAmbience() {
+		for (const p of document.querySelectorAll<HTMLElement>('[data-rd-amb-panel]')) p.hidden = true;
+		for (const t of document.querySelectorAll<HTMLElement>('[data-rd-amb-toggle]'))
+			t.setAttribute('aria-expanded', 'false');
+	}
+
+	function closePanel() {
+		closeAa();
+		closeAmbience();
+	}
+
+	document.addEventListener('click', (e) => {
+		const el = e.target as HTMLElement;
+
+		const toggle = el.closest<HTMLElement>('[data-rd-toggle]');
+		if (toggle) {
+			const panel = toggle.parentElement?.querySelector<HTMLElement>('[data-rd-panel]');
+			if (panel) {
+				const open = panel.hidden;
+				closePanel();
+				panel.hidden = !open;
+				toggle.setAttribute('aria-expanded', String(open));
+				if (open) mark();
+			}
+			return;
+		}
+
+		const contents = el.closest<HTMLElement>('[data-rd-contents]');
+		if (contents) {
+			toggleContents();
+			return;
+		}
+
+		const t = el.closest<HTMLElement>('[data-rd-theme]');
+		if (t?.dataset.rdTheme) return applyTheme(t.dataset.rdTheme);
+		const s = el.closest<HTMLElement>('[data-rd-size]');
+		if (s?.dataset.rdSize) return applyScale('data-reading-size', KEY.size, s.dataset.rdSize);
+		const m = el.closest<HTMLElement>('[data-rd-measure]');
+		if (m?.dataset.rdMeasure)
+			return applyScale('data-reading-measure', KEY.measure, m.dataset.rdMeasure);
+		const f = el.closest<HTMLElement>('[data-rd-flag]');
+		if (f?.dataset.rdFlag) return toggleFlag(f.dataset.rdFlag as 'focus' | 'quiet');
+
+		/*
+		 * THE ONLY CONTROL LEFT ON SCREEN IN FOCUS MODE.
+		 *
+		 * Focus mode hides the header, which is where every other control in
+		 * this file lives — MEASURED: zero visible controls at 1280 and at 420 —
+		 * and it persists across a reload. Without this the `f` key was the only
+		 * exit, so a reader on a phone was simply stuck.
+		 */
+		if (el.closest('[data-rd-focus-exit]')) return toggleFlag('focus');
+
+		/*
+		 * A CLICK INSIDE THE AMBIENCE CONTROL CLOSES THE Aa PANEL AND NOTHING ELSE.
+		 *
+		 * The two popovers live in the same header group and each used to ignore
+		 * the other: the Aa panel closed only on a click outside
+		 * [data-rd-controls], which INCLUDES the ambience button, so pressing
+		 * ambience stacked a second popover on top of an open first one.
+		 *
+		 * The obvious repair — have closePanel() shut both — was wrong, and the
+		 * probe caught it: Ambience.astro's own document listener is registered
+		 * FIRST (it is imported by this file, so its module script runs first),
+		 * so it opened the ambience panel and this handler then immediately shut
+		 * it again. Clicking ambience did nothing at all.
+		 *
+		 * So this branch closes the Aa panel and returns, leaving the ambience
+		 * panel to the handler that owns it.
+		 */
+		if (el.closest('[data-rd-amb]')) {
+			closeAa();
+			return;
+		}
+		if (!el.closest('[data-rd-panel]') && !el.closest('[data-rd-toggle]')) closePanel();
+	});
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') {
+			/*
+			 * Escape unwinds one layer at a time — a panel or the drawer first,
+			 * and only focus mode when nothing else is open. Leaving focus mode
+			 * on Escape is the keyboard half of the exit button: both exist
+			 * because the header, and therefore every other control, is gone.
+			 */
+			const wasOpen =
+				root.hasAttribute('data-contents') ||
+				!!document.querySelector<HTMLElement>('[data-rd-panel]:not([hidden])');
+			closePanel(); // closes the ambience panel too
+			root.removeAttribute('data-contents');
+			if (!wasOpen && root.hasAttribute('data-focus')) toggleFlag('focus');
+			return;
+		}
+		// `f`/`q`/`c`, but never while typing into something.
+		const tag = (e.target as HTMLElement)?.tagName;
+		if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target as HTMLElement)?.isContentEditable) return;
+		if (e.metaKey || e.ctrlKey || e.altKey || !root.hasAttribute('data-reader')) return;
+		/*
+		 * ONLY `f` HAD A SHORTCUT, AND IT WAS THE ONLY ONE THE LABEL ADVERTISED.
+		 *
+		 * "Focus mode f" told a keyboard user the letter; "Quiet — chrome fades
+		 * when idle" and the Chapters button told them nothing, so quiet mode
+		 * and the drawer were reachable only by finding the button — one Tab
+		 * stop and one click, every time, for the two controls used most often
+		 * mid-chapter. `q` and `c` follow the same guard `f` already used.
+		 */
+		if (e.key === 'f') toggleFlag('focus');
+		if (e.key === 'q') toggleFlag('quiet');
+		if (e.key === 'c') toggleContents();
+	});
+
+	/*
+	 * Quiet mode. The chrome fades after three seconds of no input and returns
+	 * on movement — and NEVER while the panel is open, which is why the check is
+	 * :focus-within in CSS as well as this guard.
+	 */
+	let idle: ReturnType<typeof setTimeout> | undefined;
+	function stirred() {
+		root.removeAttribute('data-idle');
+		clearTimeout(idle);
+		if (!root.hasAttribute('data-quiet')) return;
+		idle = setTimeout(() => root.setAttribute('data-idle', ''), 3000);
+	}
+	for (const ev of ['pointermove', 'keydown', 'scroll', 'pointerdown'])
+		document.addEventListener(ev, stirred, { passive: true });
+	stirred();
+
+	/* ----------------------------------------------------------------------
+	 * THE SESSION TIMER
+	 *
+	 * The drafts name their own estimates as the thing most likely to be wrong,
+	 * and say so in the right direction: "if a chapter takes 120 minutes rather
+	 * than 85, the ESTIMATE is wrong — not me." This is the only instrument that
+	 * can settle that, so it measures one thing and measures it honestly.
+	 *
+	 * FOUR RULES, each of which is why it is not a stopwatch:
+	 *
+	 * 1 · IT ONLY RUNS ON A READING PAGE. `data-reader` is set at depth >= 3.
+	 *     Time spent on the shelf choosing a book is not reading time, and
+	 *     counting it would inflate the only number here that matters.
+	 *
+	 * 2 · IT STOPS WHEN YOU DO. A hidden tab does not count, and neither does a
+	 *     page left open with no input for 90 seconds. Wall-clock with a chapter
+	 *     open overnight is not a measurement, it is a lie with a unit attached.
+	 *
+	 * 3 · NO TARGET IS DISPLAYED. `context/reader.md` asks what the real daily
+	 *     floor is and that question is still unanswered; rendering "30 min" from
+	 *     a draft would put a number he never confirmed on screen, where it would
+	 *     be indistinguishable from one he did. Minutes, and nothing to be behind.
+	 *
+	 * 4 · NO STREAK, NO PERCENTAGE, NO TOTAL BOOKS. Reconciliation row 9. It is
+	 *     also why this sits inside the Aa panel rather than in the header: a
+	 *     number permanently on screen while you read is a number you read
+	 *     instead of the chapter.
+	 *
+	 * The 14-day log is what /progress asks about. It never leaves the browser
+	 * on its own — the copy button is the only way out, and he presses it.
+	 */
+	const SIT_GAP_MS = 30 * 60 * 1000; // a new sitting after half an hour away
+	const IDLE_MS = 90 * 1000; // no input for this long is not reading
+	const LOG_DAYS = 14;
+
+	const today = () => new Date().toISOString().slice(0, 10);
+	const mins = (sec: number) => `${Math.round(sec / 60)} min`;
+
+	function readLog(): Record<string, number> {
+		try {
+			return JSON.parse(get(KEY.log) || '{}') || {};
+		} catch {
+			return {};
+		}
+	}
+
+	let sittingSec = Number(get(KEY.sitSec) || 0);
+	let lastTick = Number(get(KEY.sitAt) || 0);
+	let lastInput = Date.now();
+
+	// A gap longer than SIT_GAP_MS is a different sitting, not a pause in this one.
+	if (!lastTick || Date.now() - lastTick > SIT_GAP_MS) sittingSec = 0;
+
+	/*
+	 * EVERY LOOKUP IS querySelectorAll, NEVER querySelector.
+	 *
+	 * This component is rendered TWICE — Starlight instantiates SocialIcons in
+	 * Header.astro and again in MobileMenuFooter.astro. Singular querySelector
+	 * always returns index 0, and which copy is VISIBLE depends on the viewport.
+	 * Measured 2026-08-31, headless Chromium:
+	 *
+	 *     1440 / 1024   visible copy 0   querySelector picks 0   coincides
+	 *      768 /  420   visible copy 1   querySelector picks 0   DIVERGES
+	 *
+	 * So at 420px the reader opened panel 1, paintTimer() unhid the fieldset in
+	 * panel 0 (setsHiddenFlags [false, true]), and the timer inside the panel
+	 * they were looking at stayed hidden with a null offsetParent. The session
+	 * timer simply did not exist on a phone — silently, because the desktop case
+	 * happened to line up.
+	 *
+	 * The same shape applied to the two readouts. All three are plural now, and
+	 * the rest of this file was already plural for exactly this reason: see
+	 * mark() and closePanel().
+	 */
+	function paintTimer() {
+		const sets = document.querySelectorAll<HTMLElement>('[data-rd-timer-set]');
+		if (!sets.length) return;
+		// Hidden entirely off a reading page, rather than showing a frozen 0.
+		const off = !root.hasAttribute('data-reader');
+		for (const s of sets) s.hidden = off;
+		const text = mins(sittingSec);
+		const todayText = mins(readLog()[today()] || 0);
+		for (const a of document.querySelectorAll<HTMLElement>('[data-rd-timer-sitting]'))
+			a.textContent = text;
+		for (const b of document.querySelectorAll<HTMLElement>('[data-rd-timer-today]'))
+			b.textContent = todayText;
+	}
+
+	function tick() {
+		if (!root.hasAttribute('data-reader')) return;
+		if (document.visibilityState !== 'visible') return;
+		if (Date.now() - lastInput > IDLE_MS) return;
+
+		sittingSec += 1;
+		set(KEY.sitSec, String(sittingSec));
+		set(KEY.sitAt, String(Date.now()));
+
+		const log = readLog();
+		const day = today();
+		log[day] = (log[day] || 0) + 1;
+		for (const k of Object.keys(log).sort().slice(0, -LOG_DAYS)) delete log[k];
+		set(KEY.log, JSON.stringify(log));
+
+		// Only repaint while the panel is actually open — a setInterval writing to
+		// the DOM once a second behind a closed popover is pure waste.
+		if (document.querySelector('[data-rd-panel]:not([hidden])')) paintTimer();
+	}
+	setInterval(tick, 1000);
+
+	for (const ev of ['pointermove', 'keydown', 'scroll', 'pointerdown'])
+		document.addEventListener(ev, () => (lastInput = Date.now()), { passive: true });
+
+	document.addEventListener('click', (e) => {
+		const btn = (e.target as HTMLElement)?.closest<HTMLElement>('[data-rd-timer-copy]');
+		if (!btn) return;
+		const log = readLog();
+		const rows = Object.keys(log)
+			.sort()
+			.map((d) => `${d}  ${Math.round(log[d] / 60)} min`);
+		const text = rows.length ? rows.join('\n') : 'no reading minutes recorded yet';
+		navigator.clipboard?.writeText(text).then(
+			() => {
+				btn.textContent = 'Copied';
+				setTimeout(() => (btn.textContent = 'Copy the last 14 days'), 1600);
+			},
+			() => (btn.textContent = 'Could not copy — clipboard blocked')
+		);
+	});
+
+	// After a chapter turn the panel is re-rendered and data-reader may have
+	// flipped, so the fieldset's own visibility has to be recomputed.
+	document.addEventListener('astro:page-load', paintTimer);
+	paintTimer();
+
+	mark();
+</script>
+
+<style>
+	.rd-controls {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+	.rd-controls__btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-inline-size: 2rem;
+		block-size: 2rem;
+		padding: 0 0.4rem;
+		background: none;
+		border: 1px solid transparent;
+		border-radius: var(--ds-r-sm, 0.375rem);
+		color: var(--rd-ink);
+		font-family: var(--rd-font-ui);
+		font-size: 0.9375rem;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	.rd-controls__btn:hover {
+		border-color: var(--rd-border);
+		background: var(--rd-surface);
+	}
+	/* The chapter drawer button is meaningless on a map page. */
+	:global(html:not([data-reader])) .rd-controls__contents { display: none; }
+
+	.rd-panel {
+		position: absolute;
+		inset-block-start: calc(100% + 0.5rem);
+		inset-inline-end: 0;
+		z-index: 80;
+		inline-size: 17.5rem;
+		padding: 0.875rem;
+		background: var(--rd-surface);
+		border: 1px solid var(--rd-border-strong);
+		border-radius: var(--ds-r-md, 0.75rem);
+		box-shadow: var(--rd-shadow);
+		font-family: var(--rd-font-ui);
+	}
+	.rd-panel[hidden] { display: none; }
+
+	.rd-panel__set { margin: 0 0 0.75rem; padding: 0; border: 0; }
+	.rd-panel__set:last-child { margin-block-end: 0; }
+	.rd-panel__set legend {
+		padding: 0;
+		margin-block-end: 0.35rem;
+		font-size: 0.6875rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--rd-muted);
+	}
+	.rd-panel__row { display: flex; gap: 0.25rem; }
+	.rd-panel__row--stack { flex-direction: column; }
+	.rd-panel__row button {
+		flex: 1;
+		padding: 0.3rem 0.45rem;
+		background: var(--rd-ground);
+		border: 1px solid var(--rd-border);
+		border-radius: var(--ds-r-sm, 0.375rem);
+		color: var(--rd-ink);
+		font: inherit;
+		font-size: 0.8125rem;
+		cursor: pointer;
+		text-align: center;
+	}
+	.rd-panel__row--stack button { text-align: start; }
+	.rd-panel__row button:hover { border-color: var(--rd-border-strong); }
+	/* State is shape AND colour, never colour alone — a colour-only cue is
+	   invisible to reduced colour vision. */
+	.rd-panel__row button[aria-pressed='true'] {
+		border-color: var(--rd-accent);
+		color: var(--rd-accent);
+		font-weight: 700;
+		box-shadow: inset 0 -2px 0 var(--rd-accent);
+	}
+	.rd-panel__row kbd {
+		margin-inline-start: 0.35rem;
+		padding: 0 0.25rem;
+		border: 1px solid var(--rd-border);
+		border-radius: 3px;
+		font-size: 0.75em;
+		color: var(--rd-muted);
+	}
+	.rd-panel__hint {
+		margin: 0.4rem 0 0;
+		font-size: 0.75rem;
+		line-height: 1.45;
+		color: var(--rd-muted);
+	}
+
+	/*
+	 * The readout. Tabular figures so the number does not shuffle sideways once
+	 * a second while you are looking at it — which is the entire reason a live
+	 * counter is normally distracting.
+	 */
+	.rd-timer {
+		margin: 0;
+		display: flex;
+		align-items: baseline;
+		gap: 0.45rem;
+		font-family: var(--rd-serif, Georgia, serif);
+		font-size: 1.05rem;
+		font-variant-numeric: tabular-nums oldstyle-nums;
+		color: var(--rd-ink);
+	}
+	.rd-timer__sep {
+		color: var(--rd-muted);
+	}
+	.rd-timer__today {
+		font-size: 0.8rem;
+		color: var(--rd-muted);
+	}
+	.sr-only {
+		position: absolute;
+		inline-size: 1px;
+		block-size: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+</style>

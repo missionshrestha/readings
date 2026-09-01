@@ -1,0 +1,73 @@
+---
+title: "BOOK TITLE"
+description: "Not meant to be finished. A few pages at a time, for years."
+author: "AUTHOR"
+domain: DOMAIN_SLUG
+cluster: CLUSTER_SLUG
+book: BOOK_SLUG
+kind: lifelong
+tier: core
+weight: S
+status: reading
+private: false
+sidebar:
+  order: 0
+  label: The book
+---
+import { Aside } from '@astrojs/starlight/components';
+import { Passage } from '@components';
+
+{/* ONE OF THE 7 LIFELONG BOOKS, AND ALL FICTION. kind: lifelong.
+
+    WHY FICTION IS HERE AT ALL — it resolves a real contradiction. The protocol
+    says all fiction is exempt and gets "no page"; context/universe.md marks
+    three novels CORE. A page and a log costs nothing, keeps the completion
+    instinct off them, and is the only place those notes could live.
+    reconciliation.md row 13.
+
+    WHAT IS DIFFERENT:
+    · NO CHAPTERS, no pipeline, no explanation layer, no actions, no rating.
+      The scaffolder refuses a `chapters` array on this kind.
+    · `exitCondition` IS STILL REQUIRED BY THE VALIDATOR, and the honest value
+      is a sentence saying there is not one: "None. This book is never
+      finished, and a page that implied otherwise would be lying." That is a
+      deliberate shape, not a loophole — the field exists to force the
+      question, and "there is no exit" is a real answer to it, written down.
+    · NO VERDICT. changed / confirmed / entertainment does not apply to a book
+      you are still inside.
+    · THE LOG IS THE WHOLE PAGE. What you noticed THIS time is the only thing
+      a book like this can honestly record, and it is worth more than a
+      summary would be.
+
+    context/book-spec.md §2b has the worked book.json for this shape. */}
+
+<Aside type="note">
+**No pipeline, no explanation layer, no actions, no rating.** This book is returned to, not
+finished. Do not apply the completion instinct to it.
+</Aside>
+
+## What it is
+
+TODO — one paragraph. What it is, and what brings you back to it. Not what it
+is about.
+
+## The log
+
+{/* NEWEST FIRST. A dated entry per pass.
+
+    THE ONLY QUESTION THIS PAGE ASKS: what did you notice this time that you
+    did not notice last time? An entry that could have been written on any
+    other pass has recorded nothing. So has one that summarises the book.
+
+    Two entries a year is a healthy log. Twelve is someone reading a lifelong
+    book like a `read` book, and that is worth noticing. */}
+
+### YYYY-MM-DD
+
+<Passage at="TODO">
+TODO — the passage that landed this time.
+</Passage>
+
+TODO — what it landed as, this time. And, if you can say it: what was going on
+that made this the passage rather than another one. That is the part that makes
+the log worth having in five years.

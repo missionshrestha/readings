@@ -1,0 +1,58 @@
+---
+/**
+ * <Passage> — a quotation from the ORIGINAL book, with where to find it.
+ *
+ * Rule 8 of the protocol says "open the original for the passages that matter —
+ * the clarified chapter is a lens, not a replacement, and a lens can distort."
+ * That rule needed somewhere to land, and a blockquote is not it: a blockquote
+ * is indistinguishable from the AI quoting itself.
+ *
+ * A passage is visually distinct BECAUSE its provenance is different. Everything
+ * else on a chapter page is generated or written by the reader; this is the only
+ * element whose words came out of the book.
+ *
+ * `at` is required in spirit and optional in the schema, for the same reason
+ * every content field is optional: content arrives by paste and a missing field
+ * must degrade rather than break the build. A passage with no location is still
+ * better than no passage.
+ */
+interface Props {
+	/** Page, chapter section, or e-reader location. */
+	at?: string;
+}
+const { at } = Astro.props;
+---
+
+<figure class="rd-passage">
+	<blockquote class="rd-passage__quote">
+		<slot />
+	</blockquote>
+	{at && <figcaption class="rd-passage__at">{at}</figcaption>}
+</figure>
+
+<style>
+	.rd-passage {
+		margin: var(--ds-5, 1.5rem) 0;
+		padding: 0;
+	}
+	.rd-passage__quote {
+		margin: 0;
+		padding: var(--ds-3, 0.75rem) 0 var(--ds-3, 0.75rem) var(--ds-5, 1.5rem);
+		border-inline-start: 2px solid var(--rd-border-strong);
+		font-size: 1.02em;
+		font-style: italic;
+		line-height: 1.62;
+		color: var(--rd-ink);
+	}
+	.rd-passage__quote > :global(:first-child) { margin-block-start: 0; }
+	.rd-passage__quote > :global(:last-child) { margin-block-end: 0; }
+	.rd-passage__at {
+		margin-block-start: 0.5rem;
+		padding-inline-start: var(--ds-5, 1.5rem);
+		font-family: var(--rd-font-ui);
+		/* --rd-scale: follows the reader's text-size control. Was a fixed 13px. */
+		font-size: calc(0.8125rem * var(--rd-scale, 1));
+		letter-spacing: 0.02em;
+		color: var(--rd-muted);
+	}
+</style>

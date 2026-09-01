@@ -1,0 +1,52 @@
+---
+/**
+ * ThemeSelect — DELIBERATELY EMPTY. This override removes a control.
+ *
+ * SITE CHROME, NOT AN AUTHORING COMPONENT.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY A SECOND THEME CONTROL HAD TO GO
+ *
+ * The site has four reading themes (day, sepia, dusk, night) behind the `Aa`
+ * panel. Starlight ships its own light/dark/auto picker in the same header.
+ * They wrote two different attributes on <html> and NOTHING reconciled them:
+ *
+ *     data-reading-theme   day | sepia | dusk | night   the INK
+ *     data-theme           light | dark                 the aside GROUND
+ *
+ * MEASURED 2026-08-31, headless Chromium, through real UI clicks rather than
+ * localStorage:
+ *
+ *     Night via the Aa panel                     note aside  10.38:1   ok
+ *     Night, then this picker -> Light           note aside   1.06:1   FAIL
+ *
+ * All four aside types failed together, and it SURVIVED A RELOAD because both
+ * values persist. :::note[Core message] is mandated by context/chapter-spine.md,
+ * so the defect sat in a required section of every chapter that will ever be
+ * written.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY REMOVING IT IS THE FIX RATHER THAN SYNCING IT
+ *
+ * Sync was the obvious repair and it is the weaker one: it leaves two writers
+ * of one piece of state and a reconciler that must be right in both directions,
+ * for every future writer, forever. Deleting the second writer makes the
+ * divergence STRUCTURALLY IMPOSSIBLE. After this, `data-theme` is derived — set
+ * only by applyTheme() in ReaderControls.astro and by the two inline scripts in
+ * Head.astro, all three from `rd-theme`.
+ *
+ * NOTHING IS LOST. The four-theme control is in the header on every page, not
+ * just reading pages, and day/sepia map to light while dusk/night map to dark —
+ * so every state Starlight's picker could reach is still reachable, with the
+ * reading palette that belongs to it. A first visit with no stored choice still
+ * follows the OS: Head.astro reads prefers-color-scheme and picks night or day.
+ *
+ * ThemeProvider is untouched, so window.StarlightThemeProvider still exists and
+ * updatePickers() still runs — it just finds no pickers, which is a no-op.
+ *
+ * Asides were ALSO moved off data-theme entirely (src/styles/custom.css, and
+ * the --rd-aside-* tokens in reading.css) so the pixels are safe even if
+ * something writes data-theme in future. Two independent fixes, because either
+ * alone leaves the class open.
+ */
+---

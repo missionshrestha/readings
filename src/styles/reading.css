@@ -1,0 +1,971 @@
+/*
+ * reading.css — THE READER.
+ *
+ * Four reading themes, the serif, the measure, paper grain, marginalia, focus
+ * mode and the page turn.
+ *
+ * ---------------------------------------------------------------------------
+ * HOW FOUR THEMES SIT ON TOP OF STARLIGHT'S TWO
+ *
+ * Starlight knows only data-theme="light|dark", and astro-mermaid's autoTheme
+ * watches exactly that attribute. A four-theme system that ignored it would
+ * silently break every diagram's re-theming, so:
+ *
+ *   data-reading-theme   carries the real choice   day | sepia | dusk | night
+ *   data-theme           carries what Starlight and mermaid understand
+ *
+ * The control sets both. day/sepia map to light; dusk/night map to dark.
+ *
+ * ---------------------------------------------------------------------------
+ * EVERY NUMBER BELOW IS MEASURED, NOT CHOSEN BY EYE
+ *
+ * `node scripts/contrast.mjs` reads these blocks and computes the WCAG ratio
+ * for TWENTY-SIX pairs in each of the four themes — 104 in total, of which the
+ * twelve aside rows per theme were added on 2026-08-31 after a :::note body
+ * shipped at 1.06:1 while this script reported 56/56. It exits 1 under a floor.
+ * Run it after touching any colour here. The /* THEME: name *​/ markers are
+ * what it parses — do not remove them.
+ *
+ * TIER COLOUR IS AN IDENTITY, SO THE HUE NEVER MOVES.
+ * Core is red, deepen is amber, reference is blue, in all four themes — a
+ * reader comparing two screenshots must not have to relearn the legend. Only
+ * LIGHTNESS adapts, because the same red cannot clear 3:1 on cream and on
+ * near-black.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY THE ASIDE COLOURS LIVE HERE AND NOT IN STARLIGHT'S HUE VARIABLES
+ *
+ * MEASURED 2026-08-31, and it is the worst contrast defect this project has
+ * shipped: a :::note body at 1.06:1.
+ *
+ * Starlight derives every aside colour from FIVE hue variables through
+ * lightness arithmetic that lives in two blocks — props.css:23 for dark and
+ * props.css:143 for light — keyed on data-theme. The INK inside an aside is
+ * --sl-color-white, which custom.css maps to --rd-heading and which therefore
+ * follows data-reading-theme. So the ground came from one control and the ink
+ * from another, and the two could disagree:
+ *
+ *   data-reading-theme   data-theme   :::note body
+ *   night                dark         10.38:1   ok
+ *   night                light         1.06:1   FAIL — near-white on near-white
+ *
+ * All four aside types failed together (note 1.06, caution 1.08, danger 1.15,
+ * tip 1.19), it survived a reload because both values persist, and
+ * :::note[Core message] is MANDATED by context/chapter-spine.md — so it hit a
+ * required section of every chapter. contrast.mjs passed 56/56 the whole time,
+ * because it reads --rd-* tokens and Starlight's hue arithmetic is not one.
+ *
+ * TWO FIXES, and both are here because either alone would leave the class open:
+ *
+ *   1 · The second control is gone. src/overrides/ThemeSelect.astro renders
+ *       nothing, so data-theme is now written ONLY as a derived value of the
+ *       reading theme. Divergence became structurally impossible rather than
+ *       merely unlikely.
+ *   2 · The asides stopped reading data-theme at all. The twelve tokens below
+ *       are per-theme literals, so contrast.mjs can read them exactly like
+ *       every other pair — and it does, twelve pairs per theme. A fix that a
+ *       script cannot re-check is a fix that comes back.
+ *
+ * bg is a tint of that theme's own --rd-surface, so an aside sits INSIDE the
+ * page. edge and title are hue-true across all four themes for the same reason
+ * tier colour is: note is blue everywhere, danger is red everywhere. Only
+ * lightness adapts.
+ */
+
+/* THEME: day */
+:root {
+	--rd-ground: #f6f3ec;
+	--rd-surface: #ffffff;
+	--rd-ink: #1c1917;
+	--rd-heading: #0f0d0c;
+	--rd-muted: #635a51;
+	--rd-accent: #8a4522;
+	--rd-on-accent: #ffffff;
+	--rd-border: #d9d2c7;
+	--rd-border-strong: #8d8275;
+	--rd-tier-core: #b02525;
+	--rd-tier-deepen: #8a5200;
+	--rd-tier-reference: #14639f;
+	/* Asides. See the block comment above --rd-aside-* in this file. */
+	--rd-aside-note-bg: #e8f3fb;
+	--rd-aside-note-edge: #2985c7;
+	--rd-aside-note-title: #19649a;
+	--rd-aside-tip-bg: #f3e8fb;
+	--rd-aside-tip-edge: #a456dc;
+	--rd-aside-tip-title: #8622ce;
+	--rd-aside-caution-bg: #fbf1e8;
+	--rd-aside-caution-edge: #ba6b26;
+	--rd-aside-caution-title: #915018;
+	--rd-aside-danger-bg: #fbeae8;
+	--rd-aside-danger-edge: #d84d41;
+	--rd-aside-danger-title: #af291d;
+	--rd-grain: 0.028;
+	--rd-shadow: 0 1px 2px rgb(28 25 23 / 6%), 0 6px 18px -10px rgb(28 25 23 / 18%);
+}
+
+/* THEME: sepia */
+:root[data-reading-theme='sepia'] {
+	--rd-ground: #f2e7d3;
+	--rd-surface: #faf2e1;
+	--rd-ink: #2f261a;
+	--rd-heading: #1f180f;
+	--rd-muted: #5d5241;
+	--rd-accent: #7d3b17;
+	--rd-on-accent: #fdf8ee;
+	--rd-border: #d6c8ab;
+	--rd-border-strong: #847860;
+	--rd-tier-core: #a52121;
+	--rd-tier-deepen: #7d4a00;
+	--rd-tier-reference: #115887;
+	--rd-aside-note-bg: #e4e8e0;
+	--rd-aside-note-edge: #267dba;
+	--rd-aside-note-title: #185e91;
+	--rd-aside-tip-bg: #efdde0;
+	--rd-aside-tip-edge: #9d49da;
+	--rd-aside-tip-title: #7e1fc1;
+	--rd-aside-caution-bg: #f6e5cd;
+	--rd-aside-caution-edge: #ae6424;
+	--rd-aside-caution-title: #884b16;
+	--rd-aside-danger-bg: #f6decd;
+	--rd-aside-danger-edge: #d53d30;
+	--rd-aside-danger-title: #a7271b;
+	--rd-grain: 0.034;
+	--rd-shadow: 0 1px 2px rgb(47 38 26 / 8%), 0 6px 18px -10px rgb(47 38 26 / 22%);
+}
+
+/* THEME: dusk */
+:root[data-reading-theme='dusk'] {
+	--rd-ground: #1d1a16;
+	--rd-surface: #272320;
+	--rd-ink: #e7ddd0;
+	--rd-heading: #f6efe5;
+	--rd-muted: #a89c8c;
+	--rd-accent: #e2a768;
+	--rd-on-accent: #241a10;
+	--rd-border: #3d372f;
+	--rd-border-strong: #837a6a;
+	--rd-tier-core: #ef7a7a;
+	--rd-tier-deepen: #e0a44b;
+	--rd-tier-reference: #75b6ea;
+	--rd-aside-note-bg: #283035;
+	--rd-aside-note-edge: #3489c5;
+	--rd-aside-note-title: #6eafdd;
+	--rd-aside-tip-bg: #332535;
+	--rd-aside-tip-edge: #a562d5;
+	--rd-aside-tip-title: #bf8be4;
+	--rd-aside-caution-bg: #3b2e23;
+	--rd-aside-caution-edge: #bd7332;
+	--rd-aside-caution-title: #db9d66;
+	--rd-aside-danger-bg: #3b2723;
+	--rd-aside-danger-edge: #d15c52;
+	--rd-aside-danger-title: #e38f87;
+	--rd-grain: 0.016;
+	--rd-shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 22px -12px rgb(0 0 0 / 55%);
+}
+
+/* THEME: night */
+:root[data-reading-theme='night'] {
+	--rd-ground: #0b0b0d;
+	--rd-surface: #15151a;
+	--rd-ink: #d3d0cb;
+	--rd-heading: #eeece8;
+	--rd-muted: #97928b;
+	--rd-accent: #dba869;
+	--rd-on-accent: #1a1408;
+	--rd-border: #2b2b31;
+	--rd-border-strong: #6a6a73;
+	--rd-tier-core: #ef7676;
+	--rd-tier-deepen: #dfa447;
+	--rd-tier-reference: #6fb3e8;
+	--rd-aside-note-bg: #192430;
+	--rd-aside-note-edge: #307eb5;
+	--rd-aside-note-title: #56a1d7;
+	--rd-aside-tip-bg: #241930;
+	--rd-aside-tip-edge: #9c52d1;
+	--rd-aside-tip-title: #b87fe1;
+	--rd-aside-caution-bg: #2c221e;
+	--rd-aside-caution-edge: #ad692e;
+	--rd-aside-caution-title: #d48a49;
+	--rd-aside-danger-bg: #2c1b1e;
+	--rd-aside-danger-edge: #cc493e;
+	--rd-aside-danger-title: #de7c73;
+	--rd-grain: 0.012;
+	--rd-shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 22px -12px rgb(0 0 0 / 70%);
+}
+
+/*
+ * The reader has not chosen yet. Follow the system, and follow Starlight's own
+ * dark class so the two never disagree on first paint.
+ */
+@media (prefers-color-scheme: dark) {
+	:root:not([data-reading-theme]) {
+		--rd-ground: #1d1a16;
+		--rd-surface: #272320;
+		--rd-ink: #e7ddd0;
+		--rd-heading: #f6efe5;
+		--rd-muted: #a89c8c;
+		--rd-accent: #e2a768;
+		--rd-on-accent: #241a10;
+		--rd-border: #3d372f;
+		--rd-border-strong: #837a6a;
+		--rd-tier-core: #ef7a7a;
+		--rd-tier-deepen: #e0a44b;
+		--rd-tier-reference: #75b6ea;
+		--rd-aside-note-bg: #283035;
+		--rd-aside-note-edge: #3489c5;
+		--rd-aside-note-title: #6eafdd;
+		--rd-aside-tip-bg: #332535;
+		--rd-aside-tip-edge: #a562d5;
+		--rd-aside-tip-title: #bf8be4;
+		--rd-aside-caution-bg: #3b2e23;
+		--rd-aside-caution-edge: #bd7332;
+		--rd-aside-caution-title: #db9d66;
+		--rd-aside-danger-bg: #3b2723;
+		--rd-aside-danger-edge: #d15c52;
+		--rd-aside-danger-title: #e38f87;
+		--rd-grain: 0.016;
+		--rd-shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 22px -12px rgb(0 0 0 / 55%);
+	}
+}
+
+/* ==========================================================================
+ * TYPE
+ *
+ * A SYSTEM SERIF STACK, AND NO WEBFONT. Charter and its descendants ship with
+ * macOS, Windows and most Linux distributions; Cambria and Georgia cover the
+ * rest. Zero network cost, zero layout shift, zero third-party origin, and
+ * nothing to break when a CDN does.
+ *
+ * Serif for the text, sans for the chrome. Metadata, chips, buttons and code
+ * are not being read the way prose is read, and giving them the same face makes
+ * both jobs worse.
+ * ========================================================================== */
+:root {
+	--rd-font-serif: Charter, 'Bitstream Charter', 'Sitka Text', Cambria, Georgia, 'Times New Roman',
+		serif;
+	--rd-font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+		sans-serif;
+
+	/*
+	 * THE MEASURE INVERTS FROM A DOCS SITE.
+	 *
+	 * The sibling project chose 60rem because a two-up card grid carrying code
+	 * needs it, and justified 103–129 characters per line as "do not make it
+	 * worse". A reading site wants 62–75 cpl, which is a different instrument
+	 * for a different job.
+	 *
+	 * These three are measured for THIS serif by scripts/measure-type.mjs, not
+	 * copied from anywhere. The sibling's 0.467em advance is for its sans and
+	 * does not transfer.
+	 */
+	/*
+	 * MEASURED, 2026-08-31, by rendering Charter in headless Chromium at all
+	 * three sizes and dividing a 52-character string by its width. Re-measure
+	 * with scripts/measure-type.mjs whenever the stack changes.
+	 *
+	 * THE CROSS-SIZE CHECK IS THE POINT, not decoration. A first measurement
+	 * returned 0.4941 / 0.4421 / 0.4000em at 17 / 19 / 21px — an absolute
+	 * advance constant at 8.40px, which is impossible for a face that is really
+	 * scaling. The probe had been setting the `font` SHORTHAND from
+	 * getComputedStyle, which returns an empty string unless every sub-property
+	 * is set, so it was silently measuring the browser default at 16px. One
+	 * measurement would have looked entirely plausible and been wrong by 4%.
+	 */
+	--rd-advance: 0.4609;
+
+	/*
+	 * THE CONTROL IS CHARACTERS PER LINE, NOT A WIDTH.
+	 *
+	 * Expressing the measure as a width in rem means the line gets longer in
+	 * characters every time the reader picks a smaller text size — the opposite
+	 * of what they asked for. Deriving it from the advance keeps cpl CONSTANT
+	 * across all three sizes, which is the thing that actually governs whether
+	 * prose is comfortable.
+	 */
+	--rd-cpl: 68;
+	/* The content panel's own inline padding, which is inside --sl-content-width
+	   and therefore has to be added back or the text column comes up short. */
+	--rd-gutter: 4rem;
+	--rd-measure: calc(var(--rd-cpl) * var(--rd-advance) * var(--rd-size) + var(--rd-gutter));
+
+	--rd-size: 1.1875rem; /* 19px */
+	/* Unitless companion to --rd-size. 1 at Normal. See the block below. */
+	--rd-scale: 1;
+	--rd-leading: 1.68;
+}
+
+/* 62 / 68 / 75 characters per line. Bringhurst's comfortable band is 66. */
+:root[data-reading-measure='narrow'] { --rd-cpl: 62; }
+:root[data-reading-measure='normal'] { --rd-cpl: 68; }
+:root[data-reading-measure='wide']   { --rd-cpl: 75; }
+
+/*
+ * --rd-scale IS THE SAME CHOICE, EXPRESSED WITHOUT A UNIT, and it exists
+ * because a third of a chapter page ignored the text-size control entirely.
+ *
+ * MEASURED 2026-09-01, Small against Large: body prose moved 17px -> 21px and
+ * these did not move at all — <Margin> body 14px / label 11px, <Recall> brief
+ * 15px / label 12px / meta 13px, <Passage> caption 13px, <Actions> meta 14px /
+ * tier chip 11px / id 12px, aside titles 18px, inline code 13px, the pagination
+ * pair 16px and 24px, "Last updated" 14px. A reader who chooses Large BECAUSE
+ * 17px is uncomfortable was left with unenlargeable 11px type.
+ *
+ * The cause is that every one of those is a fixed `rem`, and rem answers to the
+ * root font size, which this control does not touch — it sets --rd-size. So the
+ * components multiply their rem by this factor instead, which keeps the
+ * designed proportion and follows the choice. Ratios are the sizes themselves:
+ * 1.0625 / 1.1875 and 1.3125 / 1.1875.
+ */
+:root[data-reading-size='small']  { --rd-size: 1.0625rem; --rd-scale: 0.895; }
+:root[data-reading-size='normal'] { --rd-size: 1.1875rem; --rd-scale: 1; }
+:root[data-reading-size='large']  { --rd-size: 1.3125rem; --rd-scale: 1.105; }
+
+/* ==========================================================================
+ * THE READER
+ *
+ * Everything below is scoped to [data-reader], which is set only on a book or
+ * chapter page — segment depth 3 or more. The map pages share none of it.
+ * ========================================================================== */
+
+[data-reader] body {
+	background: var(--rd-ground);
+	color: var(--rd-ink);
+}
+
+/* The rail is gone. The chapter list is a drawer, opened deliberately. */
+@media (min-width: 50em) {
+	[data-reader] .sidebar-pane {
+		visibility: hidden;
+		transform: translateX(-100%);
+		transition: transform var(--ds-dur, 160ms) var(--ds-ease, ease),
+			visibility var(--ds-dur, 160ms);
+	}
+	[data-reader][data-contents] .sidebar-pane {
+		visibility: visible;
+		transform: none;
+		z-index: 60;
+		box-shadow: var(--rd-shadow);
+		border-inline-end: 1px solid var(--rd-border);
+	}
+	[data-reader] .main-frame {
+		padding-inline-start: 0;
+	}
+}
+
+/*
+ * AND BELOW 50em, WHERE THE DRAWER WAS DEAD.
+ *
+ * MEASURED 2026-09-01 at 768 / 600 / 420 / 360: the Chapters button set
+ * `data-contents`, reported `aria-expanded="true"`, and `.sidebar-pane` stayed
+ * `visibility: hidden`. The button lied to a screen reader and did nothing on
+ * screen, silently, on every book and chapter page on a phone.
+ *
+ * TWO REASONS, AND BOTH HAD TO BE FIXED. The block above is inside
+ * `min-width: 50em`, so none of it applied. And below that width Starlight's
+ * pane is a fixed full-screen overlay whose ONLY un-hider is
+ *
+ *     :global([aria-expanded='true']) ~ .sidebar-pane
+ *
+ * — PageFrame.astro:62, a SIBLING selector. Our button is mounted in the header
+ * through SocialIcons and is not a sibling of anything, so no attribute it sets
+ * can ever reach that rule. Writing Starlight's own custom property is what
+ * reaches it, and it composes with Starlight's toggle rather than fighting it.
+ */
+@media (max-width: 49.999em) {
+	[data-reader][data-contents] .sidebar-pane {
+		--sl-sidebar-visibility: visible;
+	}
+	/*
+	 * And exactly one control. With ours working, Starlight's hamburger opens
+	 * the same pane with the same chapter list two centimetres away — the
+	 * mobile menu footer it also carries is already hidden (custom.css), so on
+	 * a reading page it has nothing else to offer.
+	 */
+	[data-reader] starlight-menu-button {
+		display: none;
+	}
+	[data-reader] .header {
+		padding-inline-end: var(--sl-nav-pad-x);
+	}
+}
+
+/* No right-hand table of contents. A chapter has twelve fixed sections and a
+   reader who wants one of them uses search, not a rail of anchors. */
+[data-reader] .right-sidebar-container {
+	display: none;
+}
+
+/* The column. */
+[data-reader] .main-pane {
+	--sl-content-width: var(--rd-measure);
+}
+[data-reader] .sl-markdown-content,
+[data-reader] .content-panel .sl-container {
+	max-inline-size: var(--rd-measure);
+	margin-inline: auto;
+}
+
+[data-reader] .sl-markdown-content {
+	font-family: var(--rd-font-serif);
+	font-size: var(--rd-size);
+	line-height: var(--rd-leading);
+	/* Book typography: real quotes, ligatures, old-style figures where the face
+	   has them, and hyphenation so a narrow measure does not tear. */
+	font-variant-numeric: oldstyle-num proportional-nums;
+	font-kerning: normal;
+	font-feature-settings: 'liga' 1, 'clig' 1, 'onum' 1;
+	hyphens: auto;
+	hanging-punctuation: first last;
+	text-wrap: pretty;
+}
+
+/*
+ * THE PAGE TITLE IS OUTSIDE .sl-markdown-content, AND IT WAS THE ONLY SANS
+ * THING ON A SERIF PAGE.
+ *
+ * Starlight renders it as `<h1 id="_top">` in its own .content-panel, above the
+ * markdown container — so every rule below, which is scoped to
+ * .sl-markdown-content, missed it. The chapter title came out in the UI sans
+ * while `## Core message` two centimetres beneath it was Charter. On a site
+ * whose whole premise is that a chapter should read like a page of a book, the
+ * title of the chapter was the one element that did not.
+ *
+ * Found by looking at it. No check in this repository could have.
+ */
+[data-reader] .content-panel h1,
+[data-reader] h1#_top {
+	font-family: var(--rd-font-serif);
+	font-weight: 600;
+	letter-spacing: -0.012em;
+	line-height: 1.15;
+	color: var(--rd-heading);
+	text-wrap: balance;
+	hyphens: manual;
+}
+
+[data-reader] .sl-markdown-content :is(h1, h2, h3, h4) {
+	font-family: var(--rd-font-serif);
+	font-weight: 600;
+	letter-spacing: -0.005em;
+	color: var(--rd-heading);
+	hyphens: manual;
+}
+/*
+ * THE HEADING SCALE, AND WHY IT IS calc() AND NOT em.
+ *
+ * MEASURED 2026-09-01 on a chapter page, and the hierarchy was inverted:
+ *
+ *     h1 (page title)   42.0px
+ *     h2                46.2px   <-- LARGER THAN THE H1
+ *     h3                31.9px
+ *     body              19.0px
+ *
+ * The cause is one line of Starlight's own markup. It wraps EVERY heading in
+ *
+ *     <div class="sl-heading-wrapper level-h2">
+ *
+ * and sets that WRAPPER's font-size to --sl-text-h2 — 2.1875rem, 35px. `em` on
+ * a font-size resolves against the PARENT's computed size, so `font-size:
+ * 1.32em` was 1.32 x 35 = 46.2px rather than the 1.32 x 19 = 25px it was
+ * written to mean. `margin-block-start: 2.4em` was inflated the same way, to
+ * 84px instead of 46px.
+ *
+ * It is invisible to every check here: the build is green, the contrast passes,
+ * and every section heading on every chapter simply shouts over the title of
+ * the page it is on.
+ *
+ * Two fixes, and both are kept because either alone leaves the trap armed:
+ *
+ *   1 · The wrapper stops carrying a font-size on a reading page, so `em`
+ *       inside it means what it says again.
+ *   2 · The scale is stated in calc() against --rd-size, which is the reader's
+ *       CHOSEN text size. That was the whole point of using a relative unit —
+ *       the headings track Small/Normal/Large — and calc() keeps that property
+ *       while being immune to whatever a parent's font-size happens to be.
+ */
+[data-reader] .sl-heading-wrapper {
+	font-size: inherit;
+}
+
+[data-reader] .content-panel h1,
+[data-reader] h1#_top {
+	font-size: calc(var(--rd-size) * 2.05);
+}
+[data-reader] .sl-markdown-content h2 {
+	margin-block-start: calc(var(--rd-size) * 2.4);
+	font-size: calc(var(--rd-size) * 1.45);
+}
+[data-reader] .sl-markdown-content h3 {
+	margin-block-start: calc(var(--rd-size) * 1.9);
+	font-size: calc(var(--rd-size) * 1.14);
+}
+[data-reader] .sl-markdown-content h4 {
+	margin-block-start: calc(var(--rd-size) * 1.5);
+	font-size: var(--rd-size);
+	font-weight: 700;
+}
+
+/* Chrome keeps the sans: it is scanned, not read. */
+[data-reader] :is(.ds-chip, code, kbd, .rd-action, .rd-margin, figcaption, table) {
+	font-family: var(--rd-font-ui);
+}
+
+/*
+ * `## OPEN QUESTIONS` LEFT EMPTY IS CORRECT, AND LOOKED BROKEN.
+ *
+ * chapter-spine.md §7 calls it "the prohibition zone" — the AI never writes
+ * here, so a real chapter's own author is the only source, and a chapter with
+ * no unanswered question is a legitimate result. But the template's own
+ * placeholder is an MDX comment (curly-brace, slash-star, LEFT EMPTY DELIBERATELY, star-slash, curly-brace), which
+ * compiles to nothing: MEASURED on a real chapter page, the heading is
+ * followed immediately by the next section with no rendered text at all,
+ * indistinguishable from a paste that silently dropped a section.
+ *
+ * The selector is the same shape as the card-grid heading rule above: a
+ * heading whose very next sibling is ANOTHER heading, meaning nothing was
+ * written between them. It never fires on /elements/, which documents the
+ * rule in a real paragraph — this only catches the true-empty case.
+ */
+[data-reader-kind='chapter'] .sl-heading-wrapper.level-h2:has(> h2#open-questions):has(+ .sl-heading-wrapper)::after {
+	content: 'Nothing recorded here yet — this section is for a question the chapter left unanswered, not a summary of what it argued.';
+	display: block;
+	margin-block: 0.5rem 0;
+	font-family: var(--rd-font-ui);
+	font-size: calc(0.9375rem * var(--rd-scale, 1));
+	font-style: italic;
+	line-height: 1.55;
+	color: var(--rd-muted);
+}
+
+/* ==========================================================================
+ * THE CHROME FOLLOWS THE TEXT-SIZE CONTROL TOO.
+ *
+ * Everything below was a fixed `rem` and therefore identical at Small and at
+ * Large — measured 2026-09-01, listed beside --rd-scale above. The components
+ * carry their own multipliers in their own scoped styles; these are Starlight's
+ * surfaces, which have none.
+ * ========================================================================== */
+[data-reader] .starlight-aside__title {
+	font-size: calc(1.125rem * var(--rd-scale));
+}
+[data-reader] .sl-markdown-content :is(code, kbd) {
+	font-size: calc(0.8125rem * var(--rd-scale));
+}
+[data-reader] .sl-markdown-content pre code {
+	font-size: calc(0.8125rem * var(--rd-scale));
+}
+[data-reader] .content-panel footer :is(.meta, time, a) {
+	font-size: calc(0.875rem * var(--rd-scale));
+}
+
+/*
+ * THE PAGINATION PAIR. Two changes, and the second is the visible one.
+ *
+ * It scales — it was a fixed 16px and 24px. And the title comes DOWN from 24px:
+ * at the foot of a chapter, "Next" was set larger than the h3 headings inside
+ * the chapter it is leaving, which is the wrong way round for a control that is
+ * not the reason you are on the page.
+ */
+[data-reader] .pagination-links a {
+	font-size: calc(1rem * var(--rd-scale));
+}
+[data-reader] .pagination-links .link-title {
+	font-family: var(--rd-font-serif);
+	font-size: calc(var(--rd-size) * 1.05);
+	font-weight: 600;
+	line-height: 1.35;
+}
+
+/*
+ * A CARD TITLE MAY NOT OUTRANK THE HEADING ABOVE IT.
+ *
+ * MEASURED on the Deep Work index: Starlight's `.card .title` came out at 24px
+ * against an `h3` of 21.66px in the same section, so every chapter card shouted
+ * over the part heading that grouped it. Card titles are now just under the
+ * body-derived h4 step and follow the reader's size choice like everything else.
+ */
+[data-reader] .sl-markdown-content :is(.card, .sl-link-card) .title {
+	font-family: var(--rd-font-serif);
+	font-size: calc(var(--rd-size) * 1.02);
+	font-weight: 600;
+	line-height: 1.3;
+}
+[data-reader] .sl-markdown-content .sl-link-card .description {
+	font-size: calc(var(--rd-size) * 0.92);
+}
+
+/*
+ * Expressive Code draws its own frame chrome — the filename caption above a
+ * code block, and the copy button's label — from --ec-uiFontSize, which is a
+ * fixed value in its own stylesheet and was the last thing on a chapter page
+ * that did not follow the reader's size choice. Measured 14.4px at both ends.
+ */
+[data-reader] .expressive-code {
+	--ec-uiFontSize: calc(0.9rem * var(--rd-scale));
+	--ec-codeFontSize: calc(0.8125rem * var(--rd-scale));
+}
+[data-reader] .expressive-code .frame .title {
+	font-size: calc(0.8125rem * var(--rd-scale));
+}
+
+/*
+ * TWO CHIP SYSTEMS WERE ONE TOO MANY.
+ *
+ * The site's own chip is an outlined pill in the UI face (.ds-chip). Starlight's
+ * <Badge>, which the generated chapter grid uses for "Not written", rendered as
+ * ui-monospace 13px on a solid rgb(138,69,34) fill — the loudest object on a
+ * book page, marking the ABSENCE of a chapter. It now matches .ds-chip, so the
+ * two systems are one and the badge reads as a status rather than an alarm.
+ */
+[data-reader] .sl-markdown-content .sl-badge {
+	font-family: var(--rd-font-ui);
+	font-size: calc(0.75rem * var(--rd-scale));
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	line-height: 1.6;
+	padding: 0.1rem 0.5rem;
+	border-radius: 999px;
+	color: var(--rd-muted);
+	background: none;
+	border: 1px solid currentColor;
+}
+
+/*
+ * TABLES. The sans is deliberate and stays — see the rule above: chrome is
+ * scanned, not read, and a Sources table is a data block, not prose. What was
+ * actually wrong is that it was set adrift: proportional figures that would not
+ * align down a Read on column, no rule under the header, and a size that
+ * ignored the reader's control.
+ */
+[data-reader] .sl-markdown-content table {
+	font-size: calc(0.9375rem * var(--rd-scale));
+	font-variant-numeric: tabular-nums lining-nums;
+}
+[data-reader] .sl-markdown-content :is(th, td) {
+	vertical-align: baseline;
+}
+[data-reader] .sl-markdown-content th {
+	border-block-end: 1px solid var(--rd-border-strong);
+}
+[data-reader] .sl-markdown-content :is(code, pre) {
+	font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+	font-variant-numeric: normal;
+}
+
+/*
+ * The drop cap opens the chapter, and ONLY the chapter. `initial-letter` is the
+ * correct property and is widely supported; the float fallback keeps the same
+ * shape where it is not.
+ *
+ * SCOPED TO [data-reader-kind='chapter'] SINCE 2026-09-01. A book's index page
+ * is depth 3 and also carries [data-reader], so it was getting one too — a
+ * three-line initial letter on the two-line paragraph under "Why this book,
+ * now", followed by a grid of chapter cards. A directory page with an
+ * illuminated capital reads as a mistake, because it is one.
+ */
+[data-reader-kind='chapter'] .sl-markdown-content > p:first-of-type::first-letter {
+	initial-letter: 3;
+	-webkit-initial-letter: 3;
+	float: inline-start;
+	line-height: 0.82;
+	font-size: 3.1em;
+	font-weight: 500;
+	padding-inline-end: 0.08em;
+	padding-block-start: 0.06em;
+	color: var(--rd-accent);
+}
+@supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
+	[data-reader-kind='chapter'] .sl-markdown-content > p:first-of-type::first-letter {
+		float: none;
+		font-size: inherit;
+		padding-block-start: 0;
+	}
+}
+
+/* ==========================================================================
+ * PAPER
+ *
+ * Grain from an inline SVG turbulence filter as a data URI: zero bytes over the
+ * wire, no image request, no third-party host. Fixed to the viewport so it does
+ * not swim while scrolling, and pointer-events: none so it never intercepts a
+ * click.
+ *
+ * --rd-grain is set PER THEME and is much lower in the dark ones, where grain
+ * costs contrast rather than adding texture. The measured ratios in
+ * scripts/contrast.mjs are the floor with grain applied, not without.
+ * ========================================================================== */
+[data-reader] body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	opacity: var(--rd-grain);
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ==========================================================================
+ * FOCUS AND QUIET
+ * ========================================================================== */
+
+/* Focus mode: the chrome is gone until you ask for it back. */
+[data-reader][data-focus] :is(.right-sidebar-container, .sidebar) {
+	display: none;
+}
+/*
+ * THE HEADER IS HIDDEN WITH `visibility`, NOT `display`, AND THE DIFFERENCE IS
+ * THE WHOLE FIX.
+ *
+ * `display: none` removes the subtree from rendering, and a `position: fixed`
+ * descendant goes with it — so the exit button below, which is mounted inside
+ * SocialIcons and therefore inside the header, would vanish exactly when it is
+ * the only control left. `visibility` is inherited and can be OVERRIDDEN by a
+ * descendant, which `display` cannot; so the header goes and one button stays.
+ *
+ * Nothing else changes: Starlight's header is already `position: fixed`
+ * (PageFrame.astro:32-38), so it occupies no flow space either way, and
+ * `visibility: hidden` removes it from hit-testing and from the tab order just
+ * as `display: none` did.
+ */
+[data-reader][data-focus] .header {
+	visibility: hidden;
+	pointer-events: none;
+}
+[data-reader][data-focus] .main-frame {
+	padding-block-start: var(--ds-7, 3rem);
+}
+
+/*
+ * THE WAY OUT. Added 2026-09-01, because there wasn't one.
+ *
+ * MEASURED: enabling focus mode sets the header to `display: none`, which left
+ * ZERO visible controls at 1280 and at 420 — every theme, size, measure,
+ * ambience and drawer button included. It persists (`rd-focus=1`) across a
+ * reload. The only exit was the `f` key: undiscoverable once the label that
+ * taught it has been removed from the screen, and ON A TOUCH DEVICE THERE IS NO
+ * EXIT AT ALL. A reader who tapped "Focus mode" on a phone had to clear site
+ * data or find an in-content link out — and the only in-content links on a
+ * chapter are the heading anchors and pagination, which lead to another chapter
+ * that is also in focus mode.
+ *
+ * So one control survives. It is quiet — an outline, no fill, low opacity —
+ * and it comes fully forward on hover or focus. Escape leaves focus mode too;
+ * this is the affordance that says so on a device with no Escape key.
+ */
+.rd-focus-exit {
+	display: none;
+}
+[data-reader][data-focus] .rd-focus-exit {
+	display: inline-flex;
+	visibility: visible;
+	pointer-events: auto;
+	align-items: center;
+	gap: 0.4rem;
+	position: fixed;
+	inset-block-start: max(0.75rem, env(safe-area-inset-top));
+	inset-inline-end: max(0.75rem, env(safe-area-inset-right));
+	z-index: 80;
+	min-block-size: 2.25rem;
+	padding: 0.35rem 0.7rem;
+	font-family: var(--rd-font-ui);
+	font-size: calc(0.75rem * var(--rd-scale));
+	font-weight: 700;
+	letter-spacing: 0.07em;
+	text-transform: uppercase;
+	color: var(--rd-muted);
+	background: var(--rd-surface);
+	border: 1px solid var(--rd-border);
+	border-radius: 999px;
+	opacity: 0.45;
+	cursor: pointer;
+	transition: opacity var(--ds-dur, 160ms) var(--ds-ease, ease),
+		color var(--ds-dur, 160ms) var(--ds-ease, ease);
+}
+[data-reader][data-focus] .rd-focus-exit:hover,
+[data-reader][data-focus] .rd-focus-exit:focus-visible {
+	opacity: 1;
+	color: var(--rd-accent);
+	border-color: var(--rd-accent);
+}
+
+/*
+ * Quiet mode: the chrome fades after three seconds of no input and returns on
+ * movement. It never fades while a menu is open, and reduced-motion turns the
+ * transition off rather than the feature — a reader who asked for quiet still
+ * gets quiet, it just arrives instantly.
+ */
+[data-reader][data-quiet] .header {
+	transition: opacity 600ms var(--ds-ease, ease);
+}
+
+[data-reader][data-quiet][data-idle] .header:not(:focus-within) {
+	opacity: 0;
+	/*
+	 * MEASURED 2026-09-01: at `opacity: 0` the header kept
+	 * `pointer-events: auto` and every control in it kept `tabIndex >= 0`.
+	 * `elementFromPoint` over the Aa button returned the button. So the faded
+	 * chrome still swallowed clicks aimed at the page beneath it and still took
+	 * Tab stops that a sighted keyboard user could not see. `visibility` is
+	 * what removes both, and it is animatable, so the fade is unchanged.
+	 */
+	visibility: hidden;
+	pointer-events: none;
+	transition: opacity 600ms var(--ds-ease, ease), visibility 600ms var(--ds-ease, ease);
+}
+
+/* ==========================================================================
+ * THE PAGE TURN
+ *
+ * Cross-chapter only, never within one. Driven by ClientRouter, which the
+ * task-1 gate proved works here — see src/overrides/Head.astro for the defect
+ * it exposed and the measurement that closed it.
+ *
+ * Absent, not merely faster, under reduced motion. That rule lives in
+ * custom.css so it beats anything declared later.
+ * ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+	[data-reader] .main-pane {
+		view-transition-name: rd-page;
+	}
+	::view-transition-old(rd-page) {
+		animation: rd-lift 300ms cubic-bezier(0.4, 0, 0.6, 1) both;
+		transform-origin: left center;
+	}
+	::view-transition-new(rd-page) {
+		animation: rd-settle 320ms cubic-bezier(0.2, 0.6, 0.2, 1) both;
+		transform-origin: left center;
+	}
+	@keyframes rd-lift {
+		from { opacity: 1; transform: translateX(0) rotateY(0deg); }
+		to   { opacity: 0; transform: translateX(-2.5%) rotateY(-3.5deg); }
+	}
+	@keyframes rd-settle {
+		from { opacity: 0; transform: translateX(2.5%) rotateY(3.5deg); }
+		to   { opacity: 1; transform: translateX(0) rotateY(0deg); }
+	}
+}
+
+/*
+ * WHAT MAY LEAVE THE READING MEASURE, AND WHAT MAY NOT.
+ *
+ * A CARD GRID MAY NOT, and this reverses a change made on 2026-08-31. Breaking
+ * the grid out to 58rem fixed the cramped cards and bought a worse defect:
+ * MEASURED on the Deep Work index at 1280, `h2`, `h3` and prose sat at x=310
+ * while `.rd-partmeta` and `.card-grid` sat at x=144 — a 166px ragged left edge
+ * with each section heading INSIDE the measure and its own content outside it.
+ * A page whose left edge moves twice per section reads as broken, and a card at
+ * 300px two-up inside the measure was never the problem it was solving.
+ *
+ * A DIAGRAM MAY, because unlike a card it cannot reflow: mermaid lays out to
+ * whatever width it is given and then scales down, so 627px is not a narrower
+ * presentation of the diagram, it is a smaller one. MEASURED: 500px of drawing
+ * inside a 627px column. The negative margin is clamped at 0, so a viewport too
+ * narrow to break out simply keeps the measure and nothing overflows.
+ */
+[data-reader] .sl-markdown-content pre.mermaid {
+	--rd-break: min(58rem, calc(100vw - 4rem));
+	inline-size: max(100%, var(--rd-break));
+	max-inline-size: none;
+	margin-inline: min(0px, calc((100% - var(--rd-break)) / 2));
+}
+
+/* Wide screens get a margin for marginalia to move into. */
+@media (min-width: 75rem) {
+	[data-reader] .sl-markdown-content,
+	[data-reader] .content-panel .sl-container {
+		margin-inline: auto;
+		padding-inline-end: 2rem;
+	}
+}
+
+/* ==========================================================================
+ * MERMAID — the structural / categorical split
+ *
+ * STRUCTURAL colour FLIPS with the theme, so it is injected as CSS custom
+ * properties through themeCSS in astro.config.mjs. It cannot live in
+ * themeVariables: astro-mermaid builds ONE static config at build time and
+ * calls initialize() with it, so it cannot hold four palettes. A custom
+ * property can, because it resolves when the browser PAINTS, against whichever
+ * theme is on <html> then.
+ *
+ * CATEGORICAL colour does NOT flip. A series colour is an IDENTITY — the same
+ * slice must be the same colour in Day and in Night, or a reader comparing two
+ * screenshots has to re-learn the legend. Those are set once, in hex, in
+ * astro.config.mjs.
+ *
+ * FOUR GROUNDS, NOT TWO. Every categorical fill has to clear 3:1 against warm
+ * white, cream, warm dark AND near-black. That is the constraint the sibling
+ * project never had, and it is why the palette below is desaturated rather than
+ * bright.
+ * ========================================================================== */
+:root {
+	--ds-mm-canvas: var(--rd-ground);
+	--ds-mm-node-fill: var(--rd-surface);
+	--ds-mm-node-stroke: var(--rd-border-strong);
+	--ds-mm-node-text: var(--rd-ink);
+	--ds-mm-label-text: var(--rd-muted);
+	--ds-mm-label-bg: var(--rd-ground);
+	--ds-mm-line: var(--rd-border-strong);
+	--ds-mm-alt-fill: color-mix(in srgb, var(--rd-ink) 4%, var(--rd-ground));
+}
+
+/* Framed like a card, and it scrolls inside its own box so the page body never
+   scrolls horizontally. */
+pre.mermaid {
+	margin-block: var(--ds-5, 1.5rem);
+	padding: var(--ds-4, 1rem);
+	background: var(--rd-surface);
+	border: 1px solid var(--rd-border);
+	border-radius: var(--ds-r-md, 0.75rem);
+	overflow-x: auto;
+	text-align: center;
+}
+/* Before the client script runs, the raw source is visible. Style it as a
+   deliberate fallback rather than letting it flash as unstyled text. */
+pre.mermaid:not([data-processed]) {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: 0.8125rem;
+	color: var(--rd-muted);
+	text-align: start;
+	white-space: pre;
+}
+
+/* ==========================================================================
+ * THE READING FRAME ON PAPER.
+ *
+ * The general print rules are in custom.css; these are here because they
+ * override the measure, which is defined in this file — and custom.css is
+ * loaded BEFORE reading.css (astro.config.mjs `customCss`), so at equal
+ * specificity a print rule over there loses to the screen rule over here.
+ * MEASURED: the column printed at 627px on a 1280px sheet with the override in
+ * the other file, and takes the page with it in this one.
+ *
+ * The measure exists because a screen line has no edge to stop it. A sheet has
+ * one.
+ * ========================================================================== */
+@media print {
+	[data-reader] .main-pane {
+		--sl-content-width: 100%;
+	}
+	[data-reader] .sl-markdown-content,
+	[data-reader] .content-panel .sl-container {
+		max-inline-size: 100%;
+		inline-size: auto;
+		margin-inline: 0;
+		padding-inline-end: 0;
+	}
+	/* A margin note has no margin to move into on paper. */
+	[data-reader] .rd-margin {
+		float: none;
+		inline-size: auto;
+		margin-inline: 0;
+		padding: 0.5rem 0.75rem;
+		border-inline-start: 2px solid #999;
+	}
+	/* A diagram that broke out of the measure must not break out of the sheet. */
+	[data-reader] .sl-markdown-content pre.mermaid {
+		inline-size: 100%;
+		max-inline-size: 100%;
+		margin-inline: 0;
+	}
+}

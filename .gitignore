@@ -1,0 +1,34 @@
+# build output
+dist/
+.astro/
+.wrangler/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# synthetic corpus — scripts/synth-corpus.mjs
+#
+# The manifest is ignorable; the DIRECTORIES IT NAMES ARE NOT, because they sit
+# under src/content/docs/ among real books and no pattern can tell them apart
+# without also hiding real content. That asymmetry is the whole reason the
+# manifest exists: `--clean` is the mechanism, and this line only stops the
+# manifest itself from being committed by accident.
+#
+# ALWAYS run `npm run synth:clean` before committing.
+.synth-corpus.json

@@ -1,0 +1,313 @@
+---
+/**
+ * /shelf — the bookshelf.
+ *
+ * Every one of the 293 books is a spine, and the spine ENCODES ITS DATA rather
+ * than decorating it:
+ *
+ *   colour     tier      core / deepen / reference — the heat scale already in
+ *                        universe.md, hue identical in all four themes
+ *   thickness  weight    S / M / L — what it costs at thirty minutes a day
+ *   lit        started   a book with a directory on disk is a real link
+ *
+ * So the shelf answers "what is this domain made of, and what does it cost"
+ * before a single word is read, and it needs no legend to do it.
+ *
+ * NO COVER ART. 293 books and none of it legally shippable, so a cover is
+ * generated from title, author, tier colour and a pattern seeded by the slug.
+ * Zero assets, and the same object is the spine here and the cover on the book
+ * page — which is what the pick-up transition morphs between.
+ *
+ * NO BOOK COUNTER ANYWHERE. Reconciliation row 9: the drafts print throughput
+ * arithmetic and then say, in their own failure-modes table, "the ledger is the
+ * metric, the count is vanity". The only number in the chrome is running
+ * actions.
+ */
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import universe from '../generated/universe.json';
+import { ledger, runningCount } from '../lib/ledger';
+import { getCollection } from 'astro:content';
+import { isPublished, isAuthored } from '../lib/visibility';
+
+const rows = await ledger();
+const running = runningCount(rows);
+
+// Which books actually have a page. isAuthored keeps this to depth >= 3.
+const started = new Set(
+	(await getCollection('docs'))
+		.filter((e) => isPublished(e.data as { draft?: boolean; private?: boolean }))
+		.filter((e) => isAuthored(String(e.id)))
+		.map((e) => String(e.id).split('/').slice(0, 3).join('/'))
+);
+
+type Book = {
+	slug: string; title: string; author: string | null; tier: string; weight: string;
+	flags: string[]; domain: string; cluster: string; why: string;
+};
+type Cluster = { slug: string; number: string; name: string; books: Book[] };
+type Domain = { slug: string; displayName: string; question: string; clusters: Cluster[] };
+const domains = universe.domains as unknown as Domain[];
+
+/** Deterministic per-slug jitter, so a shelf looks like a shelf rather than a chart. */
+function jitter(slug: string, spread: number, base: number) {
+	let h = 0;
+	for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) >>> 0;
+	return base + (h % spread);
+}
+/*
+ * SPINE THICKNESS, and the numbers moved on 2026-09-01 because the old ones did
+ * not fit their own text.
+ *
+ * A spine is `writing-mode: vertical-rl` with the title and the author as two
+ * flex items side by side across its thickness. At 26px, minus 2 x 0.15rem of
+ * padding, there were 21px for a 12.5px serif line (needs ~16px) AND a 10px
+ * sans line (needs ~13px). Both flex items SHRANK to fit — measured at 8px and
+ * 7px — and the glyphs came out horizontally crushed and genuinely unreadable.
+ * Every S-weight book on the shelf, which is 78 of the 293.
+ *
+ * The fix is three things together: these numbers, `flex-shrink: 0` so a line
+ * can never be squeezed below its own height again, and dropping the author on
+ * an S spine, where there is honestly no room for two lines.
+ */
+const THICKNESS = { S: 30, M: 38, L: 46 } as const;
+---
+
+<StarlightPage
+	frontmatter={{
+		title: 'The shelf',
+		description: 'Every book in the universe, by domain. Colour is priority, thickness is what it costs.',
+		template: 'splash',
+		tableOfContents: false,
+	}}
+>
+	<div class="ds-head">
+		<div class="ds-head__lede">
+			Two hundred and ninety-three books. Colour is how much it matters, thickness is what it
+			costs at thirty minutes a day. A lit spine has a page.
+		</div>
+		<div class="ds-head__meta">
+			<span class="ds-chip ds-chip--live">{running} actions still running</span>
+		</div>
+	</div>
+
+	<div class="rd-shelf-legend">
+		<span><i class="rd-sw rd-sw--core"></i> Core</span>
+		<span><i class="rd-sw rd-sw--deepen"></i> Deepen</span>
+		<span><i class="rd-sw rd-sw--reference"></i> Reference</span>
+		<span class="rd-shelf-legend__sep">·</span>
+		<span>Thickness: S · M · L</span>
+	</div>
+
+	{
+		domains.map((d) => (
+			<section class="rd-shelf">
+				<h2 class="rd-shelf__title">
+					<a href={`/${d.slug}/`}>{d.displayName}</a>
+					<span class="rd-shelf__q">{d.question}</span>
+				</h2>
+				<div class="rd-shelf__board">
+					{d.clusters.flatMap((c) =>
+						c.books.map((b) => {
+							const key = `${d.slug}/${c.slug}/${b.slug}`;
+							const live = started.has(key);
+							const Tag = live ? 'a' : 'div';
+							return (
+								<Tag
+									class:list={[
+										'rd-spine',
+										`rd-spine--${b.tier}`,
+										`rd-spine--w${b.weight ?? 'M'}`,
+										live && 'rd-spine--live',
+									]}
+									href={live ? `/${key}/` : undefined}
+									style={`--w:${THICKNESS[b.weight as 'S' | 'M' | 'L'] ?? 38}px;--h:${jitter(b.slug, 34, 188)}px`}
+									title={`${b.title}${b.author ? ' — ' + b.author : ''} · ${c.number} ${c.name}`}
+									{...(live ? { 'transition:name': `cover-${b.slug}` } : {})}
+								>
+									<span class="rd-spine__title">{b.title}</span>
+									{b.author && <span class="rd-spine__author">{b.author}</span>}
+								</Tag>
+							);
+						})
+					)}
+				</div>
+			</section>
+		))
+	}
+</StarlightPage>
+
+<style>
+	.rd-shelf-legend {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.35rem 1rem;
+		margin-block-end: 2.5rem;
+		font-family: var(--rd-font-ui);
+		font-size: 0.8125rem;
+		color: var(--rd-muted);
+	}
+	.rd-shelf-legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
+	.rd-shelf-legend__sep { color: var(--rd-border-strong); }
+	.rd-sw { inline-size: 0.75rem; block-size: 0.75rem; border-radius: 2px; }
+	.rd-sw--core { background: var(--rd-tier-core); }
+	.rd-sw--deepen { background: var(--rd-tier-deepen); }
+	.rd-sw--reference { background: var(--rd-tier-reference); }
+
+	/* Owns its own spacing. Without the reset, Starlight's general-sibling
+	   margin rule adds an inconsistent 1rem to every section after the first. */
+	.rd-shelf { margin-block: 0 2.75rem; }
+	.rd-shelf__title {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.75rem;
+		margin: 0 0 0.6rem;
+		font-size: 1.0625rem;
+		font-weight: 650;
+	}
+	.rd-shelf__title a {
+		color: var(--rd-heading);
+		text-decoration: none;
+		/* 17px text measured a 20px-tall tap target on its own — under the 24px
+		   floor. Padding on an inline element grows the hit area without
+		   changing the line box, so the heading's own layout is untouched. */
+		display: inline-block;
+		padding-block: 0.25rem;
+		margin-block: -0.25rem;
+	}
+	.rd-shelf__title a:hover { color: var(--rd-accent); }
+	.rd-shelf__q {
+		font-family: var(--rd-font-ui);
+		font-size: 0.8125rem;
+		font-weight: 400;
+		color: var(--rd-muted);
+	}
+
+	/* The board: a plank the spines stand on. */
+	.rd-shelf__board {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		/* A wrapped board is several tiers of one shelf. Without a row gap they
+		   read as one squashed block; 1.25rem is enough to separate them and
+		   still read as the same unit. */
+		gap: 1.25rem 3px;
+		padding: 0.75rem 0.75rem 0;
+		border-block-end: 4px solid var(--rd-border-strong);
+		border-radius: 2px;
+		background: linear-gradient(
+			to bottom,
+			transparent 0%,
+			color-mix(in srgb, var(--rd-ink) 4%, transparent) 100%
+		);
+	}
+
+	.rd-spine {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		align-items: center;
+		/*
+		 * PHYSICAL width/height, NOT inline-size/block-size.
+		 *
+		 * writing-mode: vertical-rl swaps the logical axes: inline becomes
+		 * VERTICAL and block becomes horizontal. `inline-size: var(--w)` therefore
+		 * set the spine's HEIGHT and `block-size: var(--h)` set its width, and
+		 * every spine rendered as a horizontal bar stretched across the shelf.
+		 *
+		 * Logical properties are the right default almost everywhere else in this
+		 * stylesheet. Inside a rotated writing mode they are the trap.
+		 */
+		width: var(--w);
+		height: var(--h);
+		padding: 0.5rem 0.15rem;
+		border-radius: 2px 2px 0 0;
+		writing-mode: vertical-rl;
+		text-orientation: mixed;
+		overflow: hidden;
+		text-decoration: none;
+		/* Not started: recessed and dashed, NEVER dimmed with opacity — opacity on
+		   a container takes the text down with the chrome, and "slightly muted"
+		   and "illegible" become the same slider. */
+		background: color-mix(in srgb, var(--rd-surface) 60%, var(--rd-ground));
+		border: 1px dashed var(--rd-border-strong);
+		border-block-end: 0;
+		color: var(--rd-muted);
+		transition: transform var(--ds-dur, 160ms) var(--ds-ease, ease);
+	}
+	.rd-spine--live {
+		background: color-mix(in srgb, currentColor 12%, var(--rd-surface));
+		border-style: solid;
+		border-color: currentColor;
+		box-shadow: var(--rd-shadow);
+	}
+	.rd-spine--core { --tier: var(--rd-tier-core); }
+	.rd-spine--deepen { --tier: var(--rd-tier-deepen); }
+	.rd-spine--reference { --tier: var(--rd-tier-reference); }
+	.rd-spine--live.rd-spine--core { color: var(--rd-tier-core); }
+	.rd-spine--live.rd-spine--deepen { color: var(--rd-tier-deepen); }
+	.rd-spine--live.rd-spine--reference { color: var(--rd-tier-reference); }
+	/* A colour band at the head of every spine, so tier reads even when the
+	   spine is not lit — shape and colour, never colour alone. */
+	.rd-spine::before {
+		content: '';
+		position: absolute;
+		/* Physical, for the same reason as above. */
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 5px;
+		background: var(--tier);
+	}
+	.rd-spine--live:hover,
+	.rd-spine--live:focus-visible {
+		transform: translateY(-6px);
+	}
+	/*
+	 * flex-shrink: 0 IS THE FIX, not a tidy-up.
+	 *
+	 * These two are flex items laid out across the spine's THICKNESS (the block
+	 * axis, because the writing mode is rotated). A flex item's default
+	 * `flex-shrink: 1` let both of them be compressed below their own line
+	 * height when the spine was too thin — 8px and 7px against the ~16px and
+	 * ~13px they need — which does not clip the text, it CRUSHES it. Legible
+	 * type became a grey smear, and it did so on the majority of the shelf.
+	 *
+	 * Refusing to shrink means a spine that cannot hold a line simply does not
+	 * show it, which is a decision you can see, rather than one that quietly
+	 * ruins every book on the page.
+	 */
+	.rd-spine__title {
+		flex-shrink: 0;
+		font-family: var(--rd-font-serif);
+		font-size: 0.78rem;
+		font-weight: 600;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-height: 100%;
+	}
+	.rd-spine__author {
+		flex-shrink: 0;
+		font-family: var(--rd-font-ui);
+		font-size: 0.5625rem;
+		margin-block-start: 2px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-height: 100%;
+		opacity: 0.85;
+	}
+	/* An S spine is 30px, which is one line and no more. The author is dropped
+	   rather than squeezed — it is still in the title attribute and on the
+	   book's own page. */
+	.rd-spine--wS .rd-spine__author {
+		display: none;
+	}
+
+	@media (max-width: 40rem) {
+		.rd-shelf__board { gap: 2px; padding-inline: 0.35rem; }
+	}
+</style>

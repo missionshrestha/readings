@@ -1,0 +1,249 @@
+---
+/**
+ * <Actions /> — renders every action in this chapter's frontmatter.
+ *
+ * NO CHILDREN. Actions are DATA, not prose: they live in frontmatter so that
+ * /ledger and /review can be computed from them rather than hand-kept, which is
+ * the whole reason the ledger can be trusted. Writing them twice — once as data
+ * and once as prose — guarantees the two disagree.
+ *
+ * ---------------------------------------------------------------------------
+ * WHAT THE RECONCILIATION PUT HERE
+ *
+ * ROW 2 — extraction is uncapped, COMMITMENT is capped at one per book.
+ *   "Adding intentions doesn't raise the ~53% conversion rate; it divides
+ *    attention." -- evidence/reading.md:568
+ *   Every candidate is still recorded, because a ledger row costs nothing and a
+ *   forgotten idea costs the idea. Only one carries `committed: true` with
+ *   `tier: now`. audit.mjs warns above one; it never refuses, because that is
+ *   his life and not a build.
+ *
+ * ROW 10 — an action that is committed MUST name its inner obstacle.
+ *   Oettingen & Mayer is the strongest negative finding in the whole corpus:
+ *   picturing the outcome predicts WORSE attainment. Naming the obstacle is
+ *   what mental contrasting actually is, and nothing on this site ever asks the
+ *   reader to visualise a result.
+ *
+ * THE ID IS RENDERED VISIBLY, and that is deliberate. It is the day-30 review
+ * key. Renaming one silently resets that action's schedule and nothing reports
+ * it — so it is shown, where a rename is something you can SEE rather than
+ * something that happens quietly in a diff.
+ */
+interface Action {
+	id: string;
+	if?: string;
+	then?: string;
+	trigger?: string;
+	obstacle?: string;
+	tier?: string;
+	impact?: string;
+	committed?: boolean;
+	started?: string | Date;
+	day30?: string;
+	note?: string;
+}
+interface Props {
+	/** Overrides the frontmatter. Only needed outside a content page. */
+	actions?: Action[];
+}
+
+const route = (Astro.locals as { starlightRoute?: { entry?: { data?: { actions?: Action[] } } } })
+	.starlightRoute;
+const actions: Action[] = Astro.props.actions ?? route?.entry?.data?.actions ?? [];
+
+const TIER = {
+	now: { label: 'Now', hint: 'Started this week.' },
+	next: { label: 'Next', hint: 'Real, but queued behind something.' },
+	later: { label: 'Later', hint: 'Depends on a life stage I am not in yet.' },
+	reference: { label: 'Reference', hint: 'Not a habit. A rule for when the situation arises.' },
+} as const;
+
+const DAY30 = {
+	'not-yet': 'Not yet due',
+	running: 'Still running',
+	adapted: 'Adapted',
+	dropped: 'Dropped',
+} as const;
+
+const key = (t: string | undefined) => (t && t in TIER ? (t as keyof typeof TIER) : 'reference');
+const committed = actions.filter((a) => a.committed);
+---
+
+{
+	actions.length === 0 ? (
+		<p class="rd-actions__none">
+			No action from this chapter. That is a legitimate result — a conceptual chapter
+			may support none, and inventing one to fill the section is how a ledger stops
+			meaning anything.
+		</p>
+	) : (
+		<div class="rd-actions">
+			{committed.length > 1 && (
+				<p class="rd-actions__warn">
+					{committed.length} actions are marked committed. One at a time converts;
+					several divide the same attention.
+				</p>
+			)}
+			<ol class="rd-actions__list">
+				{actions.map((a) => (
+					<li class="rd-action" data-tier={key(a.tier)} data-committed={a.committed ? '' : undefined}>
+						<div class="rd-action__head">
+							<span class={`rd-action__tier rd-action__tier--${key(a.tier)}`} title={TIER[key(a.tier)].hint}>
+								{TIER[key(a.tier)].label}
+							</span>
+							{a.committed && <span class="rd-action__committed">Committed</span>}
+							<code class="rd-action__id" title="Permanent. This is the review key.">{a.id}</code>
+						</div>
+
+						<p class="rd-action__rule">
+							<span class="rd-action__kw">If</span> {a.if}
+							<span class="rd-action__kw">then</span> {a.then}
+						</p>
+
+						<dl class="rd-action__meta">
+							{a.trigger && (<><dt>Trigger</dt><dd>{a.trigger}</dd></>)}
+							{a.obstacle && (<><dt>Obstacle</dt><dd>{a.obstacle}</dd></>)}
+							{a.impact && (<><dt>Honest impact</dt><dd>{a.impact}</dd></>)}
+							{a.day30 && (
+								<><dt>Day 30</dt><dd>{DAY30[a.day30 as keyof typeof DAY30] ?? a.day30}</dd></>
+							)}
+						</dl>
+
+						{a.committed && !a.obstacle && (
+							<p class="rd-action__gap">
+								Committed with no obstacle named. Picturing the outcome predicts worse
+								attainment; naming what will actually stop you is the half that works.
+							</p>
+						)}
+					</li>
+				))}
+			</ol>
+		</div>
+	)
+}
+
+<style>
+	/* Sizes multiply by --rd-scale so the reader's text-size control reaches
+	   them. Measured before: 15px / 11px / 12px / 14px, identical at Small and
+	   Large, on the one component that carries the smallest type on the page. */
+	.rd-actions__none,
+	.rd-actions__warn,
+	.rd-action__gap {
+		font-family: var(--rd-font-ui);
+		font-size: calc(0.9375rem * var(--rd-scale, 1));
+		line-height: 1.55;
+		color: var(--rd-muted);
+	}
+	.rd-actions__warn,
+	.rd-action__gap {
+		margin: 0.5rem 0 0;
+		padding: 0.5rem 0.75rem;
+		border-inline-start: 2px solid var(--rd-tier-deepen);
+		color: var(--rd-ink);
+		background: color-mix(in srgb, var(--rd-tier-deepen) 8%, transparent);
+		border-radius: 0 var(--ds-r-sm, 0.375rem) var(--ds-r-sm, 0.375rem) 0;
+	}
+	.rd-actions__list {
+		list-style: none;
+		margin: var(--ds-4, 1rem) 0 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--ds-3, 0.75rem);
+	}
+	.rd-action {
+		padding: var(--ds-4, 1rem);
+		background: var(--rd-surface);
+		border: 1px solid var(--rd-border);
+		border-radius: var(--ds-r-md, 0.75rem);
+	}
+	.rd-action[data-committed] {
+		border-color: var(--rd-accent);
+		box-shadow: inset 3px 0 0 var(--rd-accent);
+	}
+	.rd-action__head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+		margin-block-end: 0.5rem;
+	}
+	.rd-action__tier,
+	.rd-action__committed {
+		font-family: var(--rd-font-ui);
+		font-size: calc(0.6875rem * var(--rd-scale, 1));
+		font-weight: 700;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		padding: 0.1rem 0.5rem;
+		border: 1px solid currentColor;
+		border-radius: 999px;
+	}
+	.rd-action__tier--now { color: var(--rd-tier-core); }
+	.rd-action__tier--next { color: var(--rd-tier-deepen); }
+	.rd-action__tier--later { color: var(--rd-tier-reference); }
+	.rd-action__tier--reference { color: var(--rd-muted); }
+	.rd-action__committed { color: var(--rd-accent); }
+	.rd-action__id {
+		margin-inline-start: auto;
+		font-size: calc(0.75rem * var(--rd-scale, 1));
+		color: var(--rd-muted);
+		background: none;
+		border: 0;
+	}
+	.rd-action__rule {
+		margin: 0;
+		font-size: 1.02em;
+		line-height: 1.55;
+		color: var(--rd-ink);
+	}
+	.rd-action__kw {
+		font-family: var(--rd-font-ui);
+		font-size: 0.8125em;
+		font-weight: 700;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		color: var(--rd-accent);
+		margin-inline-end: 0.35em;
+	}
+	.rd-action__kw:not(:first-child) { margin-inline-start: 0.45em; }
+	.rd-action__meta {
+		display: grid;
+		grid-template-columns: max-content 1fr;
+		gap: 0.15rem 0.85rem;
+		margin: 0.75rem 0 0;
+		font-family: var(--rd-font-ui);
+		font-size: calc(0.875rem * var(--rd-scale, 1));
+		line-height: 1.5;
+	}
+	/*
+	 * EVERY VALUE SAT 16px ABOVE ITS OWN LABEL EXCEPT THE FIRST.
+	 *
+	 * MEASURED 2026-09-01 on a chapter page: Trigger dt y=6598 / dd y=6598;
+	 * Obstacle dt 6637 / dd 6621; Honest impact 6677 / 6661; Day 30 6716 /
+	 * 6700. On every action card, on every chapter, in the required Actions
+	 * section.
+	 *
+	 * Starlight's markdown CSS puts margin-top on EVERY sibling —
+	 * `.sl-markdown-content :not(a,strong,…) + :not(a,strong,…)`, in
+	 * @layer starlight.content. `dd` already reset its margin below; `dt` never
+	 * did, so in a two-column grid the labels drifted down and the values did
+	 * not. Same defect as stack fact 18, one component further in: a grid owns
+	 * the spacing between its own children, which is what `gap` is.
+	 */
+	.rd-action__meta > * {
+		margin-block-start: 0;
+	}
+	.rd-action__meta dt {
+		color: var(--rd-muted);
+		font-weight: 600;
+	}
+	.rd-action__meta dd {
+		margin: 0;
+		color: var(--rd-ink);
+	}
+	@media (max-width: 30rem) {
+		.rd-action__meta { grid-template-columns: 1fr; gap: 0 0; }
+		.rd-action__meta dd { margin-block-end: 0.4rem; }
+	}
+</style>

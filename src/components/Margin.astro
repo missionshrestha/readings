@@ -1,0 +1,79 @@
+---
+/**
+ * <Margin> — a note in the margin, where a note in a book belongs.
+ *
+ * On a wide screen this floats into the outer margin beside the paragraph it
+ * answers. Below ~1200px it collapses back inline, because a margin note in a
+ * column with no margin is just an interruption.
+ *
+ * WHY A COMPONENT RATHER THAN CSS ON AN ASIDE: the author has to be able to
+ * ATTACH it to a specific paragraph. A section-level rule cannot know which
+ * sentence a note is about, and putting it in the wrong place is worse than
+ * putting it inline.
+ *
+ * It is never load-bearing. Anything a reader must see to follow the argument
+ * belongs in the column: the margin is for the aside, the objection, the "this
+ * is the bit that is actually about me."
+ */
+interface Props {
+	/** Optional short label rendered above the note. */
+	label?: string;
+}
+const { label } = Astro.props;
+---
+
+<aside class="rd-margin">
+	{label && <span class="rd-margin__label">{label}</span>}
+	<div class="rd-margin__body"><slot /></div>
+</aside>
+
+<style>
+	/* Every size here is multiplied by --rd-scale so the reader's Small /
+	   Normal / Large choice reaches it. Measured before the change: 14px and
+	   11px, identical at both ends of the control. reading.css carries the
+	   full list. */
+	.rd-margin {
+		font-family: var(--rd-font-ui);
+		font-size: calc(0.875rem * var(--rd-scale, 1));
+		line-height: 1.5;
+		color: var(--rd-muted);
+	}
+	.rd-margin__label {
+		display: block;
+		margin-block-end: 0.25rem;
+		font-size: calc(0.6875rem * var(--rd-scale, 1));
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--rd-accent);
+	}
+	.rd-margin__body > :global(:first-child) { margin-block-start: 0; }
+	.rd-margin__body > :global(:last-child) { margin-block-end: 0; }
+
+	/* Inline by default — the narrow case is the honest default. */
+	.rd-margin {
+		margin: var(--ds-4, 1rem) 0;
+		padding: var(--ds-3, 0.75rem) var(--ds-4, 1rem);
+		border-inline-start: 2px solid var(--rd-border);
+		background: color-mix(in srgb, var(--rd-ink) 3%, transparent);
+		border-radius: 0 var(--ds-r-sm, 0.375rem) var(--ds-r-sm, 0.375rem) 0;
+	}
+
+	/*
+	 * Into the margin, but ONLY where there is a margin to move into.
+	 * The reader column is centred with room either side at this width; below
+	 * it, the rule above stands.
+	 */
+	@media (min-width: 75rem) {
+		:global([data-reader]) .rd-margin {
+			float: inline-end;
+			clear: inline-end;
+			inline-size: 13rem;
+			margin-inline-end: -15rem;
+			margin-block: 0.25rem 1rem;
+			padding: 0;
+			border-inline-start: 0;
+			background: none;
+		}
+	}
+</style>

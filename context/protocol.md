@@ -1,0 +1,1095 @@
+
+# 📖 THE READING PROTOCOL
+
+### *How I read, understand, argue with, and act on every book*
+
+**Companion to THE BOOK UNIVERSE**
+30 min weekdays · 60–90 min Sat/Sun · ~5 hrs/week
+Books sourced online · Uploaded in full to AI · Published as MDX to `readings.missionshrestha.com.np`
+
+---
+
+---
+
+# 🔄 PART 1 — THE FLOW
+
+```
+   0 ─ 🧭 SELECT ................... which book, and why it's this one
+   1 ─ 📥 ACQUIRE .................. find it, upload it, verify it landed
+   2 ─ 🌍 BRIEF .................... the whole book, inside and outside view
+                                        ↓
+       ╔═══════════════════ CHAPTER LOOP ═══════════════════╗
+   3 ─ ║ 🏗️  GENERATE ..... the clarified chapter            ║
+   4 ─ ║ 📖 READ I ........ read the clarified chapter        ║
+   5 ─ ║ 🧑‍🏫 EXPLAIN ...... the teaching layer + the world's  ║
+       ║                     reading of this chapter          ║
+   6 ─ ║ 📖 READ II ....... read the explanation              ║
+   7 ─ ║ 💬 DIALOGUE ...... confusion → pushback → clarity    ║
+   8 ─ ║ ⚡ ACTION ........ every real action, tiered         ║
+   9 ─ ║ 🖼️  RECAP ........ Mermaid map + publish to the site ║
+       ╚════════════════════ next chapter ═══════════════════╝
+                                        ↓
+  10 ─ 📋 LEDGER ................... consolidate, synthesise, publish
+  11 ─ 📅 REVIEW ................... 30 days on — is anything running?
+```
+
+**Two generations, two reads.** The clarified chapter tells me what the book says. The explanation tells me what it *means*, what other readers made of it, and where it's wrong. Neither replaces the other.
+
+---
+
+---
+
+# ⚙️ PART 2 — THE STAGES
+
+## 🧭 STAGE 0 · SELECT
+
+**Time:** 15 min · **Prompt:** `P1` · **When:** Between books
+
+Open THE BOOK UNIVERSE. Work through it with the AI rather than just picking:
+
+- What is actually consuming my attention right now?
+- What did the last book leave unanswered?
+- Is there a decision in the next three months a book could improve?
+- What am I avoiding, and why?
+
+Then **commit in writing** — title, author, start date, and one line on *why this one now*. That line goes into the book page's frontmatter and is worth rereading if the book gets hard in week two.
+
+**Hard limit: 15 minutes.** Any 🔴 CORE book is a good book. Searching for the perfect next one is the same problem in a different costume.
+
+---
+
+## 📥 STAGE 1 · ACQUIRE
+
+**Time:** 10 min · **No AI**
+
+Find the book online. Get the cleanest format available.
+
+| Format                   | Verdict                                                                                                                           |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| **EPUB**           | Best. Clean chapter boundaries, real text, no OCR damage.                                                                         |
+| **Markdown / TXT** | Excellent if available. Zero formatting noise.                                                                                    |
+| **Text PDF**       | Fine. Check that copy-paste produces real text, not gibberish.                                                                    |
+| **Scanned PDF**    | Avoid. Tables, footnotes and diagrams are lost, and OCR errors propagate silently into every downstream stage. Find another copy. |
+
+**Verify the upload before doing anything else.** Ask the AI to state the table of contents back with chapter titles and rough lengths. If titles are garbled or chapters are missing, the file is bad — a corrupted upload wastes three weeks quietly.
+
+**Large books:** split by part and upload sequentially. Part 1 uploaded properly beats the whole book uploaded badly.
+
+**Scaffold the site now, not later.** Create the book folder and an empty `index.mdx` with frontmatter. Two minutes, and it removes the friction that otherwise stops chapter one from ever getting published.
+
+---
+
+## 🌍 STAGE 2 · BRIEF
+
+**Time:** 30 min · **Prompt:** `P2` · **When:** Once per book · **Publishes to:** `/books/[slug]/`
+
+The whole-book briefing, drawing on the uploaded text **and everything beyond it** — reception, criticism, academic response, later research, what practitioners say.
+
+What I get:
+
+- The central claim, and what the author was arguing *against*
+- **The outside view** — how it landed, what critics say, what has aged badly, what later work overturned
+- A chapter map: what each chapter argues, and where the book repeats itself
+- The three most likely real changes this book could produce in *my* life
+- The reading order, if it isn't front-to-back
+
+> **The outside view is the half the book cannot give me.** *Why We Sleep* will not mention its critique. *Thinking, Fast and Slow* will not tell me the priming chapters failed replication. A book read without its criticism is an advertisement read as a textbook.
+
+This output becomes the book landing page. Everything else in the book hangs off it.
+
+---
+
+## 🏗️ STAGE 3 · GENERATE
+
+**Time:** 3 min to run · **Prompt:** `P3` · **When:** Every chapter
+
+The AI rebuilds the chapter for understanding. Six parts, in order:
+
+<table>
+<tr><td><b>1 · Pre-context</b></td><td>What I need <i>before</i> this chapter makes sense — background, prior debate, terms the author assumes, where this sits in the arc. Generous; this removes a real barrier at no cost.</td></tr>
+<tr><td><b>2 · Core message</b></td><td>One sentence.</td></tr>
+<tr><td><b>3 · Key points</b></td><td>Essential only. As many as the chapter genuinely has.</td></tr>
+<tr><td><b>4 · The clarified chapter</b></td><td>The chapter rebuilt: filler stripped, gaps filled, implicit reasoning made explicit, structure made visible. <b>Length is not a constraint</b> — longer than the original is correct if that is what clarity costs.</td></tr>
+<tr><td><b>5 · What was cut</b></td><td>And why, so I can spot-check that nothing load-bearing went in the bin.</td></tr>
+<tr><td><b>6 · Chapter rating</b></td><td>Usefulness · Novelty · Actionability, and whether the original is worth opening for any specific passage.</td></tr>
+</table>
+
+---
+
+## 📖 STAGE 4 · READ I
+
+**Time:** 20–30 min · **No AI window open**
+
+Read the clarified chapter properly. Phone in another room.
+
+- **Mark every confusion.** Don't stop to ask — batch it into Stage 7.
+- **Mark every disagreement.** These are worth more than the confusions.
+- **Open the original** for any passage doing real work. On the two or three ideas that will actually change something, I want the author's own words, not a rendering of them.
+
+---
+
+## 🧑‍🏫 STAGE 5 · EXPLAIN
+
+**Time:** 3 min to run · **Prompt:** `P4` · **When:** Every chapter
+
+The teaching layer. This is where the chapter stops being text and starts being understood.
+
+Nine sections:
+
+<table>
+<tr><td><b>1 · What the author is actually saying</b></td><td>The real message under the prose — including where the plain reading and the intended reading diverge.</td></tr>
+<tr><td><b>2 · Where readers get confused</b></td><td>The specific misreadings this chapter reliably produces, and the correction for each.</td></tr>
+<tr><td><b>3 · The teaching pass</b></td><td>A second explanation from a different angle. Analogies, worked examples, the version a good teacher would give after seeing the first one not land.</td></tr>
+<tr><td><b>4 · What real readers say</b></td><td>Reddit threads, Goodreads reviews, Medium essays, Hacker News, book clubs, blogs. What people argue about, what changed their lives, what they found useless.</td></tr>
+<tr><td><b>5 · What critics say</b></td><td>Informed objections to <i>this chapter specifically</i>, not to the book in general.</td></tr>
+<tr><td><b>6 · What's been tested since</b></td><td>Replication, later research, evidence that has strengthened or undermined the claim.</td></tr>
+<tr><td><b>7 · How practitioners use it</b></td><td>How people who actually applied this report it going, including where it broke.</td></tr>
+<tr><td><b>8 · Where it doesn't transfer</b></td><td>Cultural, economic and situational limits — Kathmandu, a Nepali family, a South Asian tech market, an introvert.</td></tr>
+<tr><td><b>9 · The version to hold</b></td><td>After all of the above: the honest synthesis. What I should actually believe.</td></tr>
+</table>
+
+> **Run this stage in a search-enabled chat where possible.** Section 4 is much richer when the model can find live threads. Without search it draws on training knowledge — substantial for well-known books, thin for obscure ones. When it's thin, the section should say so rather than inventing consensus.
+
+---
+
+## 📖 STAGE 6 · READ II
+
+**Time:** 15–20 min · **No AI window open**
+
+Read the explanation.
+
+This is the pass where things click. Read I gives me the argument; Read II gives me the argument *seen from outside*, the objections, and the correction to whatever I misread the first time.
+
+**Mark two things:** where the explanation contradicts what I concluded in Read I, and where I still don't agree with either. Both go into Stage 7.
+
+---
+
+## 💬 STAGE 7 · DIALOGUE
+
+**Time:** 15–20 min · **Prompt:** `P5` · **When:** Every chapter
+
+The conversation. Everything I marked across both reads.
+
+- Ask the stupid question. The one I'd be embarrassed to ask a person.
+- Push back on what I disagree with, and make the AI defend or concede.
+- Ask where it fails, who it doesn't work for, what a smart critic would say.
+- Ask how it lands in Kathmandu, in a Nepali family, in a tech workplace.
+- **Let it ask me a hard question back** — one that tests whether I understood it or merely followed it.
+
+**Capture this.** The dialogue produces insight that exists nowhere else — not in the book, not in the explanation, not in any review. It came from the collision between this chapter and my specific situation, and it is the single most losable thing in the whole system. It goes into the chapter page verbatim, lightly cleaned.
+
+---
+
+## ⚡ STAGE 8 · ACTION
+
+**Time:** 10–15 min · **Prompt:** `P6` · **When:** Every chapter
+
+Extract **every genuinely distinct, relevant action this chapter supports.** No cap. A dense chapter may yield eight; a thin one may yield one; a purely conceptual one may yield none, and that is a legitimate result.
+
+The only filters are:
+
+- **Relevant** — it applies to a situation I actually encounter
+- **Distinct** — not the same action in different words
+- **Grounded** — it comes from this chapter, not from general advice the chapter reminded the AI of
+
+Every action gets four fields:
+
+| Field                   | Requirement                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------- |
+| **The action**    | One line, observable. Could someone watching tell whether I did it?                   |
+| **The trigger**   | A concrete situation — a time, a place, a person, a recurring moment. Not a feeling. |
+| **The tier**      | 🔴 NOW · 🟡 NEXT · 🔵 LATER · ⚪ REFERENCE                                         |
+| **Honest impact** | Including "probably marginal."                                                        |
+
+Then: **I write the IF–THEN sentence for anything tiered 🔴 NOW**, and the AI attacks my draft. The AI proposes; I commit. A plan I didn't author is a plan I won't run.
+
+---
+
+## 🖼️ STAGE 9 · RECAP
+
+**Time:** 8 min · **Prompt:** `P7` · **When:** Every chapter · **Publishes to:** `/books/[slug]/[NN]-[chapter]/`
+
+The chapter becomes a page. A **Mermaid concept map**, the dialogue log, the actions, and a 30-second version that stands alone six months from now.
+
+**Then read the previous chapter's recap before starting the next one.** Thirty seconds. It's the cheapest thing in the protocol and the reason the book accumulates instead of evaporating — Chapter 8 usually depends on Chapter 3, and Chapter 3 will be gone by then.
+
+---
+
+## 📋 STAGE 10 · LEDGER
+
+**Time:** 45 min · **Prompt:** `P8` · **When:** End of book · **Publishes to:** `/books/[slug]/` + `/ledger/`
+
+Two outputs.
+
+**The consolidated actions.** Every action from every chapter in one table — merged where duplicated, cut where trivial, re-tiered now that the whole book is visible. An action that looked essential in Chapter 3 often looks minor beside Chapter 9.
+
+**The book synthesis.** The argument in five sentences. The one idea I should be able to defend a year from now. Where the author is wrong. What the book does *not* solve that I might mistakenly think it did. What it connects to in what I've already read. And the verdict: **changed something / confirmed something / entertainment** — all three legitimate, only the first growth.
+
+---
+
+## 📅 STAGE 11 · REVIEW
+
+**Time:** 15 min · **Prompt:** `P9` · **When:** 30 days after finishing
+
+Diarised the day the book is finished.
+
+**Is it still running?** If yes, promote something from 🟡 NEXT. If no — *when did it stop, and was it the trigger, the action, or the idea?* Those three failures need three different fixes, and "it didn't work" is not an answer.
+
+Update the ledger. Update the chapter page badges. The site should always show the truth about what survived.
+
+---
+
+---
+
+# 🤖 PART 3 — THE PROMPT LIBRARY
+
+> Paste **`P0` once** at the top of each book's conversation, then upload the book. Everything after assumes it's loaded. All prompts emit **MDX for Astro Starlight** — ready to paste straight into the repo.
+
+---
+
+## 🔑 P0 — MASTER SETUP
+
+### *Once per book, before anything else.*
+
+```
+You are my Book Analyst, Teacher and Mentor for one book, worked through over
+several weeks. Read this setup once — every later request assumes it.
+
+═══════════ WHO I AM ═══════════
+25-year-old man. Nepali, Newar, Kathmandu. BE Computer Engineering (Kathmandu
+University). Software engineer; goal is CTO within ~10 years, then
+entrepreneurship. Introverted. Highly analytical, over-thinker, over-researcher.
+Slow and deliberate decisions. Medium risk tolerance. Calm but anxious. I fear
+stagnation more than failure. Morning-oriented (target 4:30–5:00am).
+
+Strengths: disciplined when a system exists, growth mindset, natural listener,
+reliable, thrive in structured environments.
+
+Weaknesses I already know and want you to account for:
+- Procrastination and dopamine overload; social media is my named momentum-killer
+- I shallow-learn everything quickly and rarely go deep
+- Saying "no" rated 3/10 — I over-give, then resent it
+- Perfectionism: my stated ideal self is "perfect in everything." That is a
+  trap. Do NOT feed it.
+- Responsible for everyone else's work, not for my own interests
+
+Life context: family central (10/10); affection at home was practical rather
+than open. Never been in a romantic relationship; monogamy-oriented; seeking a
+long-term partner, not casual dating. Want financial freedom and multiple
+income streams; currently overspend. Values: honesty, kindness, growth,
+proactiveness, understanding.
+
+═══════════ HOW TO WORK WITH ME ═══════════
+1. FILTER HARD. Most non-fiction is one idea at 250 pages. Cut anecdotes,
+   repetition, scene-setting, and evidence for things I already accept. Keep an
+   example ONLY where the example is what makes the idea usable.
+
+2. CLARIFY, DON'T COMPRESS. When I ask for a rewrite, the goal is UNDERSTANDING,
+   not brevity. Longer than the original is correct if that's what clarity
+   costs. Fill the gaps the author left. Make implicit reasoning explicit.
+   Define what he assumes I know.
+
+3. BRING THE OUTSIDE WORLD. Use everything you know beyond the uploaded text:
+   reviews, criticism, Reddit and forum discussion, Medium and blog essays,
+   academic reception, replication results, how practitioners actually applied
+   it. A book will never tell me its own weaknesses.
+
+4. PERSONALISE, NEVER GENERALISE. Tie everything to MY situation — Kathmandu, a
+   Nepali family, a tech workplace, an introvert, someone building toward a
+   company. Never give advice that would suit anyone.
+
+5. BE DIRECT. Don't soften a correction into a compliment. If my thinking is
+   vague, say so and demand a concrete example. Accuracy over encouragement.
+
+6. FLAG YOUR CONFIDENCE. When you're drawing on thin or uncertain knowledge —
+   an obscure book, a claim you're unsure of — say so plainly. Never manufacture
+   consensus or invent reviews that may not exist.
+
+7. LENGTH: as long as the material requires. Deep where complex, tight where
+   simple. Never pad. Never give a shallow summary.
+
+═══════════ OUTPUT FORMAT: MDX FOR ASTRO STARLIGHT ═══════════
+Everything you produce goes into a Starlight docs site. Always output valid MDX:
+
+- YAML frontmatter as specified in each prompt
+- Standard markdown headings, lists, tables
+- Starlight asides: :::note[Title] / :::tip / :::caution / :::danger
+- Mermaid diagrams in ```mermaid fences (mindmap, flowchart TD, graph LR)
+- Starlight components when useful: <Card>, <CardGrid>, <Steps>, <Tabs>,
+  <TabItem>, <LinkCard>, <Badge> — and include the import line when you use them
+- Escape any bare { } < > in prose so MDX doesn't choke on it
+- No text outside the MDX. I paste your entire reply into a file.
+
+═══════════ THE ONE RULE ═══════════
+Compress, expand, rewrite, explain and criticise the BOOK as aggressively as you
+like — that's your job.
+
+You may NOT decide what I do about my life. At the action stage you propose
+candidates with triggers and honest impact estimates. I write the final IF–THEN
+commitment myself. Then you attack my draft. Never write the commitment for me.
+
+Reply with one line confirming, and ask which book we're doing.
+```
+
+---
+
+## 🧭 P1 — SELECT THE NEXT BOOK
+
+### *Stage 0.*
+
+```
+Help me choose my next book. Interrogate me before recommending.
+
+Ask me one at a time, and wait for each answer:
+1. What is actually consuming my attention right now?
+2. What did the last book leave unanswered?
+3. Is there a decision in the next 3 months a book could improve?
+4. What am I avoiding reading, and why?
+
+Then from these candidates — [PASTE 2–4 BOOKS FROM THE UNIVERSE] — recommend ONE
+and say plainly:
+
+- Why this one now, over the others
+- What it will do for me, and what it will NOT do
+- Whether I'm choosing it for a real reason or because it's the comfortable one
+- Rough time cost at ~5 hrs/week
+- One sentence I should write down as "why this book now", to reread in week two
+  when it gets hard
+
+If I'm picking an easier book to avoid a harder, more useful one — say so.
+```
+
+---
+
+## 🌍 P2 — WHOLE-BOOK BRIEFING
+
+### *Stage 2. Output goes to `/books/[slug]/index.mdx`.*
+
+```
+I've uploaded [TITLE] by [AUTHOR] in full.
+
+Give me a complete briefing using BOTH the uploaded text AND everything you know
+from outside it: reviews, criticism, academic reception, forum and Reddit
+discussion, later research, cultural impact.
+
+Output as MDX with this frontmatter:
+
+---
+title: "[TITLE]"
+description: "[one line]"
+author: "[AUTHOR]"
+published: [YEAR]
+domain: "[domain slug]"
+cluster: "[N.N]"
+tier: "core|deepen|reference"
+weight: "S|M|L"
+chapters: [N]
+status: reading
+started: [YYYY-MM-DD]
+whyNow: "[my one-line reason]"
+---
+
+Then these sections:
+
+## 📘 Snapshot
+- The central claim in ONE sentence
+- What the author was arguing AGAINST; what the field believed before
+- Who it's for, and whether I'm that person
+- Verdict: read fully / read selectively / skim / skip
+
+## 🌍 The Outside View
+Be thorough here — this is the half the book cannot give me.
+- How was it received, and by whom?
+- What do serious critics say against it?
+- What has aged badly, been contested, or failed replication?
+- What did later research complicate or overturn?
+- What do actual readers say — Reddit, Goodreads, HN, Medium, book clubs? What
+  do they argue about? What did people find genuinely life-changing, and what
+  did they find useless?
+- What does the book NOT tell me about itself?
+
+## 🗂️ Chapter Map
+A table: Chapter | What it argues (one line) | Weight in the argument | Est. reading time
+
+## 🔁 Repetition Map
+Which ideas appear across several chapters that could have been one? Knowing
+this in advance stops me thinking I've missed something new.
+
+## 🎯 What This Could Change For Me
+Given my profile: the 3 most likely REAL changes this book could produce in my
+life. Concrete, not aspirational. Include one that's likely to disappoint me.
+
+## 🧭 Reading Order
+Front-to-back, or is there a better sequence? Any chapter that should be read
+first out of order?
+
+## ❓ Questions To Carry
+5–7 questions to hold across the whole book. These are what I'm reading toward.
+```
+
+---
+
+## 🏗️ P3 — THE CHAPTER ENGINE
+
+### *Stage 3. The clarified chapter.*
+
+```
+CHAPTER [N] — "[TITLE]"
+
+Rebuild this chapter for maximum understanding. Output as MDX with frontmatter:
+
+---
+title: "Ch [N] · [TITLE]"
+description: "[one line core message]"
+sidebar:
+  order: [N]
+book: "[slug]"
+chapter: [N]
+status: generated
+---
+
+## 🧩 Pre-Context
+What I need BEFORE this chapter makes sense: background, prior debate, terms the
+author assumes I know, where this sits in the book's argument, what happened in
+the previous chapter that this builds on. Be generous — this costs me nothing
+and removes a real barrier.
+
+## 🎯 Core Message
+One sentence, in a :::note aside.
+
+## 🔑 Key Points
+The essential claims. As many as the chapter genuinely has — no padding to reach
+a number, no cutting to stay under one.
+
+## 📖 The Clarified Chapter
+
+Rebuild it. This is NOT a summary.
+
+STRIP: anecdotes that don't teach, repetition, scene-setting, evidence for
+things already accepted, filler transitions, self-promotion.
+
+KEEP AND EXPAND: the actual argument, the mechanism underneath it, every
+reasoning step the author left implicit, the examples that are load-bearing.
+
+ADD: what he assumes I already know, better examples where his are weak or too
+American, the connective logic between his points, and the "why" behind claims
+he only asserts.
+
+STRUCTURE IT: headings for each move in the argument, numbered logic where the
+reasoning is sequential, tables where content is comparative, a Mermaid flowchart
+where a process is described.
+
+LENGTH IS NOT A CONSTRAINT. If clarity needs more words than the original
+chapter, use more. I should finish this genuinely understanding the chapter — not
+finish it faster.
+
+## ✂️ What I Cut, And Why
+A table: What was removed | Why. So I can spot-check that nothing load-bearing
+went in the bin.
+
+## ⭐ Chapter Rating
+Usefulness /5 · Novelty /5 · Actionability /5
+Verdict: DEEP DIVE / SKIM / SKIP
+Is the original worth opening for any specific passage? Name it if so.
+
+## ❓ Questions To Carry Into The Explanation
+3–5 things this chapter raises that the next stage should address.
+```
+
+---
+
+## 🧑‍🏫 P4 — THE EXPLANATION LAYER
+
+### *Stage 5. The teaching pass. Run in a search-enabled chat where possible.*
+
+```
+Now explain Chapter [N] — the teaching layer. I've read the clarified version;
+this is where I actually understand it.
+
+Use everything beyond the book: your own knowledge, reviews, criticism, Reddit
+and forum threads, Medium and Substack essays, Goodreads, Hacker News, book club
+discussion, academic response, later research, practitioner accounts.
+
+Output as MDX, appended to the chapter page:
+
+## 🎯 What The Author Is Actually Saying
+The real message underneath the prose. Where does the plain reading diverge from
+the intended one? What is he assuming that he never states? If the chapter is
+commonly reduced to a slogan, what does the slogan lose?
+
+## 🌀 Where Readers Get Confused
+The specific misreadings this chapter reliably produces — and the correction for
+each. Include the ones I'm personally likely to make given my profile.
+
+## 🧑‍🏫 The Teaching Pass
+Explain the core idea AGAIN, from a completely different angle. Assume the first
+explanation didn't land.
+- A concrete analogy
+- A worked example, in a tech or Kathmandu context rather than an American one
+- The simplest possible version, then the version with the nuance restored
+- A Mermaid diagram if the idea has structure
+
+## 🗣️ What Real Readers Say
+What do actual people say about this chapter or idea?
+- Reddit, Hacker News, Goodreads, Medium, Substack, blogs, book clubs
+- What do people argue about?
+- What did people report actually changing in their lives?
+- What did people call overrated, obvious, or useless?
+- Where's the disagreement between readers who loved it and readers who didn't?
+
+If your knowledge here is thin, SAY SO. Do not manufacture consensus or invent
+reviews. "I don't have good sources on this specific chapter" is a useful answer.
+
+## ⚔️ What Critics Say
+Informed objections to THIS chapter specifically — not the book in general. Who
+disagrees, on what grounds, and are they right?
+
+## 🔬 What's Been Tested Since
+Research that has strengthened, complicated, or undermined this chapter's claims.
+Replication status where relevant. Anything the author has since revised or
+walked back.
+
+## 🛠️ How Practitioners Actually Use It
+How do people who genuinely applied this report it going? Where does it work in
+practice, where does it break, and what modifications did people make?
+
+## 🌏 Where It Doesn't Transfer
+Cultural, economic and situational limits. Specifically: Kathmandu, a Nepali
+family structure, a South Asian tech market, an introvert, someone without an
+existing social or professional network. What in this chapter assumes a context
+I don't have?
+
+## ✅ The Version To Hold
+After all of the above — the honest synthesis. What should I actually believe
+from this chapter? State it in a :::tip aside. Include what to discard.
+```
+
+---
+
+## 💬 P5 — DIALOGUE
+
+### *Stage 7. A conversation, not a request. Stay in it until the chapter is clear.*
+
+```
+I've read both the clarified chapter and the explanation. Let's work through
+what's left.
+
+MY CONFUSIONS
+1. [...]
+2. [...]
+
+WHERE THE EXPLANATION CONTRADICTED WHAT I CONCLUDED
+- [...]
+
+MY PUSHBACK
+- [what I disagree with, or think is weak]
+
+MY QUESTION
+- [the thing I actually want to know]
+
+Rules for this conversation:
+- Answer directly. No hedging, no "it depends" without saying what it depends on.
+- Where I've misunderstood, say so plainly and correct it.
+- Where I'm right to push back, say so — don't defend the author reflexively.
+- Tie everything to MY situation, not a generic reader's.
+- If my question is vague, tell me and make me sharpen it.
+- End by asking me ONE hard question — something that tests whether I understood
+  this or merely followed it. Don't accept a vague answer.
+```
+
+### 🔍 Zoom-ins — use inline, any time
+
+```
+"Go deeper on [X]."
+"Break this paragraph down: [paste]."
+"Give me a better example — Nepali or tech context, not American."
+"Where would this fail? Who does this not work for?"
+"What would a smart critic say about what I just said?"
+"How does this connect to [earlier chapter / earlier book]?"
+"Am I agreeing too easily here?"
+"Explain it again like I've never heard the terminology."
+"What's the strongest version of the opposite position?"
+```
+
+---
+
+## ⚡ P6 — ACTION EXTRACTION
+
+### *Stage 8. No cap — but no redundancy either.*
+
+```
+Chapter [N] is clear. Extract the actions.
+
+## STEP 1 — YOU: EXTRACT EVERYTHING REAL
+Find EVERY genuinely distinct, relevant action this chapter supports. No cap.
+A dense chapter may yield eight; a thin one may yield one; a purely conceptual
+one may yield none — and "none" is a legitimate answer. Do not pad to look
+thorough.
+
+Three filters, all of which must pass:
+- RELEVANT — applies to a situation I actually encounter
+- DISTINCT — not the same action wearing different words
+- GROUNDED — comes from THIS chapter, not from general advice it reminded you of
+
+Output as an MDX table:
+
+| # | Action | Trigger (concrete situation) | Tier | Honest impact |
+
+Tiers:
+🔴 NOW — start this week. Should be rare.
+🟡 NEXT — real, but queued behind something.
+🔵 LATER — depends on a life stage or condition I'm not in yet.
+⚪ REFERENCE — not a habit; a rule to apply when the situation arises.
+
+For "Trigger": a concrete situation I will physically encounter — a time, a
+place, a person, a recurring moment. NEVER a feeling like "when I'm unmotivated."
+For "Honest impact": including "probably marginal" where that's true.
+
+Then flag: which ONE of these, if I did nothing else from this chapter, carries
+most of its value? Argue for your pick.
+
+## STEP 2 — ME: THE COMMITMENT
+For anything you tiered 🔴 NOW, I'll write:
+IF [specific trigger], THEN I WILL [specific observable action].
+
+## STEP 3 — YOU: ATTACK MY DRAFT
+- Is the trigger something I will physically encounter, or a feeling?
+- Is the action observable? Could someone watching tell whether I did it?
+- Is it small enough for my worst day, not just my best?
+- Is this the real obstacle, or a comfortable substitute for it?
+- Does it address what this chapter actually changed, or a peripheral detail
+  that was easier to turn into a task?
+
+Push back until it survives all five. Then propose the simplest possible way to
+track it — one line, one tick per day, nothing needing an app.
+
+Finally ask me: what happens on the day I don't do it?
+```
+
+---
+
+## 🖼️ P7 — CHAPTER RECAP & PAGE ASSEMBLY
+
+### *Stage 9. Publishes the finished chapter page.*
+
+```
+Assemble the final chapter page for Chapter [N]. This must stand alone — readable
+and useful in six months without reopening the book or this conversation.
+
+Append these sections to the chapter MDX, and update frontmatter status to
+`complete` with the rating badge.
+
+## 🗺️ Concept Map
+A Mermaid diagram of this chapter's 4–8 core concepts and how they relate. Use
+`mindmap` for hierarchical ideas, `flowchart TD` for processes or causal chains,
+`graph LR` for relationships between concepts. Show the RELATIONSHIPS, not just a
+list of nouns.
+
+## 💬 Dialogue Log
+Our actual conversation, cleaned up but not sanitised. A table:
+| What I asked / pushed on | What we concluded |
+Include the questions where I was wrong — those are the most useful to reread.
+
+## 💡 What We Worked Out Together
+The insights that came from the DISCUSSION, not from the book or the explanation.
+These exist nowhere else and are the most losable thing in the whole system. Be
+specific about what was mine and what was yours.
+
+## ⚔️ Where I Pushed Back
+What I disagreed with, whether I still do, and what would change my mind.
+
+## ⚡ Actions From This Chapter
+The final table from the action stage, with any 🔴 NOW commitment written out as
+IF–THEN with its tracking method.
+
+## 🔗 Connects To
+Other chapters and other books in my Universe. Emit as Starlight <LinkCard>
+components where I've already read the connected book, plain text where I
+haven't.
+
+## 🎯 The 30-Second Version
+In a :::tip[The 30-Second Version] aside — if I read only this in six months,
+what must it say? One paragraph maximum. This is the highest-value text on the
+page; write it last and write it hardest.
+```
+
+---
+
+## 📋 P8 — LEDGER & SYNTHESIS
+
+### *Stage 10. End of book.*
+
+```
+[TITLE] is finished. Build the closing outputs.
+
+## PART A — CONSOLIDATED ACTIONS
+Append to /books/[slug]/index.mdx.
+
+1. Every action from every chapter, in one table:
+   | Ch | Action | Trigger | Original tier | Revised tier | Impact |
+
+2. MERGE — which of these are the same thing in different words? Merge them and
+   say which chapters they came from.
+
+3. CUT — which are trivial, unlikely to survive a hard week, or were interesting
+   in isolation but minor beside the whole book? Cut them and say so honestly
+   rather than quietly filing them as "later."
+
+4. RE-TIER — now that the whole argument is visible, re-rank everything. An
+   action that looked essential in Chapter 3 often looks minor beside Chapter 9.
+
+5. THE SHORTLIST — the small set I should actually start with, and the order.
+   Argue for the sequence.
+
+## PART B — BOOK SYNTHESIS
+Update the book page frontmatter: status: complete, finished: [date], verdict.
+
+- The argument in 5 sentences
+- The ONE idea I should be able to defend a year from now
+- Where the author is wrong or overreaching
+- What this book does NOT solve, that I might mistakenly think it did
+- What I already knew before opening it — be honest, it's often most of it
+- What actually changed, compared to what I believed at the start
+- What it connects to in books I've already read — as <LinkCard>s
+- VERDICT: changed something / confirmed something / entertainment.
+  All three are legitimate. Only the first is growth.
+
+## PART C — WHAT THIS OPENS
+Given what I now know: what's the natural next book — and what would be the
+comfortable, low-value choice I might make instead?
+
+## PART D — BOOK-LEVEL CONCEPT MAP
+One Mermaid diagram of the whole book's argument. Chapter-level nodes, showing
+how the argument is built. This goes at the top of the book page.
+```
+
+---
+
+## 📅 P9 — 30-DAY REVIEW
+
+### *Stage 11. Diarise it the day the book is finished.*
+
+```
+Thirty days ago I finished [TITLE] and committed to:
+IF [trigger], THEN I WILL [action].
+
+Ask me one at a time. Don't let me answer vaguely.
+
+1. Did I do it? Roughly what fraction of the opportunities?
+2. When did it break down? What was actually happening that day?
+3. Was it the TRIGGER that was wrong, the ACTION that was too big, or the IDEA
+   that wasn't useful to me? Those need three different fixes — "it didn't work"
+   is not an answer.
+4. Keep it as-is, revise it, or drop it?
+5. If keeping — is it automatic yet, or still effortful?
+6. What still stands out from the book? What has completely gone?
+7. Should anything move up from 🟡 NEXT?
+
+Then output the ledger row updates as MDX, and tell me what to change on the
+book page so the site shows the truth rather than the intention.
+```
+
+---
+
+## 🔧 MODULE TOGGLES
+
+### *Append any of these to `P3`, `P4` or `P6` when a book calls for it.*
+
+| Toggle                      | Line to add                                                                                            | Best for                                       |
+| --------------------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------- |
+| 💬**Scripts**         | `Include ready-to-use scripts and exact phrasings, natural for a Kathmandu context.`                 | Communication, negotiation, dating, leadership |
+| 🔥**Drills**          | `Include specific practice drills I can run this week.`                                              | Speaking, social, physical, technical skills   |
+| 🧩**Reflection**      | `Include reflection questions that would expose my blind spots.`                                     | Psychology, philosophy, relationships          |
+| 📊**Cheat sheet**     | `Include a one-page cheat sheet and comparison tables.`                                              | Frameworks, finance, technical reference       |
+| 🔀**Decision tree**   | `Convert this into IF-THEN rules and a Mermaid decision tree.`                                       | Anything procedural                            |
+| 🚩**Flags**           | `Include red flags and green flags — in my behaviour and in others'.`                               | Relationships, hiring, investing, negotiation  |
+| 🧭**Self-assessment** | `Include a checklist to score myself against this chapter.`                                          | Skills, character, health                      |
+| 📅**Timeline**        | `Include a 7-day and 30-day implementation plan.`                                                    | Habits, health, systems                        |
+| 🧘**Mindset**         | `What belief do I need to uninstall, and what replaces it?`                                          | Psychology, philosophy, identity               |
+| 🇳🇵**Local**         | `Adapt fully to Nepali/Newar context — family expectation, Kathmandu, local norms and economics.`   | Relationships, money, career, status           |
+| 📐**Numbers**         | `Show the actual numbers, calculations and thresholds, adapted to NPR and Nepali market conditions.` | Finance, health, business                      |
+| 🪞**Contrarian**      | `Give me the strongest case AGAINST this chapter's thesis before the synthesis.`                     | Anything I'm agreeing with too readily         |
+
+---
+
+---
+
+# 🌐 PART 4 — THE SITE
+
+`readings.missionshrestha.com.np` · Astro + Starlight + Mermaid · Cloudflare Pages
+
+## Structure
+
+```
+src/content/docs/
+├── index.mdx                          ← the Universe: 16 domains
+├── ledger.mdx                         ← master action ledger, all books
+├── domains/
+│   └── 01-self-command.mdx            ← domain page → its clusters → its books
+├── books/
+│   └── deep-work/
+│       ├── index.mdx                  ← brief · book concept map · synthesis
+│       ├── 01-deep-work-is-valuable.mdx
+│       ├── 02-deep-work-is-rare.mdx
+│       └── ...
+└── protocol.mdx                       ← this document
+```
+
+## Chapter page anatomy
+
+Every chapter page carries the same nine sections, in the same order. Consistency is what makes the site scannable a year from now.
+
+| # | Section                                          | Produced by      |
+| :-: | ------------------------------------------------ | ---------------- |
+| 1 | 🧩 Pre-context                                   | `P3`           |
+| 2 | 🎯 Core message                                  | `P3`           |
+| 3 | 🔑 Key points                                    | `P3`           |
+| 4 | 📖 The clarified chapter                         | `P3`           |
+| 5 | 🧑‍🏫 The explanation layer*(9 sub-sections)* | `P4`           |
+| 6 | 🗺️ Concept map*(Mermaid)*                    | `P7`           |
+| 7 | 💬 Dialogue log + what we worked out             | `P7`           |
+| 8 | ⚡ Actions                                       | `P6` → `P7` |
+| 9 | 🎯 The 30-second version                         | `P7`           |
+
+## Frontmatter spec
+
+```yaml
+---
+title: "Ch 2 · Deep Work Is Rare"
+description: "Why organisations destroy concentration — and why that's leverage."
+sidebar:
+  order: 2
+  badge: { text: "★★★★☆", variant: tip }
+book: deep-work
+author: "Cal Newport"
+domain: self-command
+cluster: "1.3"
+chapter: 2
+status: complete          # generated | explained | complete
+rating: { usefulness: 4, novelty: 3, actionability: 5 }
+verdict: deep-dive        # deep-dive | skim | skip
+actions: 3
+committed: 1
+read: 2026-09-14
+---
+```
+
+## Components worth using
+
+```mdx
+import { Aside, Card, CardGrid, Steps, Tabs, TabItem, LinkCard, Badge }
+  from '@astrojs/starlight/components';
+```
+
+| Component                       | Use it for                                                                    |
+| ------------------------------- | ----------------------------------------------------------------------------- |
+| `:::note[Core Message]`       | The one-sentence core message                                                 |
+| `:::tip[The Version To Hold]` | The synthesis at the end of the explanation layer                             |
+| `:::caution`                  | Where the chapter's claim is contested or has failed replication              |
+| `:::danger`                   | Advice that would actively backfire in my context                             |
+| `<CardGrid>`                  | Key points, red/green flags, comparison sets                                  |
+| `<Steps>`                     | Any sequential process from the chapter                                       |
+| `<Tabs>`                      | *The book's version* vs *the critics' version* vs *the version to hold* |
+| `<LinkCard>`                  | Cross-links to other books and chapters                                       |
+| `<Badge>`                     | Chapter status, action tiers, ratings                                         |
+
+## Mermaid by purpose
+
+| Diagram           | Use for                                                            |
+| ----------------- | ------------------------------------------------------------------ |
+| `mindmap`       | Chapter concept maps — hierarchical ideas branching from a centre |
+| `flowchart TD`  | Processes, decision trees, causal chains                           |
+| `graph LR`      | Relationships between concepts that aren't hierarchical            |
+| `timeline`      | Book arcs, historical context, staged models                       |
+| `quadrantChart` | Two-axis comparisons                                               |
+
+## The two mechanisms
+
+|                 | Web chat                           | Code agent                                                                                                    |
+| --------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Does**  | `P1`–`P9`. Generates all MDX. | Scaffolding, file writes, frontmatter consistency, cross-link repair, ledger aggregation, builds and deploys. |
+| **Never** | Touches the repo.                  | Generates chapter content.                                                                                    |
+
+**Keep the boundary clean.** Content comes from the chat, where the book is uploaded and the conversation lives. Structure comes from the agent. When they blur, chapters get written without the book in context and the quality drops silently.
+
+**Weekly agent tasks worth automating:** validate frontmatter against the spec, rebuild `/ledger` from all book frontmatter, find broken cross-links, list chapters stuck at `status: generated` for more than a week.
+
+:::caution[Before the first push]
+Chapter pages will contain real personal material — the relationship domain, money, family. **Keep the repo private.** Cloudflare Pages deploys fine from a private repo, and Cloudflare Access can gate the live site for free: reachable from my phone, invisible to search engines. Decide this before the first deploy, because de-indexing later is much harder than never indexing.
+:::
+
+---
+
+---
+
+# 🗓️ PART 5 — THE RHYTHM
+
+*Mapped onto the week I already keep: Mon–Thu workday mode, Friday futsal, Saturday's one cognitive win, Sunday's full timetable.*
+
+## The week
+
+| Day           |    Time    | What                                                                      |
+| ------------- | :--------: | ------------------------------------------------------------------------- |
+| **Mon** |   30 min   | Previous recap*(30 sec)* → `P3` generate → **Read I**         |
+| **Tue** |   30 min   | `P4` explain → **Read II** → `P5` dialogue *(start)*        |
+| **Wed** |   30 min   | Finish dialogue →`P6` actions → `P7` recap → publish               |
+| **Thu** |   30 min   | Previous recap →`P3` → **Read I** *(next chapter)*            |
+| **Fri** |   15 min   | Futsal day. Light: reread the week's recaps, or`P9` on an earlier book. |
+| **Sat** | 75–90 min | Full chapter cycle, start to published page                               |
+| **Sun** | 60–90 min | Full cycle — or`P8` ledger and synthesis if the book is done           |
+
+**Weekly total: ~4 hrs 55 min.** Throughput: **3–4 chapters per week.**
+
+## The arithmetic
+
+| Stage                                     |            Per chapter |
+| ----------------------------------------- | ---------------------: |
+| Previous recap review                     |                0.5 min |
+| `P3` generate *(AI runs)*             |                  3 min |
+| **Read I** — the clarified chapter |             20–30 min |
+| `P4` explain *(AI runs)*              |                  3 min |
+| **Read II** — the explanation      |             15–20 min |
+| `P5` dialogue                           |             15–20 min |
+| `P6` actions                            |             10–15 min |
+| `P7` recap + publish                    |              8–10 min |
+| **Per chapter**                     | **~75–100 min** |
+
+| Book total                      |                Hours |
+| ------------------------------- | -------------------: |
+| `P2` briefing + site scaffold |                 0.75 |
+| 12 chapters × ~85 min          |                 17.0 |
+| `P8` ledger + synthesis       |                 0.75 |
+| `P9` 30-day review            |                 0.25 |
+| **Total**                 | **~18.75 hrs** |
+
+**At ~5 hrs/week: ~3.75 weeks per book → 12–15 books a year.**
+
+Short books and thin chapters run faster; dense ones run slower. **A realistic year is 12–15 books, deeply worked.** The 73 🔴 CORE books become a five-year path.
+
+That is the honest trade. The explanation layer roughly doubles per-chapter time and cuts annual throughput by a third. It buys a chapter I have understood, argued with, and seen from outside — instead of one I have read.
+
+:::note[Track the first three books]
+These are estimates, not measurements. If a chapter takes 120 minutes rather than 85, **the estimate is wrong — not me.** Adjust the schedule, not the expectation.
+:::
+
+---
+
+---
+
+# 📋 PART 6 — THE LEDGER
+
+**One permanent document across every book.** It lives at `/ledger` and is the actual output of the whole system.
+
+| Book | Ch | Action (IF–THEN) | Trigger | Tier     | Started | Day 30 | Running? |
+| ---- | -- | ----------------- | ------- | -------- | ------- | ------ | -------- |
+|      |    |                   |         | 🔴🟡🔵⚪ |         |        | ✅ / ❌  |
+
+## How it works
+
+- **Every action from every chapter lands here**, at whatever tier it earned.
+- **🔴 NOW is small by choice.** Not a hard rule — but three simultaneous new behaviours is usually the ceiling before none of them survive. When something graduates to automatic, promote the next from 🟡.
+- **⚪ REFERENCE actions are not habits.** They're rules to apply when a situation arises — *"if a non-grocery purchase is over NPR 5,000, wait 72 hours."* They need no daily tracking, only a place to be found.
+- **Day 30 gets filled in honestly, including the failures.** A ledger of intentions is worthless; a ledger with ❌ in it is data.
+
+> **This is the metric.** Not books read. Not chapters published. Not word count on the site. Fifteen books a year producing forty ledger rows of which twenty-two are still running — that is what "reading improved my life" looks like when it's measured instead of felt.
+
+---
+
+---
+
+# 📏 PART 7 — THE RULES
+
+|      #      | Rule                                                                                                     | Why                                                                                                                                                                               |
+| :----------: | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | **Both reads, every chapter.** Read I and Read II are not interchangeable.                         | The clarified chapter gives me the argument. The explanation gives me the argument seen from outside, plus the correction to what I misread.                                      |
+| **2** | **One book at a time.**                                                                            | Two in progress means zero finished.                                                                                                                                              |
+| **3** | **Four-week ceiling.** Beyond that, it's the wrong book.                                           | The arithmetic says ~3.75 weeks. Exceeding it is a signal, not a character failure.                                                                                               |
+| **4** | **No cap on action items — but no redundancy.** Relevant, distinct, grounded.                     | A dense chapter may yield eight. A conceptual one may yield none. Both are correct.                                                                                               |
+| **5** | **I write every 🔴 NOW commitment myself.**                                                        | The AI proposes candidates and attacks my draft. It never writes the final sentence.                                                                                              |
+| **6** | **Publish before moving on.** No chapter is done until its page is live.                           | An unpublished chapter is a chapter that will never be reread, which makes the whole system a very slow way of forgetting.                                                        |
+| **7** | **Reread the previous recap before every new chapter.**                                            | Thirty seconds. It's what makes twelve chapters into one argument instead of twelve forgotten essays.                                                                             |
+| **8** | **Open the original for the passages that matter.**                                                | The clarified chapter is a lens, not a replacement — and a lens can distort. On the two or three ideas that will change something, I want the author's own words.                |
+| **9** | **A missed day is not a broken streak.** Resume tomorrow, same chapter.                            | Missing one repetition does not derail habit formation. Restarting from chapter one does.                                                                                         |
+| **10** | **Dropping a book is a decision, not a failure.** One line on the book page: where I stopped, why. | Without an honourable exit I'll grind through a bad book for two months to avoid admitting a bad choice.                                                                          |
+| **11** | **♾️ books are exempt from all of this.**                                                        | *Meditations*, the Gita, the Tao Te Ching, the Dhammapada, and all fiction. No pipeline, no explanation layer, no actions, no page. A few pages, slowly, and nothing extracted. |
+
+---
+
+---
+
+# ⚠️ PART 8 — FAILURE MODES
+
+| Trap                                                   | How it shows up                                                                                                                             | Counter                                                                                                                            |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Skipping Read II**                             | The clarified chapter was satisfying, I feel finished, the explanation goes unread. Within two weeks the explanation stage is dead.         | Rule 1. Read II is where the misreadings get corrected — and Read I*always* produces misreadings I can't detect from inside.    |
+| **Reading instead of thinking**                  | Both passes are fluent and pleasant. I consume them, skip the dialogue, and mistake comprehension for understanding.                        | The dialogue is where understanding is tested. A chapter without pushback is a chapter I received.                                 |
+| **Letting the AI write the commitment**          | *"Just give me the plan."* It produces something excellent. I feel finished. Nothing happens.                                             | Rule 5.`P0` makes it refuse. If it complies anyway, I broke my own system.                                                       |
+| **Forty action items**                           | No cap becomes no filter. The ledger fills with plausible intentions, none survive a hard week.                                             | Rule 4. The filters are relevance, distinctness and groundedness — not a number. Apply them honestly.                             |
+| **Publishing lag**                               | Chapters accumulate at`status: generated`. Three weeks later there are six unpublished chapters and the site is a graveyard.              | Rule 6. Publish before moving on. Have the agent flag anything stuck for more than a week.                                         |
+| **Building the site instead of reading**         | Two weeks on the theme, the sidebar, a custom component. Feels like progress. It is the most sophisticated procrastination available to me. | The site is a filing cabinet.**Scaffold it once, ugly, and read.** Improvements get logged and deferred to a quarterly pass. |
+| **Restarting after a missed week**               | Back to chapter one "to do it properly." Two weeks gone.                                                                                    | Rule 9. Reread the last recap, resume the next chapter. Thirty seconds, not two weeks.                                             |
+| **The ♾️ completion instinct**                 | Running`P3` on the Bhagavad Gita. Extracting action items from *Karnali Blues*.                                                         | Rule 11. These have no end state. That is the entire point of them.                                                                |
+| **The count becomes the goal**                   | Feeling good about "15 books this year" while the ledger shows two rows still running.                                                      | The ledger is the metric. The count is vanity.                                                                                     |
+| **Believing the explanation layer uncritically** | The outside view is compelling and well-organised, so I adopt the critics' position as readily as I adopted the author's.                   | The synthesis section exists to be argued with too. Ask`P5`: *"what's the strongest case against the critics here?"*           |
+
+---
+
+---
+
+# 🚀 PART 9 — WEEK ONE
+
+### Setup — 45 minutes, once
+
+<div>
+
+### The first week
+
+| Day           | Do                                                                                                                        |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Mon** | `P2` — the whole-book briefing. Read it properly, especially the outside view. Publish the book page.                  |
+| **Tue** | `P3` on Chapter 1 → **Read I**. Mark every confusion and every disagreement.                                     |
+| **Wed** | `P4` → **Read II**. Note where it contradicts what I concluded yesterday.                                        |
+| **Thu** | `P5` dialogue → `P6` actions → `P7` recap. **Publish the page.**                                            |
+| **Fri** | Futsal. Reread the Chapter 1 page. Nothing else.                                                                          |
+| **Sat** | Full cycle on Chapter 2. Start to published. 75–90 min.                                                                  |
+| **Sun** | Full cycle on Chapter 3. Then write one line at the bottom of the book page:*what surprised me about working this way.* |
+
+### The test at the end of week one
+
+> **Not** how many chapters I got through.
+> **Not** whether the pages look good — they will; that's what Starlight does.
+>
+> **The test is:** open the three chapter pages and nothing else. Can I reconstruct the book's argument so far, say where the author is weakest, and name what I've committed to?
+>
+> If yes, the pipeline works.
+> If the pages are beautiful but I can't reconstruct anything — **the dialogue and recap stages need to be harder, not longer.**
+
+---
+
+---
+
+# 📚 APPENDIX — WHY IT'S BUILT THIS WAY
+
+The design rests on five findings. Each is named with what it does and does not support.
+
+| Finding                                                                     | Source                                                                                  | What it establishes                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Clear, high-coherence text helps readers who lack the schema**      | McNamara, Kintsch, Songer & Kintsch (1996); McNamara (2001); O'Reilly & McNamara (2007) | The*reverse cohesion effect*. Low-knowledge readers learn more from high-coherence text; high-knowledge readers can learn more from low-coherence text, because gap-filling forces active processing. O'Reilly & McNamara qualified it: skilled comprehenders with high knowledge benefit from clear text again. **This is why the clarified chapter is generated in full for every chapter — most of the Universe is new territory.** |
+| **Redundant elaboration can harm knowledgeable learners**             | Kalyuga, Ayres, Chandler & Sweller (2003)                                               | The*expertise reversal effect*. Support essential for novices "may have negative consequences for more experienced learners." **This is why Rule 8 exists** — on material I already know, going to the original beats reading more explanation.                                                                                                                                                                                        |
+| **Retrieval beats re-exposure for retention**                         | Roediger & Karpicke (2006)                                                              | 61% vs 40% recall at one week, with rereading producing*higher confidence and lower retention* — the illusion of competence. **This is why the recap card is reread before every chapter, and why the dialogue is not optional.**                                                                                                                                                                                                      |
+| **If–then plans substantially improve follow-through**               | Gollwitzer & Sheeran (2006); Sheeran, Listrom & Gollwitzer (2024)                       | 94 tests, 8,000+ participants,**d = 0.65**; updated across 642 tests, stronger with an explicit contingent format and when the plan is rehearsed. **This is why every 🔴 NOW action is an IF–THEN with a physical trigger, and why I write it rather than receive it.**                                                                                                                                                            |
+| **Habit formation takes ~66 days, and one missed day doesn't matter** | Lally, van Jaarsveld, Potts & Wardle (2010)                                             | Median 66 days to automaticity, range 18–254; about half hadn't reached it by day 84. A single missed repetition did not derail the curve.**This is why day 30 is a checkpoint rather than a verdict, and why Rule 9 exists.**                                                                                                                                                                                                           |
+
+### What is reasoning rather than evidence
+
+- **No study tests this pipeline.** The components are evidenced; the assembly is design. Treat it as a well-reasoned bet.
+- **The explanation layer is an extrapolation.** Multiple explanations from different angles are well-supported pedagogically, but nobody has tested "AI-assembled outside view" as a reading stage.
+- **"I write the commitment myself" is reasoned, not tested.** No study compares self-generated with AI-generated implementation intentions for follow-through. It rests on adjacent findings — self-generated plans work better, ownership predicts action — plus the fact that no AI knows my Tuesday. **If I try both and AI-written plans stick as well, drop the rule.**
+- **AI-generated clarification is an analogue for high-coherence text, not the same thing.** It can also introduce errors the original didn't contain. Rule 8 is partly a hedge against exactly that.
+
+---
+
+> ## The protocol in one line
+>
+> **The AI clarifies the book, then explains it, then argues with me about it.**
+> **I decide what any of it changes.**

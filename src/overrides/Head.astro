@@ -1,0 +1,260 @@
+---
+/**
+ * Head — the client-side router, and the one script that makes it safe.
+ *
+ * SITE CHROME, NOT AN AUTHORING COMPONENT.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY <ClientRouter /> IS HERE AT ALL
+ *
+ * Two features need it, and they are the same dependency:
+ *
+ *   · the page turn between chapters — a normal navigation destroys the
+ *     document, so there is nothing to animate FROM;
+ *   · ambient sound that survives a chapter — a full navigation creates a new
+ *     document whose AudioContext starts suspended and cannot legally resume
+ *     without a fresh user gesture.
+ *
+ * ---------------------------------------------------------------------------
+ * THE DEFECT THIS SCRIPT EXISTS TO FIX, measured rather than assumed
+ *
+ * astro/dist/transitions/swap-functions.js:46 — swapRootAttributes() REMOVES
+ * every attribute from <html> and replaces them with the incoming document's.
+ * Only two survive: data-astro-transition and data-astro-transition-fallback.
+ * The removal is a side effect hidden inside a .filter() predicate, which is why
+ * it is easy to miss.
+ *
+ * And it cannot self-heal: deselectScripts() at :35 marks any inline script with
+ * identical textContent as data-astro-exec and will not re-run it.
+ *
+ * MEASURED on astro@7.2.9 + @astrojs/starlight@0.41.10, 2026-08-31, headless
+ * Chromium, one chapter-to-chapter navigation:
+ *
+ *   without this script     data-reading-theme -> null     FAIL
+ *                           data-focus         -> absent   FAIL
+ *                           data-theme         -> survives  (see below)
+ *   with this script        10/10 gate checks pass
+ *
+ * data-theme survives WITHOUT help for a reason worth knowing, because it means
+ * you cannot generalise from it: StarlightThemeSelect's CONSTRUCTOR calls
+ * onThemeChange(loadTheme()) (ThemeSelect.astro:63), and the custom element is
+ * reconstructed on every swap. Starlight's own theme self-heals through the
+ * element lifecycle. OUR attributes have no element to heal them.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY astro:after-swap AND NOT SOMETHING ELSE
+ *
+ * It fires after the DOM swap and BEFORE the browser paints. Verified, not
+ * assumed: a MutationObserver against a rAF counter recorded the wipe and the
+ * restore in the SAME animation frame (frame 7 -> null, frame 7 -> night), so
+ * the stripped state is never painted. astro:page-load would be too late and
+ * would flash on every turn.
+ */
+import Default from '@astrojs/starlight/components/Head.astro';
+import { ClientRouter } from 'astro:transitions';
+import { isAuthored } from '../lib/visibility';
+
+/*
+ * IS THIS ROUTE THE READER?
+ *
+ * Segment depth >= 3 means <domain>/<cluster>/<book> or below. Depths 0-2 are
+ * the generated map, which shares none of the reader's CSS.
+ *
+ * This is emitted as a META TAG rather than written onto <html> by script,
+ * because <head> IS swapped correctly by the router while <html> attributes are
+ * stripped. The after-swap handler reads the meta out of the incoming document
+ * and sets the attribute from it, so the flag is always right for the page you
+ * are actually on.
+ */
+const entry = Astro.locals.starlightRoute.entry;
+// Derived from the path, with one explicit opt-in — see `reader` in
+// src/content.config.ts. Derived first so a chapter can never lose the frame by
+// omitting a field.
+const entryId = String(entry.id ?? '');
+const forced = (entry.data as { reader?: boolean }).reader === true;
+const isReader = isAuthored(entryId) || forced;
+
+/*
+ * READER, AND WHICH KIND OF READER. Two things need to tell them apart:
+ *
+ *   · THE DROP CAP. It opens a CHAPTER. On a book's index page — a directory
+ *     with four short prose sections and a grid of chapter cards — a three-line
+ *     initial letter on "Procrastination as an anxiety response…" reads as a
+ *     mistake, because it is one.
+ *   · THE CARD GRID. A book index carries the chapter grid, and the reading
+ *     measure is 627px: the cards came out two-up at 285px inside a column
+ *     sized for prose, with 600px of empty page on either side.
+ *
+ * `chapter` is depth >= 4 — <domain>/<cluster>/<book>/<chapter>. `book` is
+ * depth 3. A page that opted in with `reader: true` (elements.mdx) counts as a
+ * chapter: its whole job is showing what a chapter looks like.
+ */
+const readerKind =
+	entryId.split('/').filter(Boolean).length >= 4 || forced ? 'chapter' : 'book';
+---
+
+<Default><slot /></Default>
+
+{isReader && <meta name="rd-reader" content={readerKind} />}
+
+{/*
+  WITHOUT JAVASCRIPT, A DIAGRAM PRINTED ITS OWN SOURCE.
+
+  astro-mermaid renders client-side, so `<pre class="mermaid">` ships holding
+  the diagram definition as text. MEASURED 2026-09-01 with JS disabled: 1 raw
+  block on a chapter and 6 on /elements/, each rendering as a wall of
+  `graph TD` / `A --> B` in the middle of the prose — not a missing diagram,
+  which a reader would understand, but a page that looks corrupted.
+
+  The page is otherwise completely readable without JS (all 10 page kinds, 200
+  and full text), and this is the one thing that was not. `font-size: 0` on the
+  block collapses the source without removing it from the accessibility tree,
+  and the note is set at a real size on the pseudo-element.
+
+  <noscript> is valid in <head> and may contain <style>. With JS on, none of
+  this is parsed at all.
+*/}
+<noscript>
+	{/* `is:inline` and PLAIN CSS, both deliberate.
+
+	    A `<style>` in an .astro file is compiled and scoped, and a JSX
+	    expression inside one is NOT evaluated — `<style>` is raw text. The
+	    first version of this block wrapped the CSS in a template literal and
+	    shipped `{\`` into the stylesheet verbatim, which invalidated the
+	    first rule and therefore the whole block. MEASURED with JS off:
+	    pre.mermaid still 13px, `::before` content `none`, source still on
+	    screen. `is:inline` leaves it exactly as written. */}
+	<style is:inline>
+		/* `:root` prefix, so this outranks reading.css's
+		   `pre.mermaid:not([data-processed])`, which sets 0.8125rem for the
+		   pre-render flash and is (0,2,1). Measured: without it the source
+		   stayed at 13px and only the note appeared. */
+		:root pre.mermaid,
+		:root pre.mermaid:not([data-processed]) {
+			font-size: 0;
+			line-height: 0;
+			display: block;
+			padding: 0.75rem 1rem;
+			border: 1px dashed var(--rd-border, #ccc);
+			border-radius: 0.5rem;
+			background: none;
+		}
+		:root pre.mermaid::before {
+			content: 'Diagram — needs JavaScript to draw.';
+			display: block;
+			font-family: var(--rd-font-ui, system-ui), sans-serif;
+			font-size: 0.875rem;
+			line-height: 1.5;
+			font-style: italic;
+			color: var(--rd-muted, #666);
+		}
+	</style>
+</noscript>
+
+{/*
+  Applied before first paint on a COLD load, so a chosen theme never flashes the
+  default. Inline and un-bundled deliberately: a module script is deferred, and
+  deferred is after paint.
+*/}
+<script is:inline>
+	(() => {
+		try {
+			const t = localStorage.getItem('rd-theme');
+			if (t) {
+				document.documentElement.setAttribute('data-reading-theme', t);
+				/*
+				 * data-theme IS DERIVED. Writing it here, and writing the key Starlight's
+				 * own ThemeProvider reads, is what makes the two unable to hold different
+				 * answers.
+				 *
+				 * ORDER MATTERS AND IS NOT IN OUR FAVOUR: ThemeProvider is rendered at
+				 * Page.astro:79, AFTER <Head /> at :52, so its inline script runs after
+				 * this one and would win. It reads `starlight-theme` out of localStorage —
+				 * so this writes the derived value THERE as well as onto <html>, and
+				 * ThemeProvider then re-applies our own answer.
+				 *
+				 * It also HEALS a browser carrying a stale divergence from before
+				 * Starlight's picker was removed: a reader left at rd-theme=night with
+				 * starlight-theme=light saw :::note body text at 1.06:1, and it survived
+				 * reloads because both values persisted. One visit and the stale value is
+				 * gone.
+				 *
+				 * NO rd-theme AT ALL is left alone deliberately. ThemeProvider then picks
+				 * from prefers-color-scheme, and reading.css carries a matching
+				 * `:root:not([data-reading-theme])` block under the same media query — so a
+				 * first visit is already consistent, and writing a choice the reader has
+				 * not made would freeze them out of following the system.
+				 */
+				const sl = t === 'day' || t === 'sepia' ? 'light' : 'dark';
+				document.documentElement.dataset.theme = sl;
+				if (localStorage.getItem('starlight-theme') !== sl)
+					localStorage.setItem('starlight-theme', sl);
+			}
+			if (localStorage.getItem('rd-focus') === '1')
+				document.documentElement.setAttribute('data-focus', '');
+			const q = localStorage.getItem('rd-quiet');
+			if (q === '1') document.documentElement.setAttribute('data-quiet', '');
+			const size = localStorage.getItem('rd-size');
+			if (size) document.documentElement.setAttribute('data-reading-size', size);
+			const measure = localStorage.getItem('rd-measure');
+			if (measure) document.documentElement.setAttribute('data-reading-measure', measure);
+		} catch {
+			/* Blocked-storage origins THROW on access rather than returning null. */
+		}
+		const rd = document.querySelector('meta[name="rd-reader"]');
+		if (rd) {
+			document.documentElement.setAttribute('data-reader', '');
+			document.documentElement.setAttribute('data-reader-kind', rd.getAttribute('content') || 'chapter');
+		}
+	})();
+</script>
+
+{/* Re-applied after every client-side swap. See the header. */}
+<script is:inline>
+	document.addEventListener('astro:after-swap', () => {
+		try {
+			const root = document.documentElement;
+			const t = localStorage.getItem('rd-theme');
+			if (t) root.setAttribute('data-reading-theme', t);
+			if (localStorage.getItem('rd-focus') === '1') root.setAttribute('data-focus', '');
+			if (localStorage.getItem('rd-quiet') === '1') root.setAttribute('data-quiet', '');
+			const size = localStorage.getItem('rd-size');
+			if (size) root.setAttribute('data-reading-size', size);
+			const measure = localStorage.getItem('rd-measure');
+			if (measure) root.setAttribute('data-reading-measure', measure);
+			/*
+			 * data-theme, DERIVED — never carried across as an independent value.
+			 *
+			 * This used to copy `starlight-theme` over verbatim, which faithfully
+			 * reproduced a divergence on every page turn. Starlight's own picker has
+			 * since been removed (src/overrides/ThemeSelect.astro), so the reading theme
+			 * is the only input and the storage read is now just the fallback for a
+			 * reader who has never chosen one.
+			 *
+			 * The original reason this line exists at all still holds:
+			 * StarlightThemeSelect's constructor used to self-heal data-theme, but only
+			 * when that element was on the page — and focus mode hides the header.
+			 */
+			if (t) {
+				root.dataset.theme = t === 'day' || t === 'sepia' ? 'light' : 'dark';
+			} else {
+				const st = localStorage.getItem('starlight-theme');
+				if (st === 'light' || st === 'dark') root.dataset.theme = st;
+			}
+			/* Route-dependent, so it is read from the INCOMING document rather than
+			   from storage. The drawer always closes on a turn: a chapter list left
+			   open across a navigation is clutter nobody asked for. */
+			const rd = document.querySelector('meta[name="rd-reader"]');
+			if (rd) {
+				root.setAttribute('data-reader', '');
+				root.setAttribute('data-reader-kind', rd.getAttribute('content') || 'chapter');
+			} else {
+				root.removeAttribute('data-reader');
+				root.removeAttribute('data-reader-kind');
+			}
+			root.removeAttribute('data-contents');
+		} catch {}
+	});
+</script>
+
+<ClientRouter />

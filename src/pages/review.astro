@@ -1,0 +1,230 @@
+---
+/**
+ * /review — what is due, and it serves the QUESTION rather than the answer.
+ *
+ * ---------------------------------------------------------------------------
+ * RECONCILIATION ROW 7, and it is the reason this page is shaped this way.
+ *
+ * The protocol says "reread the previous recap before every new chapter". The
+ * evidence says rereading is a LOW-utility technique and retrieval is a high
+ * one — and the protocol's own appendix cites Roediger & Karpicke, the
+ * retrieval finding, in support of rereading. That is a misreading of its own
+ * citation, not merely a disagreement.
+ *
+ * So: this page shows the QUESTION and withholds what you wrote. Answer from
+ * memory, then open the chapter and compare. Thirty seconds either way; only
+ * one of them is practice.
+ *
+ * ---------------------------------------------------------------------------
+ * THE SCHEDULE IS ABSOLUTE — day 3, week 2, week 6, month 3, from the date the
+ * action started. Never "after N more chapters": a schedule that depends on
+ * natural gaps does not happen. And a missed review is simply overdue, never a
+ * broken streak — a schedule that punishes a missed week gets abandoned in
+ * week three.
+ */
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { ledger, due, INTERVALS } from '../lib/ledger';
+
+const rows = await ledger();
+/*
+ * `now` is BUILD TIME, and that is honest for a static site: a page cannot age
+ * after it is built, and every deploy re-evaluates it. The alternative — doing
+ * the arithmetic in the browser — would put a different answer on the page for
+ * every visitor and none of them recorded.
+ */
+const now = new Date();
+const dueRows = due(rows, now);
+
+/*
+ * OVERDUE WAS BINARY, AND IT STOPPED MEANING ANYTHING PAST THE FIRST WEEK.
+ *
+ * `data-overdue` fired on anything past 7 days, so a review 8 days late and
+ * one 78 days late — MEASURED on the built page — got the exact same 3px
+ * accent. The one number on this page that says how bad the drift is could
+ * not tell "slightly behind" from "hasn't been opened in over two months",
+ * and those call for different reactions: the first is Tuesday, the second is
+ * a question about whether the habit survived at all.
+ *
+ * Three bands, chosen off the review skill's own review-vs-life-goes-on
+ * framing — a WEEK behind is normal, a MONTH says the rhythm slipped, a
+ * QUARTER says ask whether this is still running before trusting the schedule
+ * at all.
+ */
+function overdueTier(days: number): 'mild' | 'stale' | 'severe' | undefined {
+	if (days > 90) return 'severe';
+	if (days > 30) return 'stale';
+	if (days > 7) return 'mild';
+	return undefined;
+}
+const upcoming = rows
+	.filter((r) => r.started && r.day30 !== 'dropped')
+	.flatMap((r) => {
+		const start = new Date(String(r.started));
+		return INTERVALS.map((iv) => ({
+			row: r,
+			iv,
+			when: new Date(start.getTime() + iv.days * 86400000),
+		}));
+	})
+	.filter((x) => x.when > now)
+	.sort((a, b) => a.when.getTime() - b.when.getTime())
+	.slice(0, 8);
+
+const fmt = (d: Date) => d.toLocaleDateString('en-GB', { dateStyle: 'medium' });
+---
+
+<StarlightPage
+	frontmatter={{
+		title: 'Review',
+		description: 'What is due for retrieval — day 3, week 2, week 6, month 3.',
+		template: 'splash',
+		tableOfContents: false,
+	}}
+>
+	<div class="ds-head">
+		<div class="ds-head__lede">
+			Answer from memory first. Then open the chapter and see what you missed — that gap is
+			the thing that teaches, and reading it again is not.
+		</div>
+		<div class="ds-head__meta">
+			<span class="ds-chip ds-chip--live">{dueRows.length} due</span>
+			<span class="ds-chip ds-chip--count">day 3 · week 2 · week 6 · month 3</span>
+		</div>
+	</div>
+
+	{
+		dueRows.length === 0 ? (
+			<div class="rd-empty">
+				<p><b>Nothing due.</b></p>
+				<p>
+					Reviews appear here once an action carries a <code>started</code> date. The
+					schedule is absolute from that date, so nothing needs to be scheduled by hand.
+				</p>
+			</div>
+		) : (
+			<section>
+				<h2>Due now</h2>
+				<ol class="rd-review">
+					{dueRows.map((r) => (
+						<li class="rd-review__item" data-overdue={overdueTier(r.overdueDays)}>
+							<div class="rd-review__meta">
+								<span class="rd-review__iv">{r.interval}</span>
+								<span>
+									{r.overdueDays === 0 ? 'today' : `${r.overdueDays} day${r.overdueDays === 1 ? '' : 's'} ago`}
+								</span>
+								<code>{r.id}</code>
+							</div>
+							{/*
+							  THE QUESTION, AND NOT THE ANSWER. The if-then is deliberately
+							  withheld: showing it turns retrieval back into rereading, which is
+							  the exact swap this page exists to prevent.
+							*/}
+							<p class="rd-review__q">
+								What did you commit to after <b>{r.chapterTitle}</b>, and what was
+								supposed to trigger it?
+							</p>
+							<details class="rd-review__reveal">
+								<summary>I have answered — show me</summary>
+								<p><span class="rd-if">If</span> {r.if} <span class="rd-if">then</span> {r.then}</p>
+								{r.trigger && <p><b>Trigger</b> — {r.trigger}</p>}
+								{r.obstacle && <p><b>Obstacle</b> — {r.obstacle}</p>}
+								<p><a href={r.href}>Open the chapter</a></p>
+							</details>
+						</li>
+					))}
+				</ol>
+			</section>
+		)
+	}
+
+	{
+		upcoming.length > 0 && (
+			<section>
+				<h2>Coming up</h2>
+				<ul class="rd-soon">
+					{upcoming.map((x) => (
+						<li>
+							<b>{fmt(x.when)}</b> · {x.iv.label} · {x.row.chapterTitle}
+						</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
+
+	<p class="rd-note">
+		A missed review is not a broken streak. It goes to the back of the queue and you carry on —
+		a schedule that punishes a missed week is a schedule that gets abandoned in week three.
+	</p>
+</StarlightPage>
+
+<style>
+	.rd-empty {
+		padding: 1rem 1.25rem;
+		border: 1px dashed var(--rd-border-strong);
+		border-radius: var(--ds-r-md, 0.75rem);
+		font-family: var(--rd-font-ui);
+		color: var(--rd-muted);
+	}
+	.rd-empty p:last-child { margin-block-end: 0; }
+
+	.rd-review { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+	.rd-review__item {
+		padding: 1rem;
+		background: var(--rd-surface);
+		border: 1px solid var(--rd-border);
+		border-radius: var(--ds-r-md, 0.75rem);
+	}
+	/* Graduated rather than binary — see overdueTier() above for the bands and
+	   why 7 / 30 / 90 stopped being the same thing. */
+	.rd-review__item[data-overdue='mild'] { box-shadow: inset 3px 0 0 var(--rd-tier-deepen); }
+	.rd-review__item[data-overdue='stale'] {
+		box-shadow: inset 4px 0 0 var(--rd-tier-reference);
+		background: color-mix(in srgb, var(--rd-tier-reference) 5%, var(--rd-surface));
+	}
+	/* Reuses the danger-aside tokens rather than inventing a new colour —
+	   they are the ones contrast.mjs already measures across all four themes
+	   (104 pairs), so this inherits that guarantee instead of needing its own. */
+	.rd-review__item[data-overdue='severe'] {
+		box-shadow: inset 4px 0 0 var(--rd-aside-danger-edge);
+		background: var(--rd-aside-danger-bg);
+	}
+	.rd-review__item[data-overdue='severe'] .rd-review__meta > span:nth-child(2) {
+		color: var(--rd-aside-danger-title);
+		font-weight: 700;
+	}
+	.rd-review__meta {
+		display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
+		margin-block-end: 0.5rem;
+		font-family: var(--rd-font-ui); font-size: 0.75rem; color: var(--rd-muted);
+	}
+	.rd-review__iv {
+		font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+		color: var(--rd-accent); border: 1px solid currentColor;
+		border-radius: 999px; padding: 0.05rem 0.45rem;
+	}
+	.rd-review__meta code { margin-inline-start: auto; background: none; border: 0; font-size: 0.6875rem; }
+	.rd-review__q { margin: 0 0 0.6rem; font-size: 1.02rem; line-height: 1.5; }
+	.rd-review__reveal summary {
+		cursor: pointer; font-family: var(--rd-font-ui); font-size: 0.875rem; color: var(--rd-accent);
+	}
+	.rd-review__reveal[open] summary { margin-block-end: 0.5rem; }
+	.rd-review__reveal p { margin: 0 0 0.35rem; font-family: var(--rd-font-ui); font-size: 0.9375rem; }
+	/* "Open the chapter" measured 116x17 — a 15px link under the 24px tap-target
+	   floor. Same fix as .rd-shelf__title a and .ds-head__eyebrow a: padding on
+	   an inline element grows the hit area, not the line box. */
+	.rd-review__reveal p:has(> a:only-child) a {
+		display: inline-block;
+		padding-block: 0.35rem;
+		margin-block: -0.35rem;
+	}
+	.rd-if {
+		font-size: 0.75em; font-weight: 700; letter-spacing: 0.05em;
+		text-transform: uppercase; color: var(--rd-accent);
+	}
+	.rd-soon { font-family: var(--rd-font-ui); font-size: 0.875rem; color: var(--rd-muted); }
+	.rd-note {
+		margin-block-start: 2.5rem; font-family: var(--rd-font-ui);
+		font-size: 0.875rem; color: var(--rd-muted); max-width: 44rem;
+	}
+</style>

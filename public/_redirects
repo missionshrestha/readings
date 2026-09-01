@@ -1,0 +1,8 @@
+# Path-level redirects, for a book that has moved between clusters.
+#
+# A slug is a URL. Moving a book changes its URL and every inbound link,
+# so add a line here rather than accepting the breakage:
+#
+#   /old-domain/old-cluster/the-book/*  /new-domain/new-cluster/the-book/:splat  301
+#
+# Verify with `npx wrangler dev` — the only local server that applies this file.

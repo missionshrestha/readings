@@ -1,0 +1,67 @@
+{
+  "_placeholder": "SHAPE ONLY. Chapter titles and parts are bibliographic fact; every 'argues', 'gap', 'familiarity', 'questions', 'outsideView' and 'exitCondition' below is a STAND-IN written to exercise the scaffolding, and must be replaced wholesale by the real Stage 2 (BRIEF) output from web chat. See context/book-spec.md.",
+
+  "slug": "deep-work",
+  "title": "Deep Work",
+  "author": "Cal Newport",
+  "published": 2016,
+  "domain": "self-command",
+  "cluster": "attention-dopamine-and-digital-discipline",
+  "clusterNumber": "1.3",
+  "tier": "core",
+  "weight": "M",
+  "kind": "read",
+
+  "gap": "execution",
+  "familiarity": "familiar",
+  "whyNow": "PLACEHOLDER — his own one-line reason goes here.",
+
+  "questions": [
+    "PLACEHOLDER — question one, written before reading.",
+    "PLACEHOLDER — question two.",
+    "PLACEHOLDER — question three."
+  ],
+
+  "outsideView": {
+    "replication": "PLACEHOLDER — filled at Stage 1 with search on, every citation verified.",
+    "critics": "PLACEHOLDER",
+    "agedBadly": "PLACEHOLDER"
+  },
+
+  "parts": [
+    { "slug": "the-idea", "title": "The idea", "order": 1,
+      "outcome": "Say what deep work is, why it is valuable and why it is becoming rare." },
+    { "slug": "the-rules", "title": "The rules", "order": 2,
+      "outcome": "Run a week that actually contains depth, and say which rule produced it." }
+  ],
+
+  "chapters": [
+    { "slug": "deep-work-is-valuable", "title": "Deep work is valuable", "order": 1,
+      "part": "the-idea", "argues": "PLACEHOLDER — the claim this chapter makes, in one line.",
+      "weightInArgument": "load-bearing", "estMinutes": 30, "verdict": "deep-dive", "clarified": false },
+    { "slug": "deep-work-is-rare", "title": "Deep work is rare", "order": 2,
+      "part": "the-idea", "argues": "PLACEHOLDER — the claim this chapter makes, in one line.",
+      "weightInArgument": "load-bearing", "estMinutes": 30, "verdict": "deep-dive", "clarified": false },
+    { "slug": "deep-work-is-meaningful", "title": "Deep work is meaningful", "order": 3,
+      "part": "the-idea", "argues": "PLACEHOLDER — the claim this chapter makes, in one line.",
+      "weightInArgument": "supporting", "estMinutes": 25, "verdict": "skim", "clarified": true },
+    { "slug": "work-deeply", "title": "Work deeply", "order": 4,
+      "part": "the-rules", "argues": "PLACEHOLDER — the claim this chapter makes, in one line.",
+      "weightInArgument": "load-bearing", "estMinutes": 45, "verdict": "deep-dive", "clarified": false },
+    { "slug": "embrace-boredom", "title": "Embrace boredom", "order": 5,
+      "part": "the-rules", "argues": "PLACEHOLDER — the claim this chapter makes, in one line.",
+      "weightInArgument": "load-bearing", "estMinutes": 30, "verdict": "deep-dive", "clarified": false },
+    { "slug": "drain-the-shallows", "title": "Drain the shallows", "order": 6,
+      "part": "the-rules", "argues": "PLACEHOLDER — the claim this chapter makes, in one line.",
+      "weightInArgument": "supporting", "estMinutes": 35, "verdict": "deep-dive", "clarified": true }
+  ],
+
+  "antiChapters": [
+    { "title": "Rule #3 — Quit Social Media",
+      "reason": "PLACEHOLDER — the reason must be a reason FOR HIM, not a reason in general." }
+  ],
+
+  "inventory": { "chapters": 7, "read": 6, "skipped": 1 },
+
+  "exitCondition": "PLACEHOLDER — what must be observably TRUE for this book to be finished."
+}

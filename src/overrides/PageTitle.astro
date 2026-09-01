@@ -1,0 +1,133 @@
+---
+/**
+ * PageTitle — Starlight's, plus the one thing a chapter page never said.
+ *
+ * ---------------------------------------------------------------------------
+ * WHAT THIS FIXES
+ *
+ * MEASURED 2026-09-01 on a chapter page: the book's title appeared NOWHERE in
+ * the document. `bookNameOnPage: false`, no breadcrumb element of any kind. You
+ * could land on "Ch 1 · Deep work is valuable" from search, from /shelf/, from
+ * a link, and there was nothing on screen saying which book it belonged to, or
+ * offering a way to the rest of it.
+ *
+ * The chapter list is in the drawer, which is one deliberate tap away and was,
+ * until today, broken below 800px. So the answer was a control away on desktop
+ * and unreachable on a phone.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY IT READS universe.json RATHER THAN THE COLLECTION
+ *
+ * The slugs are already in the chapter's own frontmatter — build control 3 in
+ * scripts/guards.mjs refuses the build if `domain`, `cluster` or `book` ever
+ * disagree with the directory — and universe.json is generated from
+ * context/universe.md, which is the source of truth for their TITLES. So the
+ * crumb cannot drift from the path, and this file never calls
+ * getCollection('docs'), which keeps it outside control 1 entirely.
+ *
+ * A book that is somehow absent from the universe degrades to the cluster crumb
+ * alone rather than throwing: content arrives by paste, and a missing lookup
+ * must never take the page down.
+ */
+import universe from '../generated/universe.json';
+
+/*
+ * Starlight's own PAGE_TITLE_ID, inlined. `@astrojs/starlight/constants` is not
+ * an exported subpath of the package (verified against 0.41.10 — the file is
+ * `node_modules/@astrojs/starlight/constants.ts` and `exports` does not list
+ * it), so importing it fails `astro check` even though the module exists on
+ * disk. The value is what the skip link and every in-page `#_top` anchor point
+ * at, so it is asserted here rather than assumed.
+ */
+const PAGE_TITLE_ID = '_top';
+
+const route = Astro.locals.starlightRoute;
+const data = route.entry.data as {
+	title: string;
+	domain?: string;
+	cluster?: string;
+	book?: string;
+};
+
+const idParts = String(route.entry.id ?? '')
+	.split('/')
+	.filter(Boolean);
+
+/* A crumb belongs on a CHAPTER — depth 4 — and not on the book index, which is
+   already the page the crumb would point at. */
+const isChapter = idParts.length >= 4;
+
+type Book = { slug: string; title: string; cluster: string; domain: string };
+type Cluster = { slug: string; domain: string; number: string; name: string };
+
+const book = isChapter
+	? (universe.books as Book[]).find(
+			(b) => b.slug === (data.book ?? idParts[2]) && b.cluster === (data.cluster ?? idParts[1])
+		)
+	: undefined;
+const cluster = book
+	? (universe.clusters as Cluster[]).find(
+			(c) => c.slug === book.cluster && c.domain === book.domain
+		)
+	: undefined;
+
+const bookHref = book ? `/${book.domain}/${book.cluster}/${book.slug}/` : null;
+---
+
+{
+	book && bookHref && (
+		<p class="rd-crumb">
+			<a href={bookHref}>{book.title}</a>
+			{cluster && (
+				<>
+					<span aria-hidden="true"> · </span>
+					<a href={`/${cluster.domain}/${cluster.slug}/`}>
+						{cluster.number} {cluster.name}
+					</a>
+				</>
+			)}
+		</p>
+	)
+}
+
+<h1 id={PAGE_TITLE_ID}>{data.title}</h1>
+
+<style>
+	@layer starlight.core {
+		h1 {
+			margin-top: 1rem;
+			font-size: var(--sl-text-h1);
+			line-height: var(--sl-line-height-headings);
+			font-weight: 600;
+			color: var(--sl-color-white);
+		}
+	}
+	/*
+	 * Unlayered on purpose, so it is not competing with Starlight's own
+	 * heading rules for the block it sits above.
+	 */
+	.rd-crumb {
+		margin: 0 0 0.35rem;
+		font-family: var(--rd-font-ui);
+		font-size: calc(0.8125rem * var(--rd-scale, 1));
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--rd-muted);
+	}
+	.rd-crumb a {
+		color: inherit;
+		text-decoration: none;
+		/* Same 24px floor as .ds-head__eyebrow a — padding on an inline box
+		   grows the hit area without changing the line box. */
+		padding-block: 0.35rem;
+		border-block-end: 1px solid transparent;
+		transition:
+			color var(--ds-dur, 160ms) var(--ds-ease, ease),
+			border-color var(--ds-dur, 160ms) var(--ds-ease, ease);
+	}
+	.rd-crumb a:hover,
+	.rd-crumb a:focus-visible {
+		color: var(--rd-accent);
+		border-block-end-color: currentColor;
+	}
+</style>

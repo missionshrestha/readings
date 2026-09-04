@@ -111,6 +111,9 @@ src/content/docs/
                                           hint — Starlight's own carries none in <main>
   <domain>/<cluster>/<book>/              appears ONLY when a book is actually started
     index.mdx · book.json · <NN>-<chapter>.mdx
+                                          index.mdx has TWO generated regions: BRIEF (whyNow,
+                                          outsideView, questions — straight from book.json) and
+                                          CHAPTERS (the grid). Both written by --refresh
 ```
 
 **Read only what your task names.** `context/` is not preloaded. Never read the whole content tree.
@@ -287,6 +290,42 @@ Each of these fails **silently**. That is why they are here and not in a checkli
     Starlight's own `--sl-sidebar-visibility` custom property directly, which
     composes with their rule instead of needing to be its sibling.
 
+22. **`astro-mermaid` DOES NOT SHIP A STYLESHEET — IT INJECTS ONE AT RUNTIME, AND IT
+    WINS.** `astro-mermaid-integration.js:618` appends a `<style>` from a page script,
+    so it lands after every stylesheet this project emits and is in no layer, which
+    means `@layer` cannot demote it either. **One root cause, three visible defects,
+    all silent, all invisible until the corpus had real diagrams in it:**
+    it sets `border: none` and a `background-color` keyed on `[data-theme]` and
+    `prefers-color-scheme` — so the "framed like a card" comment in `reading.css`
+    described a frame that had not existed since the integration was added, and the
+    diagram's ground tracked the OS rather than any of the four reading themes. And
+    it sets **`display: flex`, which makes the SVG a FLEX ITEM**: a flex item shrinks
+    to its container whatever width it is given, so `overflow-x: auto` had nothing to
+    scroll and an inline `width: 2879px` set by hand still computed to `896px`.
+    Combined with `useMaxWidth: true` and Starlight's own `svg { max-width: 100% }`
+    (`markdown.css:75`), every `## Concept map` — a REQUIRED heading on every chapter
+    — was scaled down instead of scrolled. **Measured 2026-09-04 across four authored
+    chapters: 31%–62% at 1280px, and 12%–24% at 420px, with label text at 2.8–5.6px
+    on a phone.** The fix is three places and none works alone: `useMaxWidth: false`
+    on all five diagram types, `max-inline-size: none` + `block-size: auto` on the
+    svg, and the frame rules re-declared at `html .sl-markdown-content pre.mermaid`
+    with `!important` on the four properties the vendor actively fights for.
+    **Diagnosed with CDP `CSS.getMatchedStylesForNode`, after two rounds of measuring
+    a computed value with no visible cause** — when a computed style disagrees with
+    every rule you can find, enumerate the matched rules rather than reading more CSS.
+
+23. **A generated page can be the thing that leaks.** `readChapterFrontmatter()` in
+    `new-chapters.mjs` read `draft` and not `private`, so a chapter carrying
+    `draft: false, private: true` — the correct, intended combination for personal
+    material — counted as *written* and got a real `<LinkCard>` in the chapter grid.
+    Control 4 refused the build, correctly, naming the link. **The point is which side
+    produced it:** an author who writes that link sees the refusal once and edits one
+    page, whereas `--refresh` reintroduces it on every run, so the failure returns
+    every time the grid is regenerated. A private chapter is now OMITTED from the grid
+    rather than badged — a "Private" badge still puts the chapter's TITLE on a public
+    page, which is half of what the control's own message names — and a count line
+    replaces it, so the page does not claim a coverage it is not showing.
+
 ---
 
 ## The controls
@@ -333,7 +372,9 @@ themes) and `scripts/audit.mjs` (the weekly report).
   this session. Ask, then write. An unasked cell stays empty.** An empty cell is a known gap; a
   guessed one is indistinguishable from a real answer.
 - **Never hand-write a derived file.** The 102 map pages, the sidebar, `book-slugs.md`, the chapter
-  grid and the `OUTLINE`/`SPINE` regions are generated. Re-run the script; never edit between markers.
+  grid, the book page's `BRIEF` region and the `OUTLINE`/`SPINE` regions are generated. Re-run the
+  script; never edit between markers. **A chapter's `description` is derived too** — it is
+  `book.json`'s `argues`, and `--outline` re-derives it and prints every change.
 - **`.mdx` only, never `.md`.** Stock Starlight components plus exactly four custom ones. A fifth
   requires him to ask explicitly, in writing, in that session.
 - **There is NO length budget, and this is his instruction, not an omission.** *"if a chapter is 10
@@ -361,7 +402,10 @@ npm run check      # astro check
 npm run ci         # astro check && astro build — EXACTLY what Cloudflare runs
 
 node scripts/universe.mjs                    parse and verify the universe
-node scripts/gen-pages.mjs                   regenerate the 102 map pages
+node scripts/gen-pages.mjs                   regenerate the 102 map pages.
+                                             RUN IT AFTER STARTING A BOOK — the
+                                             cluster card is inert until you do
+node scripts/gen-pages.mjs --check           writes nothing; reports drift. audit runs it
 node scripts/new-book.mjs <d> <c> <b>         start a book
 node scripts/new-chapters.mjs <d> <c> <b>     scaffold its chapters from book.json
 node scripts/new-chapters.mjs <d> <c> <b> --refresh    after a paste

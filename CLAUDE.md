@@ -107,6 +107,8 @@ src/content/docs/
                                           purpose: 38 bare `<` in the sources
   elements.mdx                            every element on one page. THE RENDERING TEST — it is
                                           published, not draft, because fact 11
+  404.mdx                                 hand-written, not generated. Four ways out and a search
+                                          hint — Starlight's own carries none in <main>
   <domain>/<cluster>/<book>/              appears ONLY when a book is actually started
     index.mdx · book.json · <NN>-<chapter>.mdx
 ```
@@ -270,6 +272,20 @@ Each of these fails **silently**. That is why they are here and not in a checkli
     away — absent. `custom.css` un-hides it (unlayered beats
     `@layer starlight.utils`) and hides the drawer-footer copy so exactly one is
     ever visible. **Verified at 1854/1280/1024/768/420/360 on four page kinds.**
+
+21. **A custom drawer button can set every attribute correctly and still open
+    nothing, because Starlight's own un-hider is a SIBLING selector.** Below
+    `50em`, `.sidebar-pane`'s only path to visible is
+    `:global([aria-expanded='true']) ~ .sidebar-pane` — `PageFrame.astro:62` —
+    and it matches only an element that is itself a **sibling** of the pane.
+    This project's chapter-drawer button lives in the header, mounted through
+    `SocialIcons`, so it is never a sibling of anything. **Measured
+    2026-09-01**: the button toggled `data-contents` on `<html>` and reported
+    `aria-expanded="true"` — correct by every attribute a script could check —
+    while `.sidebar-pane` stayed `visibility: hidden` and zero chapter links
+    were reachable, on every book and chapter page below 800px. The fix writes
+    Starlight's own `--sl-sidebar-visibility` custom property directly, which
+    composes with their rule instead of needing to be its sibling.
 
 ---
 

@@ -46,7 +46,7 @@ npm run ci       # astro check && astro build — exactly what CI runs
 npm run preview  # the built site
 
 node scripts/universe.mjs    # parse and verify the universe
-node scripts/audit.mjs       # the weekly report and the three build controls
+node scripts/audit.mjs       # the weekly report and the four build controls
 node scripts/contrast.mjs    # 104 colour pairs across four themes
 ```
 

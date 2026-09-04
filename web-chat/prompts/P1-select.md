@@ -2,11 +2,16 @@
 
 **Stage 0. Fifteen minutes, hard limit.** Between books, never during one.
 
-**Length: 752 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 986 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
 
 > **The gate is real.** This stage can end in *"not now"*, and a selection stage that always says yes
 > is theatre. It can also end in *"this is an execution gap and another book will not fix it"*,
 > which is the most useful outcome it has.
+
+## Paste with it
+
+`00-CONTEXT-PACK` ● · `source-rules` ○ — `GUIDE.md` Appendix A. **Search on.** No chapter, no
+`book.json`: neither exists yet.
 
 ---
 
@@ -60,9 +65,16 @@ comfortable option. I want to know when I am doing it.
 3 · SCREEN IT — search on, and I will verify every citation
 
   · What is the evidence base, and how much of it has replicated?
-    Name the studies. If the book's central claim rests on priming,
-    ego depletion, power posing, learning styles or the 10,000-hour
-    rule, tell me that in the first line of the screen.
+    Name the studies. If the book's central claim rests on any of
+    these six, tell me that in the FIRST LINE of the screen:
+
+      priming · ego depletion · power posing · learning styles
+      the 10,000-hour rule · handwriting beats typing
+
+    Each has either failed to replicate or been materially walked
+    back, and each appears across dozens of the books on my shelf. A
+    book whose spine is one of them is a different decision from a
+    book that merely mentions one.
   · Who are the serious critics, and what is their STRONGEST point?
     Not the weakest one you can answer. If you cannot find a critic
     after a real look, say that you looked and found none — that is a
@@ -99,9 +111,62 @@ Do NOT produce a reading plan, a schedule, or a summary of the book.
 Do NOT tell me the book is excellent, seminal, or a must-read; give me
 the evidence and let me decide. If I argue you into a yes after you
 said no, say that I have just done that.
+
+MISSING INPUTS — NAME THEM AND STOP
+
+If you do not have search, say so in the first line and stop: section 3
+is the whole screen and a screen written from training knowledge is a
+recollection of a book's reputation, not an examination of it. If I
+have not told you which book, ask — do not screen a plausible one. If
+you cannot see my map, say so rather than guessing at section 2; you
+cannot name the domain I am avoiding without it, and a guess there is
+worse than silence.
+
+This stage is fifteen minutes. Output nothing outside the four
+sections.
 ````
 
 ---
+
+## What lands on the page
+
+**Nothing yet — this is conversation, not a file.** Two values survive it and both go into
+`book.json` at Stage 2, where they are fixed and never re-derived:
+
+| From | Becomes |
+|---|---|
+| Section 1's diagnosis | `gap` — `knowledge` or `execution` |
+| Section 4's recommendation, in your words | `whyNow` |
+
+A "not now" produces no `book.json` at all. It goes in `reader-profile.md`, with its condition.
+
+## Landed / Did not
+
+| | |
+|---|---|
+| **Landed** | It named a critic, and the critic's point was one you had to think about |
+| **Did not** | *"Some readers find it repetitive."* That is a review aggregate wearing a critic's coat |
+| **Landed** | It said THIN, and said what it searched. A stated gap is a correct output here |
+| **Did not** | A fluent paragraph on what critics generally say, with no name in it |
+| **Landed** | It committed to one of the four words and stayed there when you pushed |
+| **Did not** | *"It depends on what you're looking for"* — which is the four options restated as a non-answer |
+| **Landed** | It said *execution gap* in a first sentence and offered no book until you asked twice |
+| **Did not** | *"This is more of an execution gap, but the book might still help with…"* — the softening the prompt forbids by name |
+
+## If it comes back wrong
+
+````text
+You gave me a survey rather than a recommendation. One of exactly
+four — read it · skim one chapter · abandon it · not now — and commit
+to it in the first line. For "not now", the condition that would
+change it.
+````
+
+````text
+You named no critic. Say where you looked and that you found none —
+that is a fact about the book's reception and I want it. Do not
+substitute a summary of general criticism.
+````
 
 ## Do not move on if
 

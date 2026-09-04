@@ -35,9 +35,11 @@ reading.** If you read one file, read this one.
 
 ## Three things to do before the first chapter
 
-**1. Answer the questions in [`context/reader.md`](context/reader.md).** It is currently a skeleton
-of `[ASK]` markers, and every chapter generated while they are unanswered is a chapter written for a
-stranger. Run `/progress` and it will ask.
+**1. `context/reader.md` is answered — done 2026-08-31.** Two of his answers reversed assumptions
+the repository had hard-coded (no length budget on a chapter; the transfer question is additive,
+never subtractive). What is left is honestly marked, not guessed: `§8` lists what he has not told
+us, and one standing `[ASK]` re-fires per book at Stage 0 (`§3`, recorded in `book.json` as `gap`).
+Nothing here blocks starting — read `§8` once so a real gap does not get filled by assumption.
 
 **2. Decide the one that cannot be undone later:** the site is public and currently `noindex` on a
 temporary host. Chapters in the relationships, love and money domains will carry real personal

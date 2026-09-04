@@ -49,12 +49,16 @@ Two of them reversed assumptions the repository had hard-coded, and both are loa
 | **There is no length budget** | *"if a chapter is 10 hour or unlimited long, you do it."* §2. This repealed the sitting-floor premise an earlier version of that file called *"the load-bearing figure"*, and it is why nothing in this repository sizes a chapter |
 | **The transfer question is additive** | *"you don't remove, alter the things that author wanted to say for original intent, you can give extra instead."* §4. A chapter may describe where a claim's conditions differ; it may never conclude that the claim does not apply to him |
 
-**Two questions remain open**, marked in §8 and not guessed: what he has already tried and abandoned,
-and whether his time tracker is a physical record.
+**§8 lists four things he has not told us**, three genuinely open (what he has already tried and
+abandoned; whether his time tracker is a physical record; which country/context details he wants
+surfaced) and one already decided and only logged there for transparency (the tenth sub-section).
+None are guessed.
 
 > **Verify:**
-> **PASS** — `grep -c '\[ASK\]' context/reader.md` returns 1 (the standing per-book gap question in
-> §3), and every filled cell traces to a quoted sentence.
+> **PASS** — `grep -c '\[ASK\]' context/reader.md` returns **3**: the standing per-book gap
+> question (§3, re-fires every book at Stage 0), a re-ask condition on the abandonment question (§1),
+> and a conditional ask on the physical-record question (§6, only if it ever matters). Every filled
+> cell traces to a quoted sentence.
 > **FAIL** — a cell contains a plausible value with no quotation behind it. An empty cell is a known
 > gap; a guessed one is indistinguishable from a real answer.
 
@@ -339,6 +343,14 @@ inputs generates happily against the two it invented, and the result looks corre
 | **P9** review | ● | ○ | | | | ● | | |
 
 ● required · ○ helps · blank means do not paste it — it costs context and buys nothing.
+
+**Each prompt now repeats its own row**, under a `## Paste with it` heading directly above its fence.
+This table stays the authority; the copies exist so the row is visible at the moment you paste.
+
+Two files in `web-chat/prompts/` are not prompts and take no row here. Read
+[`spine-map.md`](web-chat/prompts/spine-map.md) — which prompt owns which of the twelve headings —
+before you call a chapter finished, and [`recall.md`](web-chat/prompts/recall.md) between reading and
+`P4`. Neither is ever pasted into a chat: they are for you.
 
 **In Project mode the whole left half is uploaded once** and the row tells you what still has to be
 pasted per turn. **The one that is forgotten most often is column 3**, the chapter's own node from

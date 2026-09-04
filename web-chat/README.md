@@ -62,7 +62,13 @@ of five inputs will generate happily against the two it invented, and the output
 ```
 
 **Stages 4, 5 and 8 have the AI OFF, and that is where the learning is.** Everything else is
-logistics.
+logistics. Stage 5 has its own page — [`prompts/recall.md`](prompts/recall.md) — because it is the
+one step in the pipeline with no prompt, and it was the one step with no artifact at all.
+
+**This numbering is not `context/protocol.md`'s.** That file was written before the closed-book
+recall existed, so it has EXPLAIN at 5 and READ II at 6; inserting the recall pushed everything after
+it down by one. [`prompts/README.md`](prompts/README.md) carries the map across all three schemes
+that name this work — this one, protocol's, and `WORKFLOW.md`'s chapter-loop steps.
 
 ---
 
@@ -81,7 +87,13 @@ logistics.
 | P8 | [Ledger](prompts/P8-ledger.md) | End of book | Synthesis |
 | P9 | [Review](prompts/P9-review.md) | Day 3, week 2, week 6, month 3 | What survived |
 
-Plus [`toggles.md`](prompts/toggles.md) — twelve fragments to append when a book calls for one.
+And three files in the same directory that are not prompts:
+
+| | For |
+|---|---|
+| [`prompts/spine-map.md`](prompts/spine-map.md) | **Which prompt owns which heading.** The twelve `##`, the ten `###`, and the `clarified` flip that decides who produces sections 2 and 3 |
+| [`prompts/recall.md`](prompts/recall.md) | **Stage 5, which has no prompt.** What to write closed-book, and the one measurement worth taking |
+| [`prompts/toggles.md`](prompts/toggles.md) | Twelve fragments to append when a book calls for one — with what each looks like when it did **not** land |
 
 ## The reference files
 

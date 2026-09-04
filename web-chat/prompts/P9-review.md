@@ -3,11 +3,34 @@
 **Stage 11. Day 3 · week 2 · week 6 · month 3**, absolute, from the date an action started.
 `/review` computes what is due.
 
-**Length: 532 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 709 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
 
 > **ANSWER FIRST, THEN OPEN THE PAGE.** `/review` deliberately shows you the question and withholds
 > what you wrote. Rereading is a low-utility technique and retrieval is a high one — and the drafted
 > protocol got this backwards, citing the retrieval study in support of rereading.
+
+## Paste with it
+
+`00-CONTEXT-PACK` ● · `standards` ● · the chapter ○ — `GUIDE.md` Appendix A. **A new chat.** The
+transcript that produced the action is the last place to judge whether it survived.
+
+## Which review writes `day30`
+
+Four review points, one field, and they are not the same thing. `day30` is a **day-30 outcome**, and
+**week 6 is the first review that happens after day 30.**
+
+| Review | What it does | `day30` |
+|---|---|---|
+| **Day 3** | Did the trigger fire at all? Was the obstacle you named the real one? | Leave `not-yet` |
+| **Week 2** | Counts. How many times was the trigger available, how many times did you act? | Leave `not-yet` |
+| **Week 6** | **Keep, adapt or drop.** This is the decision the field records | **Write `running` · `adapted` · `dropped`** |
+| **Month 3** | Is a `running` row still running? If not, correct it to `dropped` with a date | Correct it if it is now false |
+
+Writing a verdict at day 3 records an outcome twenty-seven days early, and the row then reads as
+reviewed for the next month. **`/ledger` flags any action whose `started` is more than thirty days
+old while `day30` is still `not-yet`** — so a missed week-6 review surfaces on its own and needs no
+reminder. An **adapted** action takes a **new `started` date**, which restarts the whole schedule:
+an adapted action keeping its original date has its reviews pointing at a behaviour it no longer is.
 
 ---
 
@@ -96,14 +119,65 @@ Here is what is actually on the page:
   what will stop me between now and the next review.
 
   Do not summarise this conversation back to me at the end. Give me
-  the one sentence I should write into day30, and nothing else.
+  the one sentence I should write into the action's note, and nothing
+  else.
+
+  ONLY THE WEEK-6 REVIEW SETS day30. At day 3 and week 2 the field
+  stays not-yet — those reviews correct the obstacle and count the
+  trigger, they do not record an outcome. If the day number above is
+  under 30, do not offer me a verdict and do not ask me to choose one.
+
+MISSING INPUTS
+
+  If I have not pasted what I wrote from memory, stop and ask for it.
+  Opening the page first turns this into rereading, which is the
+  low-utility technique this whole schedule exists to replace, and the
+  gap I would have measured is gone. If I have not given you counts
+  when you asked, ask once more before accepting an impression.
 ````
 
 ---
 
+## What lands on the page
+
+Frontmatter, not prose. `day30` at week 6, `note` with the one sentence, and a corrected `obstacle`
+whenever the one you named turned out not to be the one that stopped you — **that correction is the
+more useful fact and it should replace what is recorded**, not sit beside it.
+
+An adapted action gets a **new `started`**. Nothing here writes a `##` section.
+
+## Landed / Did not
+
+| | |
+|---|---|
+| **Landed** | It said the fraction back to you — "four of eleven" |
+| **Did not** | It let you call it "mostly working" at under half. That is the phrase this section exists to refuse |
+| **Landed** | It separated trigger, action and idea, and started with the trigger |
+| **Did not** | It concluded you lacked discipline. That is not one of the three, and it is not a diagnosis — it is the failure restated as a character trait |
+| **Landed** | It named "the idea was wrong for my situation" as a live option |
+| **Did not** | Every failure came back as yours. The chapter being wrong is a legitimate finding and the one least likely to be volunteered |
+| **Landed** | Dropping was offered as an outcome, not a setback |
+| **Did not** | *"Let's pause it."* An action left at "still running" that you have not done in a month is a lie in a table you use to make decisions |
+| **Landed** | It ended with one sentence and stopped |
+| **Did not** | Encouragement. You are not being cheered on here; there is no person in this loop and simulating one is worse than admitting there is none |
+
+## If it comes back wrong
+
+````text
+You encouraged me. Delete it. Tell me what the record says: how many
+times the trigger was available, how many times I acted, and the
+fraction.
+````
+
+````text
+It is day [N], which is under 30. Do not offer me a keep/adapt/drop
+verdict — that is the week-6 review. Ask whether the obstacle I named
+was the real one, and stop.
+````
+
 ## Then record it
 
-Set `day30` on that action: `running` · `adapted` · `dropped`.
+At **week 6**, set `day30` on that action: `running` · `adapted` · `dropped`.
 
 **Record the failures.** A ledger with no dropped rows in it measures nothing — and a schedule that
 punishes a missed review gets abandoned in week three, so a missed one simply goes to the back of

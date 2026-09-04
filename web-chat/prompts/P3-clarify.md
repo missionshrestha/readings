@@ -2,7 +2,7 @@
 
 **Stage 3. TWO PARTS, and only the second is conditional.** Three to six minutes.
 
-**Length: 578 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 776 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
 
 > **This prompt used to be conditional in its entirety, and that was a defect.**
 >
@@ -15,7 +15,17 @@
 > **Part A runs on every chapter. Part B runs only when `book.json` says `clarified: true`.** When
 > it does not, `## Core message` and `## Key points` are produced by `P4` instead, after your
 > closed-book recall has been marked — which is the better place for them anyway.
-> `chapter-spine.md` §1.
+> `chapter-spine.md` §1, and [spine-map.md](spine-map.md) is the table that would have caught it.
+
+## Paste with it
+
+**Part A** — `00-CONTEXT-PACK` ● · the chapter's **opening only** ● · its `book.json` node ● ·
+`chapter-spine` ● · `standards` ●.
+**Part B** — the same, plus the **full chapter** ● · `md-spec` ● · `source-rules` ○.
+
+`GUIDE.md` Appendix A. **The one forgotten most often is the `book.json` node**: without `argues`,
+`clarified` and `verdict`, the model invents the shape, and inventing the shape is the single failure
+the brief exists to prevent.
 
 ---
 
@@ -53,6 +63,13 @@ WHAT IT IS NOT
 LENGTH
   As long as it needs and no longer. Three sentences is a normal
   answer. If you find yourself at four paragraphs, you are summarising.
+
+MISSING INPUTS
+  If I have pasted the whole chapter rather than its opening, say so
+  and use only the opening — you cannot write a condition for reading
+  from material you have already read past. If you do not have the
+  chapter before this one, and this chapter builds on it, name what
+  you need instead of reconstructing it from the title.
 
 Four-backtick fence. Nothing outside it.
 ````
@@ -114,10 +131,54 @@ Everything cites the uploaded chapter. Where the chapter asserts
 something you know to be contested, MARK IT IN PLACE — do not smooth
 it, and do not move the qualification to a footnote.
 
+MISSING INPUTS
+  ONE CHAPTER. If I have uploaded the whole book, say so and stop —
+  material in the middle of a long context degrades by more than 30%
+  and you will not be able to tell me which parts. If the brief says
+  clarified: false for this chapter, refuse it: I read the original,
+  and a rebuild deletes the machinery that made it usable.
+
 Four-backtick fence. Nothing outside it.
 ````
 
 ---
+
+## What lands on the page
+
+| Part | Section |
+|---|---|
+| **A, always** | `## Pre-context` |
+| **B, only when `clarified: true`** | `## Core message` · `## Key points` · `## The clarified chapter` |
+
+When `clarified: false`, `## The clarified chapter` is **absent from the page** — not empty — and
+sections 2 and 3 come from `P4`. [spine-map.md](spine-map.md) has the flip in one table.
+
+## Landed / Did not
+
+| | |
+|---|---|
+| **Landed** | Every pre-context sentence states a CONDITION for reading |
+| **Did not** | *"The chapter argues that depth is becoming rare."* That is a claim from the reading — the test the prompt names, failed |
+| **Landed** | The cut list has nouns in it. "The Roosevelt anecdote, third instance of the same point" |
+| **Did not** | *"Some repetition and throat-clearing."* A cut list with no nouns is a claim that cutting happened |
+| **Landed** | The numbers and the named cases survived the rebuild |
+| **Did not** | A clarified chapter that is all argument. That is the summary this stage exists to avoid, produced under a different heading |
+| **Landed** | Where his situation differs, a paragraph was **added** beside the author's claim |
+| **Did not** | The claim was rewritten into advice for Kathmandu and you can no longer tell what the book said |
+
+## If it comes back wrong
+
+````text
+That is a summary, not a pre-context. Delete every sentence that
+states a claim FROM the chapter and keep only what must be in my head
+BEFORE it. If nothing survives, say the chapter needs no pre-context.
+````
+
+````text
+The cut list names nothing. Tell me which anecdote, which paragraph,
+which repetition — with a noun for each — and why dropping it was
+safe. If you cut nothing, say you cut nothing.
+````
 
 ## What to check
 

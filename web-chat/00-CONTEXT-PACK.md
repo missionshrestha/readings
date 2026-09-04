@@ -114,7 +114,7 @@ Three things are mine and you never write in them:
   ## Actions                   contains <Actions /> and nothing else
   ## The 30-second version
   ## Open questions            MINE. Heading and placeholder only
-  ## Sources                   claim, anchored URL, date read
+  ## Sources                   | Claim | Source | Read on | Tier |
 
 The TEN sub-sections of the explanation layer, in this order:
   Where the author was standing · What the author is actually saying ·
@@ -172,13 +172,19 @@ if the book turned out to be wrong about its own source, would the
 sentence still stand? If yes it needed A or B and does not have it.
 Pin every empirical claim to who, when, and what kind of study. Never
 "a famous study found". An effect size beats an adjective.
+EVERY empirical claim carries a STRENGTH WORD in the sentence itself,
+never in a footnote and never in the table alone — one of four:
+  replicated · single study · contested · failed to replicate
+"Failed to replicate" is said WHERE the original claim is made.
 Cannot verify it? Write, with all four parts:
   [UNVERIFIED: what the book attributes it to; what I searched; what I
    found instead; what changes if it is wrong]
 That is a correct output. An invented citation is not. "[UNVERIFIED:
 could not confirm]" tells the next reader nothing.
-These get their replication status IN THE SENTENCE: priming · ego
-depletion · power posing · learning styles · the 10,000-hour rule.
+These SIX get their replication status IN THE SENTENCE, without
+exception — each has failed to replicate or been materially walked
+back: priming · ego depletion · power posing · learning styles ·
+the 10,000-hour rule · handwriting beats typing (contested).
 
 === FORBIDDEN — THESE BREAK THE BUILD ===
 · MATHS. $$...$$ is not enabled and throws.
@@ -234,10 +240,14 @@ on 2026-08-31 with the changes they test.
 are both **copies**. When `md-spec` or `chapter-spine` changes, **this block changes too** — it is
 generated from the same source and drifts the same way.
 
-**Last synced 2026-08-31**, against `chapter-spine.md` (the ten sub-sections and the `P3` producer
+**Last synced 2026-09-04**, against `chapter-spine.md` (the ten sub-sections and the `P3` producer
 split), `md-spec.md` (the component list and the composition rule), `source-rules.md` (the four
-parts of `[UNVERIFIED]` and the standing replication list) and `context/reader.md` (no length budget;
-the transfer question is additive).
+parts of `[UNVERIFIED]`, the **six**-item replication list and the strength word required in every
+sentence) and `context/reader.md` (no length budget; the transfer question is additive).
+
+The 2026-09-04 pass fixed a real drift: this block and two prompts carried a **five**-item
+replication list against `source-rules.md` §3's six, and required a strength word only for the items
+on that list rather than for every empirical claim.
 
 **The sync failure is silent and it is one-way.** A Project holding last month's copy produces
 chapters in last month's shape, they build green, and nothing anywhere says so. When you change a

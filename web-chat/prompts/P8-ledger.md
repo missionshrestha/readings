@@ -2,7 +2,15 @@
 
 **Stage 10. End of book, forty-five minutes.**
 
-**Length: 633 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 775 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+
+## Paste with it
+
+`00-CONTEXT-PACK` ● · every chapter recap ● · the book's `book.json` ● · `standards` ● ·
+`book-spec` ○ — `GUIDE.md` Appendix A. **A new chat**, not the last chapter's.
+
+The brief matters here because Part B checks the book against **the questions you wrote before you
+opened it**, and those live in `questions[]` where they have sat untouched since Stage 2.
 
 ---
 
@@ -84,6 +92,50 @@ CONSTRAINTS
   If the honest reading of the ledger is that nothing changed, say
   that plainly — it is the most valuable output this stage can produce
   and the least likely to be volunteered.
+
+  MISSING INPUTS. If I have not given you every action, say how many
+  chapters you can see and which are absent, then stop. Part A is a
+  consolidation and a consolidation of a subset is worse than none —
+  it will merge two actions that are not duplicates and miss the pair
+  that is. If my opening questions are not above, ask for them rather
+  than reconstructing what I probably wanted to know.
+````
+
+## What lands on the page
+
+The **book's** `index.mdx`, not a chapter's: `## What it changed`, and Part D's diagram. Part A's
+merges and corrections go back into the chapters' `actions:` frontmatter, where the ledger reads them.
+
+Nothing here writes a chapter section. If Part B produced something that belongs on a chapter page,
+it belongs in that chapter's `## Open questions`, and you write it.
+
+## Landed / Did not
+
+| | |
+|---|---|
+| **Landed** | It named a pair of actions that compete for the same slot in the day and made you choose |
+| **Did not** | It consolidated by theme. Two actions on "focus" are not duplicates; two satisfied by the same behaviour on the same evening are |
+| **Landed** | It asked, one at a time, which you had quietly stopped — and took "I don't know" as a no |
+| **Did not** | It assumed. An action you cannot remember whether you did is an action you did not do |
+| **Landed** | It found a question that turned out to be the **wrong question** |
+| **Did not** | Every opening question neatly answered. That category is the most useful one and the first to be skipped |
+| **Landed** | It was strict about changed-versus-confirmed and made you name one specific thing |
+| **Did not** | It accepted an abstraction. If you could have written the sentence before reading, it confirmed |
+| **Landed** | It named which books this makes redundant |
+| **Did not** | A reading list. "What should I not read" is the more useful half and the one that does not get volunteered |
+
+## If it comes back wrong
+
+````text
+You told me the book was worth reading. That line is mine and it is
+one of three — changed something, confirmed something, entertainment.
+Give me the ledger evidence for each and stop.
+````
+
+````text
+You merged those by topic, not by behaviour. Two actions are one only
+if the same act on the same evening satisfies both. Redo Part A on
+that test and say which merges you are withdrawing.
 ````
 
 ## The verdict is yours, and it is one of three

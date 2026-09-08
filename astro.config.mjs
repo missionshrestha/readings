@@ -196,11 +196,60 @@ export default defineConfig({
 				 */
 				fontFamily:
 					'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-				flowchart: { useMaxWidth: true, htmlLabels: true, nodeSpacing: 55, rankSpacing: 65, padding: 14 },
-				mindmap: { useMaxWidth: true, padding: 14 },
-				timeline: { useMaxWidth: true },
-				quadrantChart: { useMaxWidth: true },
-				pie: { useMaxWidth: true, textPosition: 0.6 },
+				/*
+				 * useMaxWidth: false ON THE THREE THAT LAY OUT WIDE — AND IT IS A BUG
+				 * FIX, NOT A PREFERENCE.
+				 *
+				 * `useMaxWidth: true` makes mermaid stamp `width: 100%` on the SVG, so
+				 * a diagram wider than the column is SCALED DOWN rather than allowed to
+				 * overflow. reading.css already gives `pre.mermaid` `overflow-x: auto`
+				 * and says in its own comment that a diagram "scrolls inside its own box
+				 * so the page body never scrolls horizontally" — but with width:100% the
+				 * SVG can never exceed the box, so scrollWidth always equalled clientWidth
+				 * and that scroll container had nothing to scroll. The CSS was written for
+				 * one model and the config enforced the other.
+				 *
+				 * It is invisible on a stub and unmissable on a real chapter, which is why
+				 * it survived until the corpus had content. MEASURED 2026-09-04, on the
+				 * mandated `## Concept map` of four authored Deep Work chapters:
+				 *
+				 *   page                 viewBox   drawn   scale   median label
+				 *   work-deeply           2879px   896px    31%     14px, min 7px
+				 *   deep-work-is-valuable 1453px   896px    62%     13.9px
+				 *   drain-the-shallows    1629px   896px    55%     12.4px
+				 *   embrace-boredom       1716px   896px    52%     23.5px, min 11.7px
+				 *
+				 * and at 420px, which is the phone case:
+				 *
+				 *   work-deeply           2879px   356px    12%     5.6px, MIN 2.8px
+				 *   drain-the-shallows    1629px   356px    22%     4.9px
+				 *
+				 * A 2.8px glyph is not a small diagram, it is a picture of one. And
+				 * `## Concept map` is a REQUIRED heading on every chapter
+				 * (context/chapter-spine.md §1), so this was every chapter in the corpus.
+				 *
+				 * With useMaxWidth false the SVG renders at its intrinsic size, overflows
+				 * the framed box, and the box scrolls — the behaviour reading.css was
+				 * already built for. The page body still never scrolls sideways, because
+				 * the overflow is contained by `pre.mermaid`, and that is asserted by the
+				 * OVERFLOW probe rather than assumed.
+				 *
+				 * ALL FIVE, not just the three that overflow. quadrantChart and pie lay
+				 * out to a fixed box (500x500 measured) that already fits the column, so
+				 * they never trigger the downscale — but the CSS override that frees the
+				 * wide ones (`max-inline-size: none` in reading.css) cannot be aimed at
+				 * one diagram type, and with `useMaxWidth: true` the quadrant carries
+				 * `width="100%"` plus an inline `max-width: 500px`. Freeing the max-width
+				 * and leaving the 100% made it STRETCH: measured 896x896 from 500x500, a
+				 * 1.79x blow-up, with 32px labels. Intrinsic sizing everywhere is the only
+				 * setting where one CSS rule is correct for every diagram, and a 500px
+				 * diagram then simply centres inside the column.
+				 */
+				flowchart: { useMaxWidth: false, htmlLabels: true, nodeSpacing: 55, rankSpacing: 65, padding: 14 },
+				mindmap: { useMaxWidth: false, padding: 14 },
+				timeline: { useMaxWidth: false },
+				quadrantChart: { useMaxWidth: false },
+				pie: { useMaxWidth: false, textPosition: 0.6 },
 
 				/*
 				 * CATEGORICAL colour — set ONCE, identical in all four themes.
@@ -394,6 +443,40 @@ export default defineConfig({
 					}
 					.data-points circle {
 						stroke: none !important;
+					}
+
+					/*
+					 * A QUADRANT POINT'S LABEL IS NOT THE POINT. Same defect class as
+					 * the timeline "null" class, reached by a different road.
+					 *
+					 * Block C above carries a .quadrant-point-text selector. Mermaid
+					 * 11.17.2 EMITS NO SUCH CLASS — read off the live SVG, the label is
+					 *
+					 *     g.data-points > g.data-point > text[fill="#a8502f"]
+					 *
+					 * with class null. So the selector matched nothing and the label kept
+					 * quadrantPointTextFill, which is the CATEGORICAL colour of the mark.
+					 *
+					 * (Both of those words were written inside backticks first, and the
+					 * build died at astro.config.mjs:451 with a rolldown parse error
+					 * pointing at line 188 — trap 1 of stack fact 14, live, in the exact
+					 * block that documents it.)
+					 *
+					 * MEASURED 2026-09-04 on the Ch 4 quadrant, against the panel each
+					 * label actually sits on: Day 4.55:1 and Sepia comparable, but Night
+					 * and Dusk 3.61:1 — under the 4.5:1 floor this project holds text to,
+					 * in two of four themes, and contrast.mjs cannot see it because it
+					 * reads --rd-* tokens and this is an inline SVG attribute.
+					 *
+					 * The split the rest of this block already uses decides the fix: the
+					 * 5px DOT is a data identity and stays #a8502f; its label sits on the
+					 * canvas and reads against the canvas, so it is STRUCTURAL and flips
+					 * with the theme like every other piece of text on a diagram.
+					 */
+					.data-points .data-point text,
+					.data-points text {
+						fill: var(--ds-mm-node-text) !important;
+						color: var(--ds-mm-node-text) !important;
 					}
 
 					/*

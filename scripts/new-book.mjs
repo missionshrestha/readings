@@ -224,7 +224,27 @@ if (kind === 'read') {
 	console.log('    1  Stage 2 (BRIEF) in web chat produces book.json');
 	console.log(`    2  save it to src/content/docs/${domain.slug}/${cluster.slug}/${book.slug}/book.json`);
 	console.log(`    3  node scripts/new-chapters.mjs ${domain.slug} ${cluster.slug} ${book.slug}`);
+	console.log('    4  node scripts/gen-pages.mjs');
 } else {
 	console.log(`    A ${kind} book has no chapter map. Append to its log as you consult it.`);
+	console.log('');
+	console.log('    node scripts/gen-pages.mjs');
 }
+/*
+ * THE gen-pages STEP WAS MISSING, AND IT IS NOT COSMETIC.
+ *
+ * gen-pages.mjs::startedBooks() scans this tree for `index.mdx` and decides two
+ * things from it: whether a domain card on `/` carries the `reading` chip, and
+ * whether the book's card on its own cluster page is a LINK or an inert card.
+ * Until it is re-run, a book that has just been started is unreachable from the
+ * map — the page exists, the sidebar knows it, and the only route to it is
+ * search or a typed URL. MEASURED 2026-09-04: three books scaffolded, three
+ * cluster pages still showing them as not started.
+ *
+ * The 102 map pages are committed files, so this is a real step somebody has to
+ * take and not something the build can do. `node scripts/audit.mjs` reports the
+ * drift weekly if it is forgotten.
+ */
+console.log('       — the 102 map pages are committed, and startedBooks() reads this tree.');
+console.log('       Until it is re-run this book is not linked from its own cluster page.');
 console.log('');

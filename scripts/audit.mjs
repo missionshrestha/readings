@@ -24,6 +24,7 @@
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 import { parseUniverse } from './universe.mjs';
 import {
 	checkSensitivePrivacy,
@@ -174,7 +175,37 @@ for (const d of onDisk)
 	if (!known.has(d))
 		findings.push(`${d}\n      has a directory but no entry in context/universe.md at that path.\n      Either the book was retitled (its slug is frozen by this directory) or it moved cluster.`);
 
-// 6 · books started, for the report line.
+/*
+ * 6 · THE DERIVED FILES STILL MATCH THEIR GENERATOR.
+ *
+ * "Never hand-write a derived file" was a rule with no instrument. Measured
+ * 2026-09-04: a plain `node scripts/gen-pages.mjs` rewrote 61 of the 102
+ * committed map pages, because the generator had stopped emitting zero-count
+ * chips and the committed pages still carried them. Nothing was broken and the
+ * build was green, which is exactly why it went unnoticed.
+ *
+ * It is a FINDING and not a control, deliberately. A stale map page still
+ * renders; refusing a deploy over a chip would block a chapter for a cosmetic
+ * drift. This is the weekly report, which is the right altitude for it.
+ */
+try {
+	execFileSync('node', [join(ROOT, 'scripts', 'gen-pages.mjs'), '--check'], {
+		cwd: ROOT,
+		stdio: 'pipe',
+	});
+} catch (e) {
+	const out = String(e.stdout ?? '').trim();
+	const files = out.split('\n').filter((l) => l.trim().startsWith('· ')).map((l) => l.trim().slice(2));
+	findings.push(
+		`${files.length} generated file(s) have DRIFTED from scripts/gen-pages.mjs.\n` +
+			'      Run `node scripts/gen-pages.mjs`. A derived file edited by hand is a file\n' +
+			'      the next run silently discards.\n' +
+			files.slice(0, 8).map((f) => `        · ${f}`).join('\n') +
+			(files.length > 8 ? `\n        … and ${files.length - 8} more` : '')
+	);
+}
+
+// 7 · books started, for the report line.
 const started = [...onDisk].length;
 
 /* --- report -------------------------------------------------------------- */

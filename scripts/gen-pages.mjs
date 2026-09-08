@@ -238,10 +238,39 @@ function page({ title, description, body, headTitle }) {
 	return `${fm.join('\n')}\n${BANNER}\n\n${body}\n`;
 }
 
-function write(relPath, contents) {
-	const full = join(DOCS, relPath);
+/* ==========================================================================
+ * --check — DOES THE COMMITTED OUTPUT STILL MATCH THE GENERATOR?
+ *
+ * CLAUDE.md says "never hand-write a derived file. Re-run the script." That is a
+ * rule held by convention, and nothing verified it — so the 102 map pages could
+ * drift from the script that produces them and stay drifted, indefinitely, on a
+ * green build. They HAD: measured 2026-09-04, a plain re-run rewrote 61 files,
+ * because the generator had since stopped emitting zero-count chips
+ * (`0 deepen`) and the committed pages still carried them. Nothing was broken —
+ * which is precisely why nobody noticed for however long it had been true.
+ *
+ * `--check` writes nothing, removes nothing, and reports every file whose
+ * generated content differs from what is on disk. It is called by
+ * scripts/audit.mjs, NOT by the build: a stale map page is a fact worth
+ * reporting weekly, not a reason to refuse a deploy — the pages that are there
+ * still render, and refusing over it would block a chapter for a chip.
+ * ========================================================================== */
+const CHECK = process.argv.includes('--check');
+const drift = [];
+
+/** The one place anything reaches the disk. In --check it compares instead. */
+function emit(full, contents) {
+	if (CHECK) {
+		const now = existsSync(full) ? readFileSync(full, 'utf8') : null;
+		if (now !== contents) drift.push({ path: full.replace(ROOT + '/', ''), missing: now === null });
+		return;
+	}
 	mkdirSync(dirname(full), { recursive: true });
 	writeFileSync(full, contents);
+}
+
+function write(relPath, contents) {
+	emit(join(DOCS, relPath), contents);
 }
 
 function homePage(u, started) {
@@ -622,19 +651,19 @@ function pruneGenerated(dir) {
 		const full = join(dir, entry);
 		if (statSync(full).isDirectory()) pruneGenerated(full);
 		else if (entry === 'index.mdx' && readFileSync(full, 'utf8').includes(BANNER)) {
-			rmSync(full);
+			if (!CHECK) rmSync(full);
 			removed++;
 		}
 		// The method pages are .md and carry the HTML-comment banner. Pruned by the
 		// same rule so a renamed slug cannot strand an orphan that still builds.
 		else if (entry.endsWith('.md') && readFileSync(full, 'utf8').includes(MD_BANNER)) {
-			rmSync(full);
+			if (!CHECK) rmSync(full);
 			removed++;
 		}
 	}
 }
 pruneGenerated(DOCS);
-if (existsSync(join(DOCS, 'index.mdx')) && readFileSync(join(DOCS, 'index.mdx'), 'utf8').includes('PLACEHOLDER'))
+if (!CHECK && existsSync(join(DOCS, 'index.mdx')) && readFileSync(join(DOCS, 'index.mdx'), 'utf8').includes('PLACEHOLDER'))
 	rmSync(join(DOCS, 'index.mdx'));
 
 write('index.mdx', homePage(u, started));
@@ -653,7 +682,7 @@ for (const d of u.domains) {
 	}
 }
 
-mkdirSync(GENERATED, { recursive: true });
+if (!CHECK) mkdirSync(GENERATED, { recursive: true });
 
 // The flat slug -> label map the breadcrumb imports.
 const labels = { domains: {}, clusters: {}, books: {} };
@@ -664,8 +693,8 @@ for (const d of u.domains) {
 		for (const b of c.books) labels.books[`${d.slug}/${c.slug}/${b.slug}`] = b.title;
 	}
 }
-writeFileSync(join(GENERATED, 'nav-labels.json'), JSON.stringify(labels, null, '\t') + '\n');
-writeFileSync(join(GENERATED, 'universe.json'), JSON.stringify(u, null, '\t') + '\n');
+emit(join(GENERATED, 'nav-labels.json'), JSON.stringify(labels, null, '\t') + '\n');
+emit(join(GENERATED, 'universe.json'), JSON.stringify(u, null, '\t') + '\n');
 
 /**
  * book-slugs.md — handed to web chat as a knowledge file.
@@ -689,7 +718,7 @@ const slugRows = [
 for (const b of u.books)
 	slugRows.push(`| ${b.title} | ${b.author ?? '—'} | \`/${b.domain}/${b.cluster}/${b.slug}/\` |`);
 slugRows.push('');
-writeFileSync(join(GENERATED, 'book-slugs.md'), slugRows.join('\n'));
+emit(join(GENERATED, 'book-slugs.md'), slugRows.join('\n'));
 
 /**
  * _redirects — path-level redirects for a book that moves between clusters.
@@ -711,7 +740,19 @@ const redirects = [
 	'# Verify with `npx wrangler dev` — the only local server that applies this file.',
 	'',
 ];
-writeFileSync(join(ROOT, 'public', '_redirects'), redirects.join('\n'));
+emit(join(ROOT, 'public', '_redirects'), redirects.join('\n'));
+
+if (CHECK) {
+	if (!drift.length) {
+		console.log('\n  gen-pages --check: every generated file matches the generator.\n');
+		process.exit(0);
+	}
+	console.log(`\n  gen-pages --check: ${drift.length} generated file(s) DRIFTED from the generator.\n`);
+	for (const d of drift) console.log(`    · ${d.path}${d.missing ? '   (absent)' : ''}`);
+	console.log('\n  Nothing was written. Re-run `node scripts/gen-pages.mjs` to bring them back.');
+	console.log('  A derived file edited by hand is a file the next run silently discards.\n');
+	process.exit(1);
+}
 
 console.log(`\n  generated from context/universe.md\n`);
 console.log(`    pages removed       ${removed}   (map + method, by banner)`);

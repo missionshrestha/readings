@@ -2,7 +2,7 @@
 
 **Stage 6. AFTER you have written `## Recall` closed-book.** Search on where possible.
 
-**Length: 822 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 1217 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
 
 > **Do not run this before the recall.** The whole design is that you produce first and receive
 > second — retrieval scored **61% against 40%** for rereading. Running this first turns the chapter
@@ -13,11 +13,23 @@
 > circumstances, so that can help understand what writer/author actually meant and why."*
 > `chapter-spine.md` §3 has the three reasons it sits here rather than in `## Pre-context`.
 
+## Paste with it
+
+`00-CONTEXT-PACK` ● · the full chapter ● · its `book.json` node ● · `chapter-spine` ● · `md-spec` ● ·
+`standards` ● · `source-rules` ● — `GUIDE.md` Appendix A. **Everything.** This is the heaviest prompt
+in the library and the one where an invented citation costs the most. **Search on.**
+
+And your recall, written closed-book. See [recall.md](recall.md).
+
 ---
 
 ````text
-Here is chapter [N] of [BOOK], and here is what I wrote from memory
-before reading anything of yours:
+Here is chapter [N] of [BOOK]. Here is its node from my brief:
+
+[PASTE THE CHAPTER'S book.json NODE — argues, weightInArgument,
+ verdict, clarified, and the book's gap]
+
+And here is what I wrote from memory before reading anything of yours:
 
 [PASTE YOUR RECALL]
 
@@ -27,10 +39,10 @@ Do not soften the marking. If I reconstructed the conclusion and lost
 the mechanism, say that in those words; it is the most common failure
 and the one I most need told.
 
-IF book.json says clarified: false FOR THIS CHAPTER, also produce
-## Core message and ## Key points now, AFTER the marking above and
-before the explanation layer. On familiar material these come after my
-own attempt rather than before my reading, so they check the attempt
+IF THE NODE ABOVE SAYS clarified: false, also produce ## Core message
+and ## Key points now, AFTER the marking above and before the
+explanation layer. On familiar material these come after my own
+attempt rather than before my reading, so they check the attempt
 instead of replacing the reading.
   ## Core message  one sentence, in a :::note[Core message] block
   ## Key points    the claims the argument rests on, unevenly sized
@@ -83,7 +95,13 @@ order, under ## The explanation layer:
       all nine sections above. If it carries no qualification it did
       not survive them; it skipped them.
 
-Then ## Sources — claim, anchored URL, date read, AND ITS TIER:
+Then ## Sources, as a table with EXACTLY these four columns:
+
+  | Claim | Source | Read on | Tier |
+
+One row per empirical claim in the body. "Source" is an anchored URL,
+not a bare title. "Read on" is the date you opened it. "Tier" is one
+of four and it is not optional:
 
   A  primary       the study, the meta-analysis, the original text
   B  independent   a replication, a critic, a review with no stake
@@ -104,19 +122,99 @@ All four parts. An honest gap is a correct output. An invented author,
 year and journal is the easiest thing you can generate and the hardest
 thing I can catch.
 
-Anything on this list gets its replication status IN THE SENTENCE, not
-in a footnote: priming · ego depletion · power posing · learning styles
-· the 10,000-hour rule.
+EVERY empirical claim carries a STRENGTH WORD in the sentence itself,
+never in a footnote and never in the table alone. Four words, and they
+are not interchangeable:
+
+  replicated           independent groups, same direction. Load-bearing
+  single study         one lab, one sample. Interesting, not settled
+  contested            competent people disagree about it NOW
+  failed to replicate  say it WHERE the original claim is made
+
+An effect size beats an adjective, and an undated fact rots silently
+while a dated one rots visibly.
+
+These six get their status in the sentence without exception, because
+each has failed to replicate or been materially walked back and each
+runs through dozens of books on my shelf:
+
+  priming · ego depletion · power posing · learning styles
+  the 10,000-hour rule · handwriting beats typing (contested)
 
 There is no length limit. Depth is set by the brief: a load-bearing
 deep-dive chapter gets everything; a supporting skim gets every
 sub-section, each shorter. NEVER DROP A SUB-SECTION — a missing one is
 a structural defect. Where one is short, say in one clause why.
 
-Four-backtick fence. Nothing outside it.
+MISSING INPUTS — NAME THEM AND STOP
+
+If my recall is not above, STOP and ask for it. Producing the
+explanation first contaminates it, and the marking afterwards measures
+nothing. If the brief node is not above, say so — without clarified
+you cannot know whether sections 2 and 3 are yours to write. If you do
+not have search, say so in the first line: "what real readers say" and
+"what's been tested since" are not written from memory, and a
+plausible paragraph in either is the most expensive output in this
+system.
+
+Four-backtick fence. Nothing outside it. The ten sub-sections land
+between the SPINE marker comments already on the page — do not
+reproduce those comments, do not rename a heading, and keep all ten
+even where one is a single clause.
 ````
 
 ---
+
+## What lands on the page
+
+`## The explanation layer` with its **ten** `###`, and `## Sources`. Plus `## Core message` and
+`## Key points` **when `clarified: false`** — the flip that had no producer until 2026-08-31.
+
+The ten `###` go **inside the `SPINE` marker comments** in the stub, replacing each `TODO`. Those
+comments are found by literal string match: a paste that alters or drops one makes
+`node scripts/new-chapters.mjs <d> <c> <b> --spine` silently no-op on that file for ever after.
+
+`### The version to hold` owes a `:::tip[The version to hold]` directive. The scaffolder does not
+pre-write it.
+
+## Landed / Did not
+
+| | |
+|---|---|
+| **Landed** | It marked the recall first, as questions, and the marking stung |
+| **Did not** | It explained first and marked afterwards. The marking is now worthless — it is grading an answer against a paper it already showed you |
+| **Landed** | Every sentence in `### Where the author was standing` ends in a prediction about the claim |
+| **Did not** | Biography. Delete every sentence that does not predict where the argument bends; if nothing survives, that is the finding |
+| **Landed** | `### What real readers say` names a venue — a subreddit, a thread, a review site |
+| **Did not** | *"Many readers find…"* with no venue. Manufactured consensus is the cheapest thing this prompt can produce and the hardest for you to catch |
+| **Landed** | `### How practitioners actually use it` contains a number — a team size, a duration, a frequency |
+| **Did not** | *"It has a learning curve."* No number means it is the book's advice restated as practice |
+| **Landed** | `### Where it doesn't transfer` describes conditions and stops |
+| **Did not** | A sentence with "you" as its subject and a conclusion as its verb. That conclusion is yours, and it belongs with your recall |
+| **Landed** | A `[UNVERIFIED: …]` with all four parts in it |
+| **Did not** | An author, a year and a journal that do not exist. This is the easiest thing a model generates and the hardest thing you will catch |
+| **Landed** | Ten sub-sections |
+| **Did not** | Nine. That is the pre-2026-08-31 shape |
+
+## If it comes back wrong
+
+````text
+You produced nine sub-sections. The missing one is
+### [heading]. Emit that sub-section alone, in a four-backtick fence,
+in the same voice as the rest. Do not re-emit the others.
+````
+
+````text
+This tier-C row supports a claim about the world: [quote it]. Rewrite
+the sentence so it says what the BOOK claims — "Newport cites a 2012
+McKinsey figure that…" — or find the primary and give me tier A.
+````
+
+````text
+"What real readers say" names no venue. Say where you looked and that
+it was thin. A stated gap is a correct output here; a fluent paragraph
+about what readers generally think is not.
+````
 
 ## What to check
 

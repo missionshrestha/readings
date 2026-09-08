@@ -2,7 +2,16 @@
 
 **Stage 9. Eight minutes.** Publishes the finished chapter page.
 
-**Length: 593 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 949 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+
+## Paste with it
+
+`00-CONTEXT-PACK` ● · its `book.json` node ● · `chapter-spine` ● · `md-spec` ● · `standards` ● · the
+chapter ○ — `GUIDE.md` Appendix A.
+
+**And the slug list.** `src/generated/book-slugs.md` holds every valid internal path. Web chat cannot
+open it, so either paste it with this prompt or accept plain-text cross-links: a link to a page that
+does not exist **fails the build outright**.
 
 ---
 
@@ -58,9 +67,10 @@ Assemble the rest of chapter [N]'s page. These sections only:
     does not exist FAILS THE BUILD OUTRIGHT — starlight-links-validator
     runs with failOnError, and a draft page has no URL at all.
 
-    Every path comes from src/generated/book-slugs.md. Root-absolute,
-    never a relative ../ chain: relative links are a hard build error
-    here, not a resolved convenience, because a ../ pasted from a chat
+    Every path must come from the slug list, if I pasted one. Links
+    are ROOT-ABSOLUTE — /domain/cluster/book/chapter/ — never a
+    relative ../ chain. Relative links are a hard build error here,
+    not a resolved convenience, because a ../ pasted from a chat
     session is a guess.
 
     If you are not certain a target exists, write it as plain text and
@@ -80,14 +90,86 @@ CONSTRAINTS
   notice a claim that is missing from it, say so in prose OUTSIDE the
   fence and I will go back to P4.
 
-  Do NOT add a heading that is not one of the twelve in the spine. An
-  extra ## is a defect: headings are anchors, and anchors are contracts
-  across the whole corpus.
+  Do NOT add a heading that is not one of these twelve, in this order.
+  An extra ## is a defect: headings are anchors, and anchors are
+  contracts across the whole corpus. An #### anywhere means the
+  chapter should have been split, which is a brief amendment.
 
-  Use only the components in md-spec.md. No fifth custom component and
-  no second diagram tool.
+    ## Pre-context              ## Dialogue
+    ## Core message             ## Concept map
+    ## Key points               ## Actions
+    ## The clarified chapter    ## The 30-second version
+    ## Recall                   ## Open questions
+    ## The explanation layer    ## Sources
+
+  Use ONLY these components. There is no fifth custom one and no
+  second diagram tool:
+
+    custom   <Recall> <Actions /> <Passage> <Margin>
+    stock    <Aside> <Badge> <Card> <CardGrid> <Code> <LinkCard>
+             <Steps> <Tabs> <TabItem>
+
+  <Aside> types are note, tip, caution and danger. There is NO success
+  type. Every component needs BLANK LINES around its inner content or
+  the Markdown inside is not parsed as Markdown — it renders, wrongly.
+  Maths is not enabled; $$…$$ hard-fails.
+
+  Put every bare < and { in prose inside backticks. "a <b" is a parse
+  error naming the line; "{threshold}" is a RUNTIME error that only
+  fires on a page with a route, so on a draft it is invisible.
+
+MISSING INPUTS — NAME THEM AND STOP
+
+If I have not given you the slug list, do not stop: write every
+cross-link as plain text and say so. A plain-text mention costs
+nothing and a broken link costs the build, so degrading is correct
+here and guessing a path is not.
+
+Everything else, stop for. If you do not have the chapter's node from
+my brief, say so — without "argues" you are drawing a concept map of
+whatever the chapter seemed to be about. If the sections above this
+one are not on the page yet, say which are missing: the 30-second
+version is what I would say having read the whole page, and written
+against half of it, it is a blurb.
 
 Four-backtick fence. Nothing outside it.
+````
+
+---
+
+## What lands on the page
+
+`## Concept map` and `## The 30-second version`. **Two sections, and no others** — `## Sources` is
+`P4`'s, the actions are frontmatter, and `## Recall` and `## Open questions` are yours.
+
+## Landed / Did not
+
+| | |
+|---|---|
+| **Landed** | The diagram has a cross-link — an idea in one section that undercuts a claim in another |
+| **Did not** | A star: one root, N leaves, no cross-links. That is a table of contents drawn sideways |
+| **Landed** | Every edge is labelled with how the two things relate |
+| **Did not** | Unlabelled edges. An unlabelled edge asserts a connection without saying what it is, which is the diagram equivalent of "studies show" |
+| **Landed** | It said the chapter did not need a diagram and omitted the section |
+| **Did not** | A diagram restating the paragraph above it, drawn because the heading was there |
+| **Landed** | Cross-links say **how** — "argues the opposite from neurochemistry" |
+| **Did not** | *"Related: Atomic Habits."* Related how? |
+| **Landed** | Uncertain targets came back as plain text, flagged as uncertain |
+| **Did not** | A confident `<LinkCard>` to a page that does not exist, which fails the build |
+
+## If it comes back wrong
+
+````text
+The concept map is a star — one root and a list of leaves. Redraw it
+with at least one non-hierarchical link: the idea in one section that
+undercuts a claim in another, or two mechanisms that turn out to be
+the same mechanism. If there is no such link, omit the section and
+say so.
+````
+
+````text
+These edges are unlabelled: [list them]. Label each with how the two
+nodes relate, or remove the edge.
 ````
 
 ## Then, in Claude Code

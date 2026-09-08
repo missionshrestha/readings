@@ -146,6 +146,16 @@ are required on all three.
 }
 ```
 
+**`new-chapters.mjs` says so and exits 0 on both kinds.** Run it against a `reference` or
+`lifelong` book and it prints *"A reference book has no chapter map, so there is nothing to
+scaffold"* and stops before it reads `chapters`. `--refresh` is **refused** on them outright —
+running it would append an empty `## Chapters` heading to a page whose whole premise is that it has
+none, which is the finish line §1 says these books must never acquire. Both were added on
+2026-09-04, after the correctly-shaped case — the one that omits `chapters` rather than wrongly
+including it — was found to reach `[...raw.chapters]` and die with a raw Node
+`TypeError: raw.chapters is not iterable`. That was the documented happy path for **103 of the 293
+books.**
+
 **The page is a dated log, appended to when consulted**, and the completion instinct never touches
 it. `exitCondition` therefore measures *use*, not coverage: "finish it" is the wrong goal for a book
 you are not reading front to back, and writing one would quietly convert a reference into a `read`.
@@ -291,7 +301,24 @@ So there are three narrow doors, and each writes only inside a generated region:
 |---|---|---|
 | `--outline` | The `OUTLINE` region on every chapter — the brief's own words, restated on the page | A file whose `OUTLINE` markers have been deleted. Named, never skipped quietly |
 | `--spine` | The `SPINE` region — the sub-sections of the explanation layer | **Any chapter that has been written in.** Safe means every body inside the region is still the literal `TODO` |
-| `--refresh` | The chapter grid on the book's `index.mdx`, from what is actually on disk | Nothing. It reads frontmatter and needs no `book.json` |
+| `--refresh` | The chapter grid **and the `BRIEF` region** on the book's `index.mdx` | A book that is not `kind: read`. A page with no `BRIEF` markers is named and skipped, with the two lines to paste |
+
+**`--outline` also re-derives each chapter's frontmatter `description` from `argues`**, because
+the scaffolder writes one from the other and they are one field with two homes. It prints every
+change with its old and new value rather than making them quietly — a description may have been
+improved during a paste, and discarding that silently would be the same defect in the other
+direction. Before this, amending a brief updated the comment block on the page and left six pages
+carrying `description: "PLACEHOLDER — the claim this chapter makes, in one line."`, which is the
+`<meta name="description">` and the search snippet, on a green build.
+
+**`--refresh` also writes the `BRIEF` region**, which is `whyNow`, the three `outsideView` fields
+and `questions` — restated on the book page from the brief that already holds them. They were
+hand-copied prose until 2026-09-04, when *Deep Work* was found with a complete `book.json` and a
+page reading "TODO" in all five places. A required field of the brief kept in two places is a field
+that goes stale, and a stale copy is not an error anything can report.
+
+**A `private: true` chapter is omitted from the grid entirely** — not badged. See `CLAUDE.md`
+stack fact 23.
 
 ```bash
 node scripts/new-chapters.mjs <domain> <cluster> <book> --outline    # after a brief amendment

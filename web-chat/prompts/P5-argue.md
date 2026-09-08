@@ -2,7 +2,7 @@
 
 **Stage 7. A conversation, not a request.** Stay in it until the chapter is clear.
 
-**Length: 654 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 750 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
 
 > **THE ORDER IS THE POINT, and it is the reverse of the drafted version.**
 >
@@ -19,6 +19,14 @@
 > and close to the ~50-word arm of the study that produced the 500-word rule. It was the prompt with
 > the single most demanding job in the whole pipeline, written at a length the evidence calls the
 > harmful configuration. Everything below exists because of that.
+
+## Paste with it
+
+`00-CONTEXT-PACK` ● · the chapter ● · `standards` ● · its `book.json` node ○ · `chapter-spine` ○ —
+`GUIDE.md` Appendix A.
+
+**Three messages, in this order, in this chat.** Not one message with three parts — the order is the
+entire mechanism, and collapsing it removes the mechanism while keeping the headings.
 
 ---
 
@@ -53,6 +61,10 @@ HOW TO ANSWER THIS ONE
 
 If you find yourself writing "it depends", finish the sentence: on
 what, and which way does it go in each case?
+
+If you do not have this chapter, say so and stop. Do not answer from
+what the book is generally understood to argue — that is the book's
+reputation, and I can get that anywhere.
 ````
 
 **Ask it as an open question.** *"What does this chapter argue about X?"* — never *"this chapter
@@ -93,7 +105,12 @@ RULES FOR THIS REPLY, AND I WILL BE CHECKING THEM
   if that is where we are.
 ````
 
-## Then, when you are stuck
+## Message three — the sceptic, when you are stuck
+
+**Optional, and it lands in `### Where we ended up` or nowhere.** There is no fifth `###` for it, and
+adding one is a defect: the four headings are anchors and anchors are contracts. If the sceptic
+produced an objection that survived, it belongs in the last sub-section as what you ended up holding.
+If nothing survived, it produced nothing to record, and that is a legitimate outcome of asking.
 
 ````text
 Play a sceptic who thinks this chapter is wrong — not sloppy, not
@@ -134,3 +151,37 @@ is what makes this section auditable a year later, and it is the only reason the
 stands and it still thinks it doesn't"* is a better entry than a manufactured convergence — and a
 `## Dialogue` in which the model agrees every time is evidence that the questions carried the
 answers.
+
+## Landed / Did not
+
+| | |
+|---|---|
+| **Landed** | Message one committed to an answer and said on what basis — the chapter, the literature, its own reasoning, or a guess |
+| **Did not** | A balanced survey of positions. That is what a model produces when it is protecting itself against your disagreeing, and it is the failure this two-message shape exists to prevent |
+| **Landed** | In message two it defended its first answer, and named which step of yours was better if it moved |
+| **Did not** | *"You make a good point."* If it cannot name the step, it has not changed its mind — it has stopped arguing |
+| **Landed** | It named which KIND of disagreement this is: what the author meant, whether the author is right, or whether it applies to you |
+| **Did not** | A synthesis neither of you holds. That ends the conversation without settling anything, which is worse than an open disagreement |
+| **Landed** | The sceptic pushed back twice before conceding anything |
+| **Did not** | *"Of course, there is much of value here."* It broke character at the first answer, which means it was never in character |
+
+## If it comes back wrong
+
+````text
+You moved toward my position as soon as I stated it. Go back to the
+answer you gave before I told you what I thought, and defend it — or
+name the specific step where my reasoning beat yours. Converging
+without naming the step reads to me as having had no position.
+````
+
+````text
+You complimented the question. Delete that and answer it.
+````
+
+## Then
+
+Write the four `###` into `## Dialogue` in the fixed order, and go to `P6`.
+
+**Two rewrites is the limit.** On the third, start a new chat — a long transcript has accumulated
+your own stated positions, which is exactly the condition sycophancy feeds on, and asking again more
+firmly does not fix it. `reference/troubleshooting.md`.

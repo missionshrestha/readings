@@ -182,14 +182,25 @@ transcript, not about the book.
 
 ## Where a toggle goes, and where it must not
 
+**Three prompts take toggles. The other seven do not, and each refusal has a reason.**
+
 | Add to | Toggles |
 |---|---|
 | `P3` part B (the rebuild) | Scripts · Cheat sheet · Local · Numbers |
 | `P4` (the explanation layer) | Reflection · Flags · Mindset · Contrarian · Local |
 | `P6` (candidate actions) | Drills · Decision tree · Self-assessment · Timeline |
 
-**Never add a toggle to `P0`.** It is the standing contract, and a toggle there applies to every
-chapter of the book without your noticing — which is how a toggle stops meaning anything.
+| Never | Because |
+|---|---|
+| **`P0`** | It is the standing contract. A toggle there applies to every chapter of the book without your noticing — which is exactly how a toggle stops meaning anything |
+| **`P1`** | A fifteen-minute gate. Anything added to it is a reason to spend longer choosing, and choosing is not reading |
+| **`P2`** | Its output is a JSON object validated key by key. A toggle produces a key the schema has no home for, and the scaffolder refuses the whole brief |
+| **`P5`** | Its shape *is* its content — a question with nothing attached, then a position. Every toggle adds material to the first message, which is the one message that must carry no belief. **Contrarian is the toggle you want here, and it belongs on `P4`,** where it lands in `### What critics say` and is on the page |
+| **`P7`** | Two sections and a closed component list. A toggle here produces a thirteenth heading, and an extra `##` is a defect — headings are anchors and anchors are contracts |
+| **`P8`, `P9`** | Both are about what actually happened. There is nothing to add to a count |
+
+**Where in the prompt.** Paste the toggle line **inside the fence, at the end**, above the
+four-backtick reminder where one exists. Outside the fence it is a comment to nobody.
 
 **No toggle may produce content in `## Recall` or `## Open questions`.** Those are the prohibition
 zone, and a toggle that asks the model to draft reflection answers has walked straight into it.

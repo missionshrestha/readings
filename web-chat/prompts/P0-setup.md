@@ -3,8 +3,13 @@
 **Once per book, before anything else.** In Project mode this lives in the custom instructions and
 you never paste it again. Standalone, it is the first message in every chat.
 
-**Length: 732 words.** `node scripts/prompt-words.mjs` measures it. The floor is 500 and it is not
+**Length: 897 words.** `node scripts/prompt-words.mjs` measures it. The floor is 500 and it is not
 arbitrary — see `03-OPERATING-RULES.md` design rule 4, and the note at the foot of this file.
+
+## Paste with it
+
+`00-CONTEXT-PACK` ● · `standards` ● — `GUIDE.md` Appendix A. Nothing else: the chapter is not
+uploaded at this stage, and `reader.md` is **never** pasted anywhere.
 
 ---
 
@@ -90,12 +95,56 @@ WHAT I NEED FROM AN ANSWER
   words, use more. What I will not accept is padding: preamble,
   reassurance, or a summary of what you are about to say.
 
+MISSING INPUTS — NAME THEM AND STOP
+
+· If a later prompt reaches you still carrying a square-bracket
+  placeholder I forgot to fill — [BOOK], [AUTHOR], [N], [PASTE], any
+  of them — DO NOT GUESS WHAT I MEANT. Quote the bracket back to me
+  and stop. A chapter number you inferred produces a confident,
+  fluent, completely wrong page, and I will not be able to tell.
+· If a prompt asks you to work from a file that is not in this chat —
+  the chapter, its node in the brief, the source rules — say which one
+  is absent and stop. Do not reconstruct it from the title.
+· Holding three of five inputs, you will generate happily against the
+  two you invented and the output will look correct. That is the
+  failure this paragraph exists to prevent, and it is invisible from
+  my side.
+
 THE TELL: if this transcript is mostly your prose, we are in the mode
 that produces confidence without understanding. You should be asking
 me questions more often than I ask you.
 
 Reply with ONE line confirming, and ask which chapter we are doing.
 ````
+
+---
+
+## What lands on the page
+
+**Nothing.** P0 produces no section of any chapter. It is the standing contract every later prompt
+is enforced against, and its one visible output is a single line of confirmation.
+
+## Landed / Did not
+
+| | |
+|---|---|
+| **Landed** | It replied in one line and asked which chapter. It did not summarise the contract back |
+| **Did not** | It restated the rules approvingly — *"Great, I'll be direct and won't write your commitments"* — which is a paragraph of agreement produced before any work exists to agree about, and the first sycophantic output of the session |
+| **Landed** | Later in the book, it refused something. A P0 that never causes a refusal was not read |
+| **Did not** | Three chapters in and it has never told you that you were wrong in a first sentence |
+
+## If it comes back wrong
+
+````text
+You summarised the contract back to me instead of confirming it. One
+line, and the chapter number. Nothing else.
+````
+
+## Then
+
+In Project mode this goes in the custom instructions once and is never pasted again — see
+`01-SETUP.md`. Standalone, it is the first message in **every** chat, including the new chat you
+start after two failed rewrites.
 
 ---
 

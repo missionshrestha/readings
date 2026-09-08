@@ -2,10 +2,16 @@
 
 **Stage 8. Menu only.** The AI proposes; you choose and you write the sentence.
 
-**Length: 807 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 1209 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
 
 > **`P0`'s one rule is live here and nowhere else matters as much.** If it writes your commitment,
 > it produces something excellent, you feel finished, and nothing happens.
+
+## Paste with it
+
+`00-CONTEXT-PACK` ● · the chapter ● · its `book.json` node ● · `standards` ● — `GUIDE.md` Appendix A.
+The node matters here because **`gap: execution`** makes this stage, not the explanation layer, where
+the chapter's weight falls.
 
 ---
 
@@ -59,8 +65,48 @@ RULES
   a day-30 review.
 · Do not propose "read more about X".
 
+THEN, after the prose menu, emit the same candidates a SECOND time as
+a YAML block I can paste straight into the page's frontmatter. Use
+these key names EXACTLY — copy them, do not retype them. A misspelled
+key and a bad value are both DROPPED SILENTLY by the schema and the
+build stays green, so a typo here does not fail, it just quietly
+removes the row from the ledger that this system's only measurement
+comes from.
+
+  actions:
+    - id: dw-02-timeblock
+      if: "the concrete situation"
+      then: "the specific behaviour"
+      trigger: "a time, a place, a person — never a feeling"
+      obstacle: ""
+      tier: next
+      impact: "honest, including 'probably marginal'"
+      committed: false
+      started:
+      day30: not-yet
+
+  id          PERMANENT and unique across the whole book. It is the
+              review key and it is rendered visibly on the card.
+              Shape: <book initials>-<chapter number, 2 digits>-<one
+              word>. dw-02-timeblock. Never renumber one later.
+  tier        now | next | later | reference. Nothing else.
+  day30       not-yet on every row you emit. running, adapted and
+              dropped are outcomes and only a review writes them.
+  committed   false on EVERY row you emit, without exception.
+
+AND THIS IS THE LINE YOU DO NOT CROSS: for the one I am going to
+commit to, emit the row with "if", "then" and "obstacle" LEFT EMPTY. I
+write those three. If you fill them, you have written my commitment —
+refuse, and say which rule you are refusing under. An excellent
+commitment you wrote produces the feeling of being finished and no
+change in behaviour.
+
 Then STOP. Do not recommend one. Do not rank them. Do not tell me
 which you would pick if you were me.
+
+If you do not have the chapter, or its node from my brief, say which
+and stop. Actions invented from a book's reputation are the fastest
+way to fill a ledger with things no chapter argued for.
 ````
 
 ## Step 2 — you choose ONE, and you write it
@@ -79,6 +125,21 @@ If [concrete situation], then [specific behaviour].
 Everything else in the menu goes into the ledger at `next`, `later` or `reference`. It is recorded,
 not abandoned — and it is not being attempted. **At most one action across the whole book carries
 `committed: true` with `tier: now`**, and `scripts/audit.mjs` reports it when more do.
+
+On the row you commit to, and only that row, you set by hand:
+
+```yaml
+  if: "…"            # yours
+  then: "…"          # yours
+  obstacle: "…"      # yours, from step 3. Required whenever committed is true
+  tier: now
+  committed: true
+  started: 2026-09-04    # the real date. It starts the review schedule
+```
+
+`/validate` flags an `obstacle` under six words as probably vague, and `audit.mjs` refuses a
+duplicate `id` anywhere in the book — an id is the review key and two actions sharing one collapse
+into a row that measures neither.
 
 ## Step 3 — you name the obstacle, and it asks you to
 
@@ -147,5 +208,53 @@ One paragraph. Do not soften it, and do not end by saying it is a good
 commitment.
 ````
 
-Then it goes into frontmatter, and `<Actions />` renders it. `md-spec.md` §4 has the field rules;
-`obstacle` is required whenever `committed: true`, and `/validate` flags one under six words.
+---
+
+## What lands on the page
+
+**Frontmatter, never prose.** `## Actions` contains `<Actions />` and nothing else; the component
+renders the rows from the data. Writing the actions twice guarantees the two disagree, and the ledger
+is computed from the data, not from the section.
+
+`md-spec.md` §4 has the field rules.
+
+## Landed / Did not
+
+| | |
+|---|---|
+| **Landed** | Every trigger is something you could photograph — a time, a place, a person, a moment that already happens without your arranging it |
+| **Did not** | *"When I feel scattered."* You do not notice feeling scattered; that is the problem, and a trigger you have to remember to look for is not a trigger |
+| **Landed** | It said this chapter supports no action, and stopped |
+| **Did not** | It found three anyway. A conceptual chapter supporting none is a legitimate result; inventing one to fill the section makes the ledger meaningless, and the ledger is the only measure this system has |
+| **Landed** | An impact estimate that says "probably marginal" somewhere |
+| **Did not** | Every candidate transformative. That is a menu written to be chosen from, not to be judged |
+| **Landed** | The YAML came back with `committed: false` on every row and the committed row's `if`/`then`/`obstacle` empty |
+| **Did not** | It wrote your commitment. That is P0's one rule, and the output being excellent is what makes it dangerous |
+| **Landed** | Your obstacle has a mechanism in it — a thought you have at the moment of failure |
+| **Did not** | *"Being busy."* That is a description of not having done it, restated |
+
+## If it comes back wrong
+
+````text
+You wrote my commitment. Delete the "if", "then" and "obstacle" on
+that row and leave them empty — I write those three. Say which rule
+you were refusing under and re-emit the YAML block alone.
+````
+
+````text
+These triggers are feelings, not situations: [list them]. Rewrite each
+one as something that already happens daily without my arranging it,
+and that I would notice without having to remember to look for it.
+````
+
+````text
+You proposed an action the chapter does not support: [name it]. Either
+point me at the specific claim it follows from, or withdraw it. An
+action with no anchor in the chapter is one you invented and I want it
+labelled as such.
+````
+
+## Then
+
+Paste the YAML into the chapter's frontmatter, set `status` onward, and go to `P7`. The action's
+`started` date is what `/review` counts from — day 3 · week 2 · week 6 · month 3, absolute.

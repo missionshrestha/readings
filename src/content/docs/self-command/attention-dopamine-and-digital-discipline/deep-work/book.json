@@ -1,5 +1,5 @@
 {
-  "_placeholder": "SHAPE ONLY. Chapter titles and parts are bibliographic fact; every 'argues', 'gap', 'familiarity', 'questions', 'outsideView' and 'exitCondition' below is a STAND-IN written to exercise the scaffolding, and must be replaced wholesale by the real Stage 2 (BRIEF) output from web chat. See context/book-spec.md.",
+  "_testFixture": "TEST DATA — written 2026-09-04 to exercise the whole pipeline end to end. Realistic in shape and register, not a real Stage 2 brief. Remove with the rest of the fixture set.",
 
   "slug": "deep-work",
   "title": "Deep Work",
@@ -14,18 +14,19 @@
 
   "gap": "execution",
   "familiarity": "familiar",
-  "whyNow": "PLACEHOLDER — his own one-line reason goes here.",
+  "whyNow": "The 2-4 hour blocks I keep saying I want have not appeared in four months, and I already know the argument for wanting them.",
 
   "questions": [
-    "PLACEHOLDER — question one, written before reading.",
-    "PLACEHOLDER — question two.",
-    "PLACEHOLDER — question three."
+    "What actually makes a block deep rather than merely uninterrupted?",
+    "Does the scheduling advice survive when the interruptions are other people I owe a reply to?",
+    "What does he say about work that is genuinely collaborative rather than solitary?",
+    "Which rule is load-bearing, and which are ornaments on it?"
   ],
 
   "outsideView": {
-    "replication": "PLACEHOLDER — filled at Stage 1 with search on, every citation verified.",
-    "critics": "PLACEHOLDER",
-    "agedBadly": "PLACEHOLDER"
+    "replication": "Not an empirical programme. The attention-residue result it leans on is Leroy 2009, one study, small, and narrower than the book's use of it. The 10,000-hour framing it borrows from Ericsson is contested by Macnamara's 2014 meta-analysis, which put deliberate practice at ~12% of variance across domains.",
+    "critics": "Read as absolutist about email and open offices. Practitioners in on-call, support and client-facing roles report the scheduling advice fails outright. Several reviewers note the exemplars are overwhelmingly tenured academics and solo authors — people with structural control over their calendars that most readers do not have.",
+    "agedBadly": "The 2016 social-media chapter predates short-form video, which is what most people now actually lose the hours to. The open-plan critique also predates the distributed-work shift, which changed the interruption channel from the desk to the notification."
   },
 
   "parts": [
@@ -37,31 +38,37 @@
 
   "chapters": [
     { "slug": "deep-work-is-valuable", "title": "Deep work is valuable", "order": 1,
-      "part": "the-idea", "argues": "PLACEHOLDER — the claim this chapter makes, in one line.",
+      "part": "the-idea",
+      "argues": "The two abilities that make a knowledge worker valuable in this economy both require sustained concentration, so depth is an economic input rather than a preference.",
       "weightInArgument": "load-bearing", "estMinutes": 30, "verdict": "deep-dive", "clarified": false },
     { "slug": "deep-work-is-rare", "title": "Deep work is rare", "order": 2,
-      "part": "the-idea", "argues": "PLACEHOLDER — the claim this chapter makes, in one line.",
+      "part": "the-idea",
+      "argues": "Organisations destroy depth not out of malice but because visible busyness is the only productivity signal knowledge work has left.",
       "weightInArgument": "load-bearing", "estMinutes": 30, "verdict": "deep-dive", "clarified": false },
     { "slug": "deep-work-is-meaningful", "title": "Deep work is meaningful", "order": 3,
-      "part": "the-idea", "argues": "PLACEHOLDER — the claim this chapter makes, in one line.",
+      "part": "the-idea",
+      "argues": "Depth is worth defending on craft and attention grounds even where the economic argument does not hold.",
       "weightInArgument": "supporting", "estMinutes": 25, "verdict": "skim", "clarified": true },
     { "slug": "work-deeply", "title": "Work deeply", "order": 4,
-      "part": "the-rules", "argues": "PLACEHOLDER — the claim this chapter makes, in one line.",
+      "part": "the-rules",
+      "argues": "Willpower is a finite daily budget, so depth has to be produced by a ritual and a schedule rather than by deciding to concentrate.",
       "weightInArgument": "load-bearing", "estMinutes": 45, "verdict": "deep-dive", "clarified": false },
     { "slug": "embrace-boredom", "title": "Embrace boredom", "order": 5,
-      "part": "the-rules", "argues": "PLACEHOLDER — the claim this chapter makes, in one line.",
+      "part": "the-rules",
+      "argues": "The capacity for concentration is trained by what you do in the gaps, so scheduling distraction rather than scheduling focus is the lever.",
       "weightInArgument": "load-bearing", "estMinutes": 30, "verdict": "deep-dive", "clarified": false },
     { "slug": "drain-the-shallows", "title": "Drain the shallows", "order": 6,
-      "part": "the-rules", "argues": "PLACEHOLDER — the claim this chapter makes, in one line.",
+      "part": "the-rules",
+      "argues": "Shallow work expands to fill whatever it is given, so the only reliable control is a hard budget on it rather than better handling of it.",
       "weightInArgument": "supporting", "estMinutes": 35, "verdict": "deep-dive", "clarified": true }
   ],
 
   "antiChapters": [
     { "title": "Rule #3 — Quit Social Media",
-      "reason": "PLACEHOLDER — the reason must be a reason FOR HIM, not a reason in general." }
+      "reason": "Settled for me already: I do not have the accounts, so reading it would be forty minutes of agreeing with myself rather than forty minutes of changing anything." }
   ],
 
   "inventory": { "chapters": 7, "read": 6, "skipped": 1 },
 
-  "exitCondition": "PLACEHOLDER — what must be observably TRUE for this book to be finished."
+  "exitCondition": "Four consecutive weeks in which at least three 90-minute blocks each week appear in the calendar, were actually worked, and the trigger that produced each one is named in the ledger."
 }

@@ -146,6 +146,9 @@ src/content/docs/
                                           hint — Starlight's own carries none in <main>
   <domain>/<cluster>/<book>/              appears ONLY when a book is actually started
     index.mdx · book.json · <NN>-<chapter>.mdx
+                                          index.mdx has TWO generated regions: BRIEF (whyNow and
+                                          questions, straight from book.json) and CHAPTERS (the
+                                          grid). Both written by --refresh
     <chapter>.comments.json               HIS comments, written only by the dev server.
                                           Never create, edit or delete one
 ```
@@ -324,31 +327,70 @@ Each of these fails **silently**. That is why they are here and not in a checkli
     Starlight's own `--sl-sidebar-visibility` custom property directly, which
     composes with their rule instead of needing to be its sibling.
 
-22. **astro-mermaid re-renders a diagram by replacing the `<pre>`'s innerHTML, on every theme
+22. **`astro-mermaid` DOES NOT SHIP A STYLESHEET — IT INJECTS ONE AT RUNTIME, AND IT
+    WINS.** `astro-mermaid-integration.js:618` appends a `<style>` from a page script,
+    so it lands after every stylesheet this project emits and is in no layer, which
+    means `@layer` cannot demote it either. **One root cause, three visible defects,
+    all silent, all invisible until the corpus had real diagrams in it:**
+    it sets `border: none` and a `background-color` keyed on `[data-theme]` and
+    `prefers-color-scheme` — so the "framed like a card" comment in `reading.css`
+    described a frame that had not existed since the integration was added, and the
+    diagram's ground tracked the OS rather than any of the four reading themes. And
+    it sets **`display: flex`, which makes the SVG a FLEX ITEM**: a flex item shrinks
+    to its container whatever width it is given, so `overflow-x: auto` had nothing to
+    scroll and an inline `width: 2879px` set by hand still computed to `896px`.
+    Combined with `useMaxWidth: true` and Starlight's own `svg { max-width: 100% }`
+    (`markdown.css:75`), every `## Concept map` — a REQUIRED heading on every chapter
+    — was scaled down instead of scrolled. **Measured 2026-09-04 across four authored
+    chapters: 31%–62% at 1280px, and 12%–24% at 420px, with label text at 2.8–5.6px
+    on a phone.** The fix is three places and none works alone: `useMaxWidth: false`
+    on all five diagram types, `max-inline-size: none` + `block-size: auto` on the
+    svg, and the frame rules re-declared at `html .sl-markdown-content pre.mermaid`
+    with `!important` on the four properties the vendor actively fights for.
+    **Diagnosed with CDP `CSS.getMatchedStylesForNode`, after two rounds of measuring
+    a computed value with no visible cause** — when a computed style disagrees with
+    every rule you can find, enumerate the matched rules rather than reading more CSS.
+    **The layout part was replaced on 2026-09-14:** diagrams now sit inside the text
+    column and open full screen with Expand (facts 24 and 30, `/elements/`). The
+    runtime stylesheet, and the frame rules that fight it, are unchanged.
+
+23. **A generated page can be the thing that leaks.** `readChapterFrontmatter()` in
+    `new-chapters.mjs` read `draft` and not `private`, so a chapter carrying
+    `draft: false, private: true` — the correct, intended combination for personal
+    material — counted as *written* and got a real `<LinkCard>` in the chapter grid.
+    Control 4 refused the build, correctly, naming the link. **The point is which side
+    produced it:** an author who writes that link sees the refusal once and edits one
+    page, whereas `--refresh` reintroduces it on every run, so the failure returns
+    every time the grid is regenerated. A private chapter is now OMITTED from the grid
+    rather than badged — a "Private" badge still puts the chapter's TITLE on a public
+    page, which is half of what the control's own message names — and a count line
+    replaces it, so the page does not claim a coverage it is not showing.
+
+24. **astro-mermaid re-renders a diagram by replacing the `<pre>`'s innerHTML, on every theme
     change** — `astro-mermaid-integration.js:551`, fired by the `data-theme` observer at `:582`. So
     **anything placed inside `pre.mermaid` is deleted the first time the reader changes theme.** The
     Expand control lives in a `.rd-diagram` wrapper around the `<pre>`, and the full-screen view
     *moves* the `<pre>` into its dialog rather than cloning the SVG, because mermaid's arrowheads and
     `themeCSS` are scoped by the SVG's id.
 
-23. **A class that sets `display` beats the browser's `[hidden]` rule.** The UA's
+25. **A class that sets `display` beats the browser's `[hidden]` rule.** The UA's
     `[hidden] { display: none }` is less specific than `.rd-btn { display: inline-flex }`, so an
     element with `hidden` correctly set still shows. **It bit twice on 2026-09-14** — the header
     comments button appeared on every page, and "Delete" appeared on a new comment — and was caught
     only by a screenshot. Every class here that sets `display` on something toggled with `hidden`
     carries a `[hidden]` override in `src/styles/annotations.css`.
 
-24. **Starlight's reset removes the margin that centres a modal `<dialog>`.** `* { margin: 0 }`,
+26. **Starlight's reset removes the margin that centres a modal `<dialog>`.** `* { margin: 0 }`,
     `@astrojs/starlight/style/reset.css:8-10`. `showModal()` still works and the backdrop still
     draws — **the dialog just opens pinned to the top-left corner.** `.rd-ceditor` sets
     `margin: auto` back.
 
-25. **`astro dev` and `astro preview` detach into a daemon in Astro 7.** The launching command exits 0
+27. **`astro dev` and `astro preview` detach into a daemon in Astro 7.** The launching command exits 0
     within a second — *"Preview server running … Stop: astro preview stop"* — while the server keeps
     running. A background task reported as "completed" is therefore not a stopped server, and a
     probe that starts one must end with `astro dev stop` / `astro preview stop`.
 
-26. **This site never renders Mermaid with `theme: 'base'`, whatever the config says.** astro-mermaid's
+28. **This site never renders Mermaid with `theme: 'base'`, whatever the config says.** astro-mermaid's
     `autoTheme` maps `data-theme` light to `default` and dark to `dark`
     (`astro-mermaid-integration.js:485-488`), and `Head.astro` always sets `data-theme`. Measured
     2026-09-14: sequence actor boxes painted `#ECECFF` in Day and `#1F2020` in Night — the stock
@@ -357,12 +399,12 @@ Each of these fails **silently**. That is why they are here and not in a checkli
     `themeVariables` object — **a partial nested object (`xyChart`, `radar`, `cynefin`) replaces the
     defaults wholesale**, which was read in mermaid's code and not probed.
 
-27. **`&` in `themeCSS` silently matches nothing.** Mermaid prefixes every rule with the diagram's id,
+29. **`&` in `themeCSS` silently matches nothing.** Mermaid prefixes every rule with the diagram's id,
     and `&` resolves to that same id, so `& text` is emitted as `#mermaid-x #mermaid-x … text`. Green
     build, rule present in the stylesheet, xychart text still at 3.20:1. The SVG root cannot be
     selected from `themeCSS` at all — scope a rule by the diagram's own group classes.
 
-28. **Two diagram types ignore the column's width.** `xychart` hard-codes `useMaxWidth: true`
+30. **Two diagram types ignore the column's width.** `xychart` hard-codes `useMaxWidth: true`
     (`xychartDiagram-S5SC5T6Z.mjs:2080`), so it shrinks on a phone instead of scrolling; `gantt` lays
     out to the page BODY's width — 1278px at a 1280 viewport, then scaled to 4.4px text — until
     `useWidth` is set. Both are pinned in `astro.config.mjs`, and both were found only by measuring
@@ -414,7 +456,9 @@ themes) and `scripts/audit.mjs` (the weekly report).
   this session. Ask, then write. An unasked cell stays empty.** An empty cell is a known gap; a
   guessed one is indistinguishable from a real answer.
 - **Never hand-write a derived file.** The 102 map pages, the sidebar, `book-slugs.md`, the chapter
-  grid and the `OUTLINE`/`SPINE` regions are generated. Re-run the script; never edit between markers.
+  grid, the book page's `BRIEF` region and the `OUTLINE`/`SPINE` regions are generated. Re-run the
+  script; never edit between markers. **A chapter's `description` is derived too** — it is
+  `book.json`'s `argues`, and `--outline` re-derives it and prints every change.
 - **`.mdx` only, never `.md`.** Stock Starlight components plus exactly four custom ones. A fifth
   requires him to ask explicitly, in writing, in that session.
 - **There is NO length budget, and this is his instruction, not an omission.** *"if a chapter is 10
@@ -448,7 +492,10 @@ npm run check      # astro check
 npm run ci         # astro check && astro build — EXACTLY what Cloudflare runs
 
 node scripts/universe.mjs                    parse and verify the universe
-node scripts/gen-pages.mjs                   regenerate the 102 map pages
+node scripts/gen-pages.mjs                   regenerate the 102 map pages.
+                                             RUN IT AFTER STARTING A BOOK — the
+                                             cluster card is inert until you do
+node scripts/gen-pages.mjs --check           writes nothing; reports drift. audit runs it
 node scripts/new-book.mjs <d> <c> <b>         start a book
 node scripts/new-chapters.mjs <d> <c> <b>     scaffold its chapters from book.json
 node scripts/new-chapters.mjs <d> <c> <b> --refresh    after a paste

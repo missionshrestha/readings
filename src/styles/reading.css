@@ -917,17 +917,142 @@
 	--ds-mm-alt-fill: color-mix(in srgb, var(--rd-ink) 4%, var(--rd-ground));
 }
 
-/* Framed like a card, and it scrolls inside its own box so the page body never
-   scrolls horizontally. */
-pre.mermaid {
+/* ==========================================================================
+ * THE DIAGRAM FRAME — AND WHY EVERY RULE HERE CARRIES `html` IN FRONT OF IT.
+ *
+ * astro-mermaid DOES NOT SHIP A STYLESHEET. It injects one at RUNTIME, from a
+ * page script that appends a <style> element to the document
+ * (astro-mermaid-integration.js:618-676). That style therefore lands AFTER every
+ * stylesheet this project emits, so at equal specificity the vendor always wins —
+ * and it is not in any layer, so `@layer` cannot demote it either.
+ *
+ * MEASURED 2026-09-04 on a chapter page, computed style of `pre.mermaid`, with
+ * the block below written at plain `pre.mermaid` specificity:
+ *
+ *     display          flex          <- vendor. WE NEVER SET display AT ALL
+ *     justify-content  center        <- vendor
+ *     border-top-width 0px           <- vendor `border: none`. Ours said 1px solid
+ *     background       rgba(0,0,0,.02)  <- vendor. Ours said var(--rd-surface)
+ *
+ * So the comment that used to sit here — "framed like a card" — described
+ * something that had not happened since the integration was added. The card had
+ * no border and no themed ground, and nothing reported it because a missing
+ * border is not an error.
+ *
+ * ONE ROOT CAUSE, THREE VISIBLE DEFECTS, and the third is the expensive one:
+ *
+ *   1 · no border, so the diagram had no frame;
+ *   2 · a background keyed to `prefers-color-scheme`, which is the OS setting and
+ *       NOT one of this site's four reading themes — so the diagram ground could
+ *       disagree with the page it sat on;
+ *   3 · `display: flex` MADE THE SVG A FLEX ITEM. A flex item shrinks to its
+ *       container whatever width it is given, which is why an inline
+ *       `width: 2879px` set by hand still computed to 896px, and why
+ *       `overflow-x: auto` here had nothing to scroll for. Diagrams were being
+ *       shrunk, never scrolled.
+ *
+ * `html` in front of each selector takes them to (0,2,2) and (0,2,3), which is
+ * enough for the vendor's `pre.mermaid` and `pre.mermaid[data-processed]`.
+ *
+ * IT IS NOT ENOUGH FOR ALL OF THEM, AND CHASING IT WITH SPECIFICITY IS THE WRONG
+ * FIX. The vendor also emits
+ *
+ *     [data-theme="light"] pre.mermaid[data-processed]
+ *       { background-color: rgba(0, 0, 0, 0.02) }
+ *
+ * at (0,3,1) — found with CDP CSS.getMatchedStylesForNode after the border came
+ * back and the background did not. Out-specifying that needs an attribute
+ * selector of our own, and the only one available is `data-reading-theme`, which
+ * is written by JS: a rule that depends on it is a rule that does not hold before
+ * hydration or with scripting off. It would also have to be re-escalated on the
+ * next vendor bump.
+ *
+ * So the four properties the vendor actively fights for are `!important` and the
+ * rest are not. That keeps the marker on exactly the declarations that are
+ * defending against a runtime-injected stylesheet, rather than on a whole block.
+ *
+ * NOTE WHAT THAT VENDOR RULE IS KEYED ON: `[data-theme]`, which has two values,
+ * and `prefers-color-scheme`, which is the OS setting. This site has FOUR reading
+ * themes, and the diagram ground has to be the same ground as the page it sits on
+ * in all four. That is the same class of defect as stack fact 16 — two writers of
+ * one piece of state — and it is why the background is ours rather than theirs.
+ * ========================================================================== */
+html .sl-markdown-content pre.mermaid {
+	display: block !important;
 	margin-block: var(--ds-5, 1.5rem);
 	padding: var(--ds-4, 1rem);
-	background: var(--rd-surface);
-	border: 1px solid var(--rd-border);
-	border-radius: var(--ds-r-md, 0.75rem);
+	/*
+	 * --ds-mm-canvas, NOT --rd-surface, and the difference is visible.
+	 * --ds-mm-node-fill is --rd-surface (see the token block below), so a frame
+	 * painted --rd-surface puts white nodes on a white ground and the boxes
+	 * survive only as their 1.25px stroke. The canvas token exists precisely to
+	 * name the ground a diagram is drawn ON, and its value is --rd-ground — the
+	 * same relationship every other card on the site has, surface on ground.
+	 *
+	 * THE FOUR LAYERS ARE A SCROLL CUE, NOT DECORATION, and they are the other
+	 * half of the overflow fix. A diagram that is now allowed to be 2879px wide
+	 * inside a 926px box ends at a hard vertical cut with nothing to say that
+	 * there is more to the right — which is a worse failure than the shrinking
+	 * was, because a squashed diagram at least looks wrong. This is the
+	 * background-attachment technique and it needs no script and no state: the
+	 * two `local` covers scroll WITH the content and sit over the shadows when
+	 * you are at that end, the two `scroll` shadows are pinned to the box and are
+	 * revealed only when the content has moved away from an edge. A diagram that
+	 * fits shows neither.
+	 *
+	 * Sizes and repeat are written INSIDE the shorthand on purpose. The vendor's
+	 * `background: transparent` is a shorthand too, so it resets background-size
+	 * and background-repeat; declaring those separately would leave them at the
+	 * mercy of whichever shorthand landed last.
+	 *
+	 * The shadow is mixed from --rd-ink rather than being black, so in Dusk and
+	 * Night — where a black shadow on a near-black ground is invisible — it
+	 * resolves to a pale haze and stays a visible cue in all four themes.
+	 */
+	background:
+		linear-gradient(to right, var(--ds-mm-canvas), transparent)
+			left center / 2.5rem 100% no-repeat local,
+		linear-gradient(to left, var(--ds-mm-canvas), transparent)
+			right center / 2.5rem 100% no-repeat local,
+		radial-gradient(farthest-side at 0 50%, color-mix(in srgb, var(--rd-ink) 24%, transparent), transparent)
+			left center / 0.85rem 100% no-repeat scroll,
+		radial-gradient(farthest-side at 100% 50%, color-mix(in srgb, var(--rd-ink) 24%, transparent), transparent)
+			right center / 0.85rem 100% no-repeat scroll,
+		var(--ds-mm-canvas) !important;
+	border: 1px solid var(--rd-border) !important;
+	border-radius: var(--ds-r-md, 0.75rem) !important;
 	overflow-x: auto;
+	overscroll-behavior-x: contain;
 	text-align: center;
 }
+
+/*
+ * AND THE SVG MUST BE ALLOWED TO EXCEED THE BOX, OR THE SCROLL ABOVE IS
+ * DECORATIVE. Two rules clamp it and both have to go:
+ *
+ *   .sl-markdown-content :is(img, picture, video, canvas, svg, iframe)
+ *     { display: block; max-width: 100%; height: auto }
+ *   @astrojs/starlight/style/markdown.css:75, @layer starlight.content
+ *   — written for images, and a diagram is an svg inside markdown content
+ *
+ *   pre.mermaid svg { max-width: 100%; height: auto }
+ *   astro-mermaid-integration.js:667, injected at runtime, unlayered
+ *
+ * `height: auto` has to be beaten alongside `max-width`, or the browser recomputes
+ * the height against the clamped width and the diagram comes out squashed rather
+ * than scrolled.
+ *
+ * `margin-inline: auto` centres a diagram NARROWER than the column — `text-align`
+ * above cannot, because Starlight has already made the svg `display: block`. When
+ * the diagram is wider, auto margins resolve to zero and it overflows into the
+ * scroll, which is what we want in both directions.
+ */
+html .sl-markdown-content pre.mermaid > svg {
+	max-inline-size: none;
+	block-size: auto;
+	margin-inline: auto;
+}
+
 /* Before the client script runs, the raw source is visible. Style it as a
    deliberate fallback rather than letting it flash as unstyled text. */
 pre.mermaid:not([data-processed]) {

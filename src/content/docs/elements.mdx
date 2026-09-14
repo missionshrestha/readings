@@ -162,6 +162,44 @@ either one.
 
 ---
 
+## The dialogue exchange
+
+`## Dialogue` has **five** `###` since 2026-09-14, and the fourth, `### How the exchange went`, is a
+sequence of turns. **The label is the syntax.** A paragraph that begins `**Me:**`, `**AI:**` or
+`**AI (as sceptic):**` starts a turn, and every paragraph or list after it belongs to that turn until
+the next label. `context/md-spec.md` §5c.
+
+### How the exchange went
+
+**Me:** I think the shutdown ritual only works if the day already has an end. Mine often does not.
+
+**AI:** That objection is fair to the example in the chapter, which assumes a fixed finishing time. The
+mechanism the chapter names is different, though: it is about closing open loops, not about ending the
+day. Two things follow from that:
+
+- the ritual can run at whatever hour the work actually stops;
+- what it needs is a written list of what is still open, not a clock.
+
+**Me:** Then the real test is whether writing the loops down works at 23:00 as well as it does at 17:30.
+
+**AI (as sceptic):** It may not. Late at night the list gets shorter because you are tired, not because
+less is open — so a ritual that seems to work at 23:00 might be measuring fatigue rather than closure.
+
+Without JavaScript these read as labelled paragraphs. With it, each turn is drawn as one side of the
+conversation: the accent rule for his turns, the neutral rule for the model's, and one continuous rule
+down each turn however many paragraphs it runs to.
+
+:::note[Two features that need no markup at all]
+**Comments.** On `npm run dev`, select any passage on this page — a heading, a paragraph or a few words
+— and press **Comment**. The comment is saved beside the page, marked on the passage, and listed behind
+the speech-bubble button in the header. The public site shows comments read-only.
+
+**Expand.** Every diagram below carries an **Expand** control that opens it full screen, with zoom.
+Diagrams are drawn to read inside this column; Expand is for detail.
+:::
+
+---
+
 ## Callouts
 
 Both spellings produce the same element. The directive form is easier to type; the component form
@@ -303,11 +341,15 @@ And `<Code />`, for when the source is a variable rather than literal text:
 
 ---
 
-## Diagrams — the six declared types
+## Diagrams — the nineteen declared types
 
 Mermaid, in a fenced block. **Never hard-code a colour**: these re-theme across all four reading
 themes automatically, and a literal hex will be wrong in three of them. Toggle the theme with the
 `Aa` control while this page is open — every diagram below must follow it.
+
+Every diagram sits inside the reading column. One wider than the column keeps its size and scrolls
+inside its own frame. **A chart that carries numbers says in its title where they come from** —
+on this page, that they are illustrative. In a chapter they are sourced, or the chart is not drawn.
 
 ### `mindmap` — a chapter concept map
 
@@ -399,6 +441,220 @@ journey
     Write the action: 2: Me
 ```
 
+### `flowchart LR` — a causal chain read left to right
+
+```mermaid
+flowchart LR
+  T[Trigger fires] --> O{Obstacle present?}
+  O -- No --> A[Action runs]
+  O -- Yes --> P[The named plan]
+  P --> A
+  A --> R[Day-30 review]
+```
+
+### `pie` — parts of one whole
+
+```mermaid
+pie title A week of reading hours (illustrative)
+  "Reading the chapter" : 5
+  "Explanation layer" : 3
+  "Dialogue" : 2
+  "Recall, closed book" : 1.5
+  "Writing the action" : 0.5
+```
+
+### `xychart-beta` — a bar chart
+
+```mermaid
+xychart-beta
+  title "Effect size by study technique (illustrative numbers)"
+  x-axis ["Rereading", "Highlighting", "Summarising", "Self-testing", "Spaced tests"]
+  y-axis "Effect size (d)" 0 --> 1
+  bar [0.10, 0.15, 0.35, 0.60, 0.75]
+```
+
+### `xychart-beta` — a line chart
+
+```mermaid
+xychart-beta
+  title "Share recalled after each review (illustrative numbers)"
+  x-axis "Day" [0, 3, 14, 42, 90]
+  y-axis "Recalled (%)" 0 --> 100
+  line [100, 62, 71, 80, 86]
+```
+
+### `xychart-beta` — bars and a line on one axis
+
+```mermaid
+xychart-beta
+  title "Chapters planned and finished (illustrative numbers)"
+  x-axis [Jan, Feb, Mar, Apr, May, Jun]
+  y-axis "Chapters" 0 --> 12
+  bar "Planned" [8, 8, 10, 6, 8, 10]
+  line "Finished" [5, 7, 4, 6, 7, 9]
+```
+
+### `xychart-beta` — a histogram, built from bars
+
+```mermaid
+xychart-beta
+  title "Length of reading sittings (illustrative numbers)"
+  x-axis "Minutes" ["0-15", "15-30", "30-45", "45-60", "60-75", "75-90"]
+  y-axis "Sittings" 0 --> 20
+  bar [3, 9, 17, 12, 5, 2]
+```
+
+### `sankey-beta` — where a quantity went
+
+What happened to 40 extracted ideas — **illustrative numbers.** A sankey draws no title, so the
+caveat lives in the sentence above it.
+
+```mermaid
+sankey-beta
+Extracted,Acted on,7
+Extracted,Noted only,33
+Acted on,Running at day 30,3
+Acted on,Dropped,4
+```
+
+### `radar-beta` — several criteria at once
+
+```mermaid
+radar-beta
+  title Two books on five criteria (illustrative scores)
+  axis ev["Evidence"], act["Actionability"], nov["Novelty"], cla["Clarity"], dur["Durability"]
+  curve dw["Deep Work"]{3, 5, 3, 4, 4}
+  curve mis["Make It Stick"]{5, 4, 3, 4, 5}
+  max 5
+  min 0
+```
+
+### `treemap-beta` — a whole, nested
+
+```mermaid
+treemap-beta
+title Reading hours by book (illustrative numbers)
+"Self-Command"
+    "Deep Work": 14
+    "Atomic Habits": 9
+    "Indistractable": 6
+"Learning"
+    "Make It Stick": 11
+    "Ultralearning": 7
+```
+
+### `venn-beta` — where ideas overlap
+
+```mermaid
+venn-beta
+  title What three books share (illustrative)
+  set DW["Deep Work"]
+  set AH["Atomic Habits"]
+  set MS["Make It Stick"]
+  union DW,AH["Cues"]
+  union AH,MS["Spacing"]
+  union DW,MS["Effort"]
+```
+
+### `ishikawa-beta` — why something failed
+
+```mermaid
+ishikawa-beta
+  The 21:30 planning habit stopped
+    Trigger
+      Evenings had no fixed end
+      Phone was in the room
+    Obstacle
+      Told myself I would remember
+    Environment
+      Notebook lived in the bag
+    Payoff
+      Nothing visible by week two
+```
+
+### `cynefin-beta` — what kind of problem the advice is for
+
+```mermaid
+cynefin-beta
+  title Which kind of problem is this advice for
+  complex
+    "Changing a long-standing habit"
+  complicated
+    "Designing a review schedule"
+  clear
+    "Setting a phone timer"
+  chaotic
+    "A week with no control of the calendar"
+  confusion
+    "Not yet sure which it is"
+  chaotic --> complex : "stabilise, then probe"
+```
+
+### `sequenceDiagram` — a dialogue, question first
+
+```mermaid
+sequenceDiagram
+  participant R as Reader
+  participant A as AI
+  participant B as Book
+  R->>A: Recall, written closed-book
+  A->>R: A question, with no position stated
+  R->>A: My answer
+  A->>B: Check the claim against the text
+  B-->>A: The passage and its page
+  alt The answer matches the book
+    A->>R: Ask what would change your mind
+  else It does not
+    A->>R: Where my answer and the book differ
+  end
+  Note over R,A: The position comes after the question
+  R->>R: Write one action and its obstacle
+```
+
+### `stateDiagram-v2` — the life of an action
+
+```mermaid
+stateDiagram-v2
+  [*] --> Extracted
+  Extracted --> Committed: one per book
+  Extracted --> Noted: not now
+  Committed --> Running: trigger fires
+  Running --> Kept: still running at day 30
+  Running --> Adapted: obstacle changed
+  Running --> Dropped: stopped
+  Adapted --> Running
+  Kept --> [*]
+  Dropped --> [*]
+```
+
+### `gantt` — a book across weeks
+
+```mermaid
+gantt
+  title One book, chapter by chapter (illustrative dates)
+  dateFormat YYYY-MM-DD
+  axisFormat %d %b
+  tickInterval 1week
+  todayMarker off
+  section Part One
+    Ch 1 read and recalled :done, c1, 2026-09-01, 3d
+    Ch 2 read and recalled :done, c2, after c1, 4d
+  section Part Two
+    Ch 3 read and recalled :active, c3, after c2, 5d
+    Ch 4 read and recalled :c4, after c3, 4d
+  section Review
+    Day-30 review :milestone, m1, 2026-10-01, 0d
+```
+
+### `block-beta` — an argument's structure
+
+```mermaid
+block-beta
+  columns 3
+  claim["Deep work is valuable"]:3
+  p1["Learn hard things fast"] p2["Produce at an elite level"] p3["Both need focus"]
+```
+
 **A diagram that restates the paragraph above it has not earned its place.** Show relationships,
 not a list of nouns.
 
@@ -463,7 +719,7 @@ need it.** Three verdicts, and the difference between them is the whole point:
 | Maths, `$$…$$` | **Not enabled.** The braces parse as MDX and hard-fail | A fenced block, or an image |
 | An HTML comment `<!-- -->` | A parse error in MDX | `{/* … */}`, and **never** containing a literal `*/` |
 | A fifth custom component | `Expected component X to be defined: you likely forgot to import, pass, or provide it.` | Say it in one sentence. A fifth requires an explicit written request in the session that needs it |
-| A second diagram tool | Mermaid is the ceiling | One of the six types above |
+| A second diagram tool | Mermaid is the ceiling | One of the nineteen types above |
 | `a <b` in prose | *Unexpected character after a less-than sign, expected a valid JSX tag* — **and `a < b` with spaces is fine**, which is why this one is confusing | Backticks. Correct either way |
 | `{threshold}` in prose | `ReferenceError: threshold is not defined` — a **runtime** error, so a draft page never reaches it | Backticks |
 | A relative link `../foo` | `relative link` — a hard error, never resolved | Root-absolute. Paths are in `src/generated/book-slugs.md` |
@@ -497,7 +753,7 @@ site as *"the most sophisticated procrastination available to me."* Opened in a 
 
 | Wanted | Note |
 |---|---|
-| A seventh mermaid type | Six cover every shape used so far. Adding one is a ceiling change, not a fix |
+| ~~A seventh mermaid type~~ | **Opened 2026-09-14 on his instruction** — *"Mermaid used to its full capacity"*. The types that render legibly in all four themes are in the diagram section above and in `context/md-spec.md` §6 |
 | Per-book accent colour | Would break the tier legend, which is an identity across four themes |
 | A dark-mode-only illustration variant | Nothing needs it yet |
 | Footnote-style margin notes with automatic numbering | `<Margin>` already floats above 1200px and collapses inline below |
@@ -515,8 +771,13 @@ not exist for a chapter.
 **Stock Starlight (seven):** `<Aside>` — four types · `<Tabs>` / `<TabItem>` · `<Steps>` ·
 `<Card>` / `<CardGrid>` · `<LinkCard>` · `<Badge>` · `<Code>`
 
-**Mermaid (six):** `mindmap` · `flowchart TD` · `graph LR` · `timeline` · `quadrantChart` ·
-`journey`
+**Mermaid (nineteen):** `mindmap` · `flowchart TD` · `flowchart LR` · `graph LR` · `timeline` ·
+`quadrantChart` · `journey` · `pie` · `xychart-beta` · `sankey-beta` · `radar-beta` · `treemap-beta` ·
+`venn-beta` · `ishikawa-beta` · `cynefin-beta` · `sequenceDiagram` · `stateDiagram-v2` · `gantt` ·
+`block-beta`
+
+**Chrome, with no markup:** comments on any passage · Expand on every diagram · dialogue turns from
+their labels · the book's release dates from `book.json`
 
 **Markdown, free:** headings and anchors · GFM tables · footnotes · task lists · ordered,
 unordered and nested lists · blockquotes · inline bold, italic, strikethrough and code · fenced code

@@ -6,6 +6,7 @@ import starlightLinksValidator from 'starlight-links-validator';
 import { isIndexable, NOINDEX_META } from './src/lib/indexing.ts';
 import { bookSidebar } from './scripts/universe.mjs';
 import { buildGuards } from './scripts/guards.mjs';
+import { commentsDev } from './scripts/comments-dev.mjs';
 import { readFileSync } from 'node:fs';
 
 /*
@@ -151,6 +152,14 @@ export default defineConfig({
 		}),
 
 		/*
+		 * THE COMMENTS WRITER, and it exists only in `astro dev`. It registers a
+		 * dev-server middleware in `astro:server:setup`, a hook `astro build`
+		 * never calls — so there is no endpoint in dist/ for anyone to find.
+		 * scripts/comments-dev.mjs says what it refuses.
+		 */
+		commentsDev(),
+
+		/*
 		 * BEFORE starlight(): the integration has to see the ```mermaid fences
 		 * before Starlight's own markdown handling claims them.
 		 *
@@ -182,6 +191,17 @@ export default defineConfig({
 			autoTheme: true,
 			// 'base' is the only theme that yields to themeVariables. The stock
 			// 'default' and 'dark' themes ignore them.
+			//
+			// CORRECTED 2026-09-14: on this site 'base' is never the theme a diagram
+			// is drawn with. autoTheme maps data-theme light -> 'default' and dark ->
+			// 'dark' (astro-mermaid-integration.js:485-488, applied at :512), and
+			// Head.astro always writes data-theme, so 'base' is only the fallback for
+			// a page with no data-theme. Confirmed on the pixels: sequence actor boxes
+			// rendered #ECECFF (default's primaryColor) in Day and #1F2020 (dark's
+			// mainBkg) in Night. Both stock themes DO take themeVariables
+			// (Theme.calculate, chunk-DU6HZSFF.mjs:794), but anything not stated
+			// derives differently in light and dark, which is why every colour below
+			// is stated rather than left to derive.
 			theme: 'base',
 			enableLog: false,
 			mermaidConfig: {
@@ -196,11 +216,114 @@ export default defineConfig({
 				 */
 				fontFamily:
 					'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-				flowchart: { useMaxWidth: true, htmlLabels: true, nodeSpacing: 55, rankSpacing: 65, padding: 14 },
-				mindmap: { useMaxWidth: true, padding: 14 },
-				timeline: { useMaxWidth: true },
-				quadrantChart: { useMaxWidth: true },
-				pie: { useMaxWidth: true, textPosition: 0.6 },
+				/*
+				 * useMaxWidth: false ON THE THREE THAT LAY OUT WIDE — AND IT IS A BUG
+				 * FIX, NOT A PREFERENCE.
+				 *
+				 * `useMaxWidth: true` makes mermaid stamp `width: 100%` on the SVG, so
+				 * a diagram wider than the column is SCALED DOWN rather than allowed to
+				 * overflow. reading.css already gives `pre.mermaid` `overflow-x: auto`
+				 * and says in its own comment that a diagram "scrolls inside its own box
+				 * so the page body never scrolls horizontally" — but with width:100% the
+				 * SVG can never exceed the box, so scrollWidth always equalled clientWidth
+				 * and that scroll container had nothing to scroll. The CSS was written for
+				 * one model and the config enforced the other.
+				 *
+				 * It is invisible on a stub and unmissable on a real chapter, which is why
+				 * it survived until the corpus had content. MEASURED 2026-09-04, on the
+				 * mandated `## Concept map` of four authored Deep Work chapters:
+				 *
+				 *   page                 viewBox   drawn   scale   median label
+				 *   work-deeply           2879px   896px    31%     14px, min 7px
+				 *   deep-work-is-valuable 1453px   896px    62%     13.9px
+				 *   drain-the-shallows    1629px   896px    55%     12.4px
+				 *   embrace-boredom       1716px   896px    52%     23.5px, min 11.7px
+				 *
+				 * and at 420px, which is the phone case:
+				 *
+				 *   work-deeply           2879px   356px    12%     5.6px, MIN 2.8px
+				 *   drain-the-shallows    1629px   356px    22%     4.9px
+				 *
+				 * A 2.8px glyph is not a small diagram, it is a picture of one. And
+				 * `## Concept map` is a REQUIRED heading on every chapter
+				 * (context/chapter-spine.md §1), so this was every chapter in the corpus.
+				 *
+				 * With useMaxWidth false the SVG renders at its intrinsic size, overflows
+				 * the framed box, and the box scrolls — the behaviour reading.css was
+				 * already built for. The page body still never scrolls sideways, because
+				 * the overflow is contained by `pre.mermaid`, and that is asserted by the
+				 * OVERFLOW probe rather than assumed.
+				 *
+				 * EVERY TYPE, not just the three that overflow (five on 2026-09-04, all
+				 * nineteen declared types on 2026-09-14). quadrantChart and pie lay
+				 * out to a fixed box (500x500 measured) that already fits the column, so
+				 * they never trigger the downscale — but the CSS override that frees the
+				 * wide ones (`max-inline-size: none` in reading.css) cannot be aimed at
+				 * one diagram type, and with `useMaxWidth: true` the quadrant carries
+				 * `width="100%"` plus an inline `max-width: 500px`. Freeing the max-width
+				 * and leaving the 100% made it STRETCH: measured 896x896 from 500x500, a
+				 * 1.79x blow-up, with 32px labels. Intrinsic sizing everywhere is the only
+				 * setting where one CSS rule is correct for every diagram, and a 500px
+				 * diagram then simply centres inside the column.
+				 */
+				flowchart: { useMaxWidth: false, htmlLabels: true, nodeSpacing: 55, rankSpacing: 65, padding: 14 },
+				mindmap: { useMaxWidth: false, padding: 14 },
+				timeline: { useMaxWidth: false },
+				quadrantChart: { useMaxWidth: false },
+				/*
+				 * THE THIRTEEN TYPES ADDED 2026-09-14, and journey, which was one of the
+				 * six and never in this list. MEASURED on /elements/ in all four themes at
+				 * 1280 and 420, with the diagram frame now INSIDE the reading column
+				 * (reading.css): 561px of drawing room at 1280, 354px at 420.
+				 *
+				 * journey inherited useMaxWidth: true, so moving the frame into the column
+				 * SHRANK it: 0.596 scale in the old 894px frame, 0.374 in the new one —
+				 * 5.2px labels at 1280 and 3.3px at 420. Intrinsic now: 1500px, 14px
+				 * labels, and it scrolls.
+				 *
+				 * pie's legend sat to the RIGHT, which made the svg 777px wide in a 561px
+				 * frame: the legend labels were out of view and the title was cut at the
+				 * frame edge. Legend below: 490x560, fits.
+				 *
+				 * The fixed-size charts are sized to the 560px column so they draw 1:1 at
+				 * 1280 instead of being scaled or scrolled. Their stock sizes scaled them
+				 * to xyChart 0.802 (11.2px labels), sankey 0.936, venn 0.702, cynefin 0.638
+				 * (7px item text) and radar 0.802; treemap was 996px and scrolled.
+				 * cynefin adds 40px of its own padding each side, hence 480. treemap's
+				 * width is nodeWidth x 10 (SECTION_INNER_PADDING), hence 54.
+				 *
+				 * xyChart's useMaxWidth IS IGNORED. xychartDiagram-S5SC5T6Z.mjs:2080 calls
+				 * configureSvgSize(..., true) unconditionally, so at 420 the chart is
+				 * scaled to 354px (0.63, 8.8px labels) and its outermost x-axis label is
+				 * cut at the svg edge. The flag is set anyway, so the day it is honoured
+				 * nothing changes.
+				 *
+				 * gantt lays out to the width of the RENDER CONTAINER, which is the body,
+				 * not the column: 1278px, then scaled to 0.439 — 4.4px text. useWidth pins
+				 * it to 560.
+				 *
+				 * radar puts its legend at three quarters of (width/2 + marginRight) from
+				 * the centre, so the legend's room is set by marginRight and not by the
+				 * total width. At the default margins the axis labels ran outside the svg
+				 * (Actionability to x=576 of 560, Durability from x=-3). At these margins
+				 * the legend's "Make It Stick" ends at x=566 of 560 — drawn, because radar
+				 * stamps overflow="visible", and inside the frame's padding.
+				 *
+				 * sequence: mirrorActors off drops the repeated actor row at the foot.
+				 */
+				pie: { useMaxWidth: false, textPosition: 0.6, legendPosition: 'bottom' },
+				journey: { useMaxWidth: false },
+				sequence: { useMaxWidth: false, mirrorActors: false },
+				state: { useMaxWidth: false },
+				gantt: { useMaxWidth: false, useWidth: 560 },
+				block: { useMaxWidth: false },
+				xyChart: { useMaxWidth: false, width: 560, height: 400 },
+				sankey: { useMaxWidth: false, width: 560, height: 360 },
+				radar: { useMaxWidth: false, width: 320, height: 320, marginTop: 80, marginBottom: 30, marginLeft: 60, marginRight: 180 },
+				treemap: { useMaxWidth: false, nodeWidth: 54, nodeHeight: 36 },
+				venn: { useMaxWidth: false, width: 560, height: 400 },
+				ishikawa: { useMaxWidth: false },
+				cynefin: { useMaxWidth: false, width: 480, height: 420 },
 
 				/*
 				 * CATEGORICAL colour — set ONCE, identical in all four themes.
@@ -268,6 +391,64 @@ export default defineConfig({
 					 */
 					quadrantPointFill: '#a8502f',
 					quadrantPointTextFill: '#a8502f',
+
+					/*
+					 * pieOpacity, and it is a CONTRAST FIX. Mermaid paints every slice at
+					 * 0.7. Over a light ground that LIGHTENS the categorical fill — #a8502f
+					 * rendered #bf8167 — and the white percentage on it measured 2.81 to
+					 * 3.21:1 in Day, MEASURED 2026-09-14. Over a dark ground it darkens the
+					 * slice instead, under 3:1 against the page. At 1 the floors are 4.63:1
+					 * for the label and 3.18:1 for a slice against the Dusk ground.
+					 */
+					pieOpacity: '1',
+
+					/*
+					 * THE THREE NESTED OBJECTS BELOW ARE COMPLETE ON PURPOSE. Theme.calculate
+					 * (chunk-DU6HZSFF.mjs:794-806) assigns the overrides, derives every
+					 * default, then assigns the overrides AGAIN, so a partial xyChart, radar
+					 * or cynefin object would replace the derived one and every key left out
+					 * would reach the renderer undefined. Read, not probed: they are supplied
+					 * whole so it cannot happen.
+					 *
+					 * Every #888888 is a PLACEHOLDER that themeCSS blocks J, L and P replace
+					 * with the flipping tokens. Nobody should ever see one; the day a block
+					 * J selector stopped matching, xychart text rendered exactly #888888, at
+					 * 3.20:1 on the Day ground.
+					 *
+					 * plotColorPalette is the categorical six, comma-joined WITHOUT spaces —
+					 * the same .split(',') trap as the pie note above.
+					 */
+					xyChart: {
+						backgroundColor: 'transparent',
+						titleColor: '#888888', dataLabelColor: '#888888', legendTextColor: '#888888',
+						xAxisTitleColor: '#888888', xAxisLabelColor: '#888888', xAxisTickColor: '#888888', xAxisLineColor: '#888888',
+						yAxisTitleColor: '#888888', yAxisLabelColor: '#888888', yAxisTickColor: '#888888', yAxisLineColor: '#888888',
+						plotColorPalette: '#a8502f,#3f7d6e,#4a6fa5,#8a5a9b,#8a7233,#4e7d43',
+					},
+					radar: {
+						axisColor: '#888888', axisStrokeWidth: 1, axisLabelFontSize: 13,
+						curveOpacity: 0.25, curveStrokeWidth: 2,
+						graticuleColor: '#888888', graticuleStrokeWidth: 1, graticuleOpacity: 1,
+						legendBoxSize: 12, legendFontSize: 13,
+					},
+					/*
+					 * cynefin's stock domain colours are different under mermaid's default
+					 * and dark themes, and this site uses both (see the theme note at the
+					 * top of this block). Under dark, MEASURED 2026-09-14: item text #cccccc
+					 * on #F57F17 at 1.75:1, and on #BF360C at 3.67:1. The five domains are
+					 * now the categorical palette and the item text is white on them, floor
+					 * 4.61:1 (Sepia, on #8a7233). The cliff is #a8502f rather than the stock
+					 * #FF6B6B, which is 2.6:1 on the Day ground.
+					 */
+					cynefin: {
+						domainFontSize: 16, itemFontSize: 12,
+						boundaryColor: '#888888', boundaryWidth: 2,
+						cliffColor: '#a8502f', cliffWidth: 4,
+						arrowColor: '#888888', arrowWidth: 2,
+						complexBg: '#3f7d6e', complicatedBg: '#4a6fa5', chaoticBg: '#a8502f',
+						clearBg: '#8a7233', confusionBg: '#8a5a9b',
+						textColor: '#ffffff', labelColor: '#ffffff',
+					},
 				},
 
 				/*
@@ -397,6 +578,40 @@ export default defineConfig({
 					}
 
 					/*
+					 * A QUADRANT POINT'S LABEL IS NOT THE POINT. Same defect class as
+					 * the timeline "null" class, reached by a different road.
+					 *
+					 * Block C above carries a .quadrant-point-text selector. Mermaid
+					 * 11.17.2 EMITS NO SUCH CLASS — read off the live SVG, the label is
+					 *
+					 *     g.data-points > g.data-point > text[fill="#a8502f"]
+					 *
+					 * with class null. So the selector matched nothing and the label kept
+					 * quadrantPointTextFill, which is the CATEGORICAL colour of the mark.
+					 *
+					 * (Both of those words were written inside backticks first, and the
+					 * build died at astro.config.mjs:451 with a rolldown parse error
+					 * pointing at line 188 — trap 1 of stack fact 14, live, in the exact
+					 * block that documents it.)
+					 *
+					 * MEASURED 2026-09-04 on the Ch 4 quadrant, against the panel each
+					 * label actually sits on: Day 4.55:1 and Sepia comparable, but Night
+					 * and Dusk 3.61:1 — under the 4.5:1 floor this project holds text to,
+					 * in two of four themes, and contrast.mjs cannot see it because it
+					 * reads --rd-* tokens and this is an inline SVG attribute.
+					 *
+					 * The split the rest of this block already uses decides the fix: the
+					 * 5px DOT is a data identity and stays #a8502f; its label sits on the
+					 * canvas and reads against the canvas, so it is STRUCTURAL and flips
+					 * with the theme like every other piece of text on a diagram.
+					 */
+					.data-points .data-point text,
+					.data-points text {
+						fill: var(--ds-mm-node-text) !important;
+						color: var(--ds-mm-node-text) !important;
+					}
+
+					/*
 					 * H. timeline draws its connector lines and its axis with stock
 					 * pastels and a literal black — stroke="black" on the axis, which
 					 * is a black line on a near-black ground. The node fills are left
@@ -405,6 +620,282 @@ export default defineConfig({
 					.timeline-node line,
 					.lineWrapper line,
 					line[class*='node-line'] {
+						stroke: var(--ds-mm-line) !important;
+					}
+
+					/*
+					 * I. timeline EVENTS SIT UNDER filter: brightness(120%), from mermaid's
+					 * own .eventWrapper rule. It lifted each event box above its cScale
+					 * colour — #a8502f painted as #ca6038 — and the white label on it
+					 * measured 3.35 to 4.01:1 in ALL FOUR themes. MEASURED 2026-09-14; the
+					 * defect was on /elements/ from the first pass and survived it, because
+					 * the computed fill of the box was still #a8502f. Only the pixel said
+					 * otherwise. Floor now 4.63:1.
+					 */
+					.eventWrapper {
+						filter: none !important;
+					}
+
+					/*
+					 * J. xychart paints an OPAQUE chart background (fill="#333" under the
+					 * dark theme: a grey slab on the Night page) and writes every text and
+					 * axis colour as an inline attribute. Scoped by its own group names,
+					 * read off the live SVG: .main, .left-axis, .bottom-axis, .legend.
+					 *
+					 * NOT BY aria-roledescription, AND THAT WAS TRIED FIRST. The ampersand
+					 * nesting selector resolves to the diagram id, and mermaid ALSO prefixes
+					 * every rule with that id, so what reached the stylesheet was
+					 *
+					 *     #mermaid-x #mermaid-x[aria-roledescription="xychart"] text
+					 *
+					 * — the svg as a descendant of itself, which matches nothing. Green
+					 * build, rule present, text still #888888 at 3.20:1. The svg element
+					 * itself cannot be selected from themeCSS at all.
+					 *
+					 * MEASURED 2026-09-14 after: text floor 12.13:1, bars 3.18:1 and the
+					 * line 3.61:1 against the Dusk ground, axes 3.39:1.
+					 */
+					.main > rect.background {
+						fill: transparent !important;
+					}
+					.main > .chart-title text,
+					.left-axis text, .bottom-axis text, .top-axis text, .right-axis text,
+					.main > .legend text {
+						fill: var(--ds-mm-node-text) !important;
+					}
+					.left-axis path, .bottom-axis path, .top-axis path, .right-axis path {
+						stroke: var(--ds-mm-line) !important;
+					}
+
+					/*
+					 * K. sankey. Its nodes are .nodes > .node > rect with NO class attribute,
+					 * and that is what keeps flowchart, state and block out: every one of
+					 * their node rects carries a class. Block A had painted these nodes
+					 * --ds-mm-node-fill, erasing all five identities; mermaid's own d3
+					 * Tableau10 colours are keyed by node name and are not this palette. The
+					 * palette is assigned by position.
+					 *
+					 * The links are drawn with mix-blend-mode: multiply, which on a dark
+					 * ground multiplies toward black: in Dusk and Night they were invisible.
+					 *
+					 * THE LINK BAND IS UNDER 3:1 BY NECESSITY, not by oversight. A node label
+					 * is drawn over the band, and in Night no single band colour gives both
+					 * band-on-ground 3:1 and ink-on-band 4.5:1 — the first needs relative
+					 * luminance of at least 0.11, the second at most 0.10. The label wins.
+					 * MEASURED 2026-09-14: band 1.82 to 2.11:1, labels floor 4.75:1 (Dusk),
+					 * node bars floor 3.18:1.
+					 */
+					.nodes > .node > rect:not([class]) {
+						stroke: none !important;
+					}
+					.nodes > .node:nth-child(6n+1) > rect:not([class]) { fill: #a8502f !important; }
+					.nodes > .node:nth-child(6n+2) > rect:not([class]) { fill: #3f7d6e !important; }
+					.nodes > .node:nth-child(6n+3) > rect:not([class]) { fill: #4a6fa5 !important; }
+					.nodes > .node:nth-child(6n+4) > rect:not([class]) { fill: #8a5a9b !important; }
+					.nodes > .node:nth-child(6n+5) > rect:not([class]) { fill: #8a7233 !important; }
+					.nodes > .node:nth-child(6n+6) > rect:not([class]) { fill: #4e7d43 !important; }
+					.links > .link {
+						mix-blend-mode: normal !important;
+					}
+					.links > .link > path {
+						stroke: var(--ds-mm-label-text) !important;
+						stroke-opacity: 0.4 !important;
+					}
+					.node-labels text {
+						fill: var(--ds-mm-node-text) !important;
+					}
+
+					/*
+					 * L. radar. Its graticule is a FILLED circle, #DEDEDE at 0.3, so five
+					 * stacked grey discs sat behind the curves and turned both into the same
+					 * mud in Night. Rings are strokes now (3.39:1). A curve's identity is its
+					 * 2px stroke (floor 3.18:1); its 0.25 fill is a tint and measures 1.23 to
+					 * 1.41:1, deliberately. Legend swatches were half-opacity and are solid.
+					 * Text floor 12.13:1. MEASURED 2026-09-14.
+					 */
+					.radarGraticule {
+						fill: none !important;
+						stroke: var(--ds-mm-line) !important;
+					}
+					.radarAxisLine {
+						stroke: var(--ds-mm-line) !important;
+					}
+					.radarAxisLabel, .radarLegendText, .radarTitle {
+						fill: var(--ds-mm-node-text) !important;
+					}
+					[class*='radarLegendBox'] {
+						fill-opacity: 1 !important;
+					}
+
+					/*
+					 * M. treemap. MEASURED 2026-09-14 in Day before: leaves at fill-opacity
+					 * 0.3 under WHITE labels, 1.66:1; section labels white on the canvas,
+					 * 1.11:1; section borders stock hsl lavender and yellow. Leaves are solid
+					 * now, so white reads against the categorical fill (floor 4.63:1).
+					 *
+					 * The section VALUE carried a stroke in the line colour. Its computed
+					 * fill was ink at 15.78:1 and its pixels measured 3.39:1 — a 10px glyph
+					 * that is mostly outline. stroke: none, floor 4.81:1.
+					 */
+					.treemapSection {
+						fill: transparent !important;
+						stroke: var(--ds-mm-line) !important;
+						stroke-opacity: 1 !important;
+					}
+					.treemapSectionHeader {
+						fill: none !important;
+					}
+					.treemapSectionLabel, .treemapSectionValue {
+						fill: var(--ds-mm-node-text) !important;
+						stroke: none !important;
+					}
+					.treemapLeaf {
+						fill-opacity: 1 !important;
+					}
+					.treemapLabel, .treemapValue {
+						fill: #ffffff !important;
+					}
+
+					/*
+					 * N. venn writes fills and label colours as INLINE STYLE, which only an
+					 * important declaration beats. MEASURED 2026-09-14 in Day before: stock
+					 * fills rgb(83,83,255), rgb(255,255,69) and rgb(181,255,32), and each set
+					 * label coloured like its circle — rgb(171,171,0) on its own tint at
+					 * 2.21:1. Circles are now the palette as a 0.16 tint with a full stroke
+					 * (floor 3.18:1), every label is ink (floor 8.30:1).
+					 *
+					 * THE TITLE CLIPPED AT ANY WIDTH UNDER 1600. The renderer scales the title
+					 * attribute by width/1600 (11.2px at 560) and places it at y = 32 x that
+					 * scale, but mermaid's own stylesheet sets .venn-title to 32px, which
+					 * beats the attribute: a 32px glyph centred 11px from the top.
+					 */
+					.venn-circle path {
+						fill-opacity: 0.16 !important;
+						stroke-opacity: 1 !important;
+					}
+					.venn-set-0 path { fill: #a8502f !important; stroke: #a8502f !important; }
+					.venn-set-1 path { fill: #3f7d6e !important; stroke: #3f7d6e !important; }
+					.venn-set-2 path { fill: #4a6fa5 !important; stroke: #4a6fa5 !important; }
+					.venn-set-3 path { fill: #8a5a9b !important; stroke: #8a5a9b !important; }
+					.venn-set-4 path { fill: #8a7233 !important; stroke: #8a7233 !important; }
+					.venn-set-5 path { fill: #4e7d43 !important; stroke: #4e7d43 !important; }
+					.venn-area text, text.venn-title {
+						fill: var(--ds-mm-node-text) !important;
+					}
+					text.venn-title {
+						font-size: 18px !important;
+						dominant-baseline: hanging !important;
+					}
+
+					/*
+					 * O. ishikawa. The head and the category boxes were stock #ECECFF under
+					 * the default theme and #1F2020 under dark, with #333 bones in Day.
+					 * MEASURED 2026-09-14 after: bones and box edges 3.39:1, text 11.61:1.
+					 */
+					.ishikawa-head, .ishikawa-label-box {
+						fill: var(--ds-mm-node-fill) !important;
+						stroke: var(--ds-mm-node-stroke) !important;
+					}
+					.ishikawa-spine, .ishikawa-branch, .ishikawa-sub-branch {
+						stroke: var(--ds-mm-line) !important;
+					}
+					.ishikawa-head-label, .ishikawa-label {
+						fill: var(--ds-mm-node-text) !important;
+					}
+
+					/*
+					 * P. cynefin. The domain colours are themeVariables (see the note there);
+					 * this block moves the text onto the flipping tokens. Domain tints are
+					 * 0.4 and measure 1.49 to 1.64:1 as areas; the boundaries carry the
+					 * shape at 3.39:1. Item boxes are solid so white text keeps 4.61:1.
+					 */
+					.cynefinDomainLabel, .cynefinSubtitle, .cynefinTitle, .cynefinArrowLabel {
+						fill: var(--ds-mm-node-text) !important;
+					}
+					.cynefinItem {
+						fill-opacity: 1 !important;
+						stroke: none !important;
+					}
+					.cynefinItemText {
+						fill: #ffffff !important;
+					}
+					.cynefinBoundary, .cynefinArrowLine, .cynefinConfusion {
+						stroke: var(--ds-mm-line) !important;
+					}
+
+					/*
+					 * Q. sequenceDiagram. Actor boxes were stock #ECECFF in Day. The box
+					 * selector is rect.actor and NOT .actor, because the actor's LABEL is a
+					 * text element carrying the same class: under .actor its computed fill
+					 * was the box colour, 1:1, legible only because its tspan overrode it.
+					 * MEASURED 2026-09-14 after: text floor 6.09:1, every line 3.39:1.
+					 */
+					rect.actor {
+						fill: var(--ds-mm-node-fill) !important;
+						stroke: var(--ds-mm-node-stroke) !important;
+					}
+					text.actor, text.actor tspan, .labelText, .labelText tspan, .loopText, .loopText tspan {
+						fill: var(--ds-mm-node-text) !important;
+					}
+					.actor-line, .loopLine {
+						stroke: var(--ds-mm-line) !important;
+					}
+					.activation0, .activation1, .activation2 {
+						fill: var(--ds-mm-alt-fill) !important;
+						stroke: var(--ds-mm-node-stroke) !important;
+					}
+
+					/*
+					 * R. gantt. Mermaid sets .grid .tick to opacity 0.8, so the date labels
+					 * computed at 6.09:1 and PAINTED at 3.07 to 4.00:1 — MEASURED 2026-09-14,
+					 * the two numbers from the same glyphs.
+					 *
+					 * Block A's .task rule had also painted done, active and critical bars
+					 * the same node fill, so a gantt could no longer say what was finished.
+					 * Status is an identity, so it is categorical: done #3f7d6e, active
+					 * #4a6fa5, critical #a8502f, white labels (floor 4.63:1). A label that
+					 * does not fit its bar is drawn beside it on the canvas and carries BOTH
+					 * classes, so the outside rule is text.taskTextOutside* — one more type
+					 * selector than the white rule, and it wins.
+					 */
+					.grid .tick {
+						opacity: 1 !important;
+					}
+					.grid .tick line {
+						stroke-opacity: 0.45;
+					}
+					.task.done0, .task.done1, .task.done2, .task.done3 { fill: #3f7d6e !important; stroke: #3f7d6e !important; }
+					.task.active0, .task.active1, .task.active2, .task.active3 { fill: #4a6fa5 !important; stroke: #4a6fa5 !important; }
+					.task.crit0, .task.crit1, .task.crit2, .task.crit3,
+					.task.activeCrit0, .task.activeCrit1, .task.activeCrit2, .task.activeCrit3,
+					.task.doneCrit0, .task.doneCrit1, .task.doneCrit2, .task.doneCrit3 { fill: #a8502f !important; stroke: #a8502f !important; }
+					.doneText0, .doneText1, .doneText2, .doneText3,
+					.activeText0, .activeText1, .activeText2, .activeText3,
+					.critText0, .critText1, .critText2, .critText3,
+					.doneCritText0, .doneCritText1, .doneCritText2, .doneCritText3,
+					.activeCritText0, .activeCritText1, .activeCritText2, .activeCritText3 {
+						fill: #ffffff !important;
+					}
+					text.taskTextOutsideLeft, text.taskTextOutsideRight {
+						fill: var(--ds-mm-node-text) !important;
+					}
+
+					/*
+					 * S. stateDiagram. Block A's .node circle rule painted the start state
+					 * the node fill, so the solid start dot became a hollow ring. MEASURED
+					 * 2026-09-14: computed fill rgb(21,21,26) in Night. Ink now, 12.13:1.
+					 */
+					circle.state-start {
+						fill: var(--ds-mm-node-text) !important;
+						stroke: var(--ds-mm-node-text) !important;
+					}
+
+					/*
+					 * T. journey. Its faces are cornsilk discs whose only edge is a stock
+					 * #999 stroke: 2.57:1 on Day and 2.33:1 on Sepia, MEASURED 2026-09-14,
+					 * so in the two light themes the face was barely a shape.
+					 */
+					circle.face {
 						stroke: var(--ds-mm-line) !important;
 					}
 				`,
@@ -420,6 +911,8 @@ export default defineConfig({
 				'./src/styles/custom.css',
 				'./src/styles/reading.css',
 				'./src/styles/design-system.css',
+				// Comments, dialogue turns and diagram Expand. Tokens only, no new colour.
+				'./src/styles/annotations.css',
 			],
 
 			/*
@@ -479,6 +972,11 @@ export default defineConfig({
 				// them: a :::note body measured 1.06:1 when they disagreed. The file
 				// itself carries the measurement and why removal beats syncing.
 				ThemeSelect: "./src/overrides/ThemeSelect.astro",
+				// Starlight's, plus his comments on the page: the data the passages are
+				// marked from, the read-only list, and the one client script for
+				// comments, dialogue turns and diagram Expand. Chrome, not an authoring
+				// component — added 2026-09-14, context/md-spec.md section 5d.
+				MarkdownContent: "./src/overrides/MarkdownContent.astro",
 			},
 
 			/*

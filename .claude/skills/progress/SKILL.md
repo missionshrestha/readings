@@ -21,7 +21,7 @@ decision downstream is made against it.
 |---|---|---|
 | `reader-profile.md` | The cross-book ledger: currently reading, one row per chapter, books finished with their verdict, books dropped | A chapter is drafted or read · a book finishes or is dropped |
 | `context/books/<d>/<c>/<b>.md` | One book: why now, the gap, chapter state, actions committed, open questions | Same triggers, plus any brief amendment |
-| `context/reader.md` | Who he is, in his own words: what he is here for, what a usable answer looks like, the standing instructions. **There is no sitting budget and there never was one** — he rejected the premise on 2026-08-31 | Rarely — only when he says one of those changed |
+| `context/reader.md` | Who he is, in his own words: what he is here for, what a usable answer looks like, the standing instructions. **There is no sitting budget and there never was one** — he rejected the premise on 2026-08-31. **§10 holds his instructions of 2026-09-14** | Rarely — only when he says one of those changed |
 
 ## What you report, before asking anything
 
@@ -31,9 +31,13 @@ decision downstream is made against it.
    failure mode: *"chapters accumulate, three weeks later the site is a graveyard."*
 3. **Actions committed with no obstacle named.** Reconciliation row 10.
 4. **Books with more than one committed `now`.** Row 2.
-5. **Open questions older than a week** — each either gets asked in the book's Project or deleted as
+5. **Chapters outside two to ten actions.** `node scripts/audit.mjs` lists them. Amendment A.
+6. **A started book whose book page is still `TODO`** — `## Author context` or
+   `## Context then vs. context today` unwritten. `P2b` is due before chapter one
+   (`context/book-spec.md` §6).
+7. **Open questions older than a week** — each either gets asked in the book's Project or deleted as
    not actually important.
-6. **The next unread chapter** in `sidebar.order`.
+8. **The next unread chapter** in `sidebar.order`.
 
 Then say what to paste.
 
@@ -67,16 +71,26 @@ computed from a start date. **Anything he just told you**, attributed to the dat
 - **`read`.** It ticks only when both hold: the recall was written closed-book, **and**
   `## Open questions` was filled in. Ask both.
 - **A verdict on a book.** *changed something / confirmed something / entertainment* is his call.
-- **Anything into a chapter's body.**
+- **Anything into a chapter's body, or into a comment.** His comments are his, written only by the
+  dev server (`context/md-spec.md` §5d). **A comment is not a record either** — never lift one into
+  `reader-profile.md` or a book profile unless he asks for that one.
 
 Mark what you could not resolve `[ASSUMPTION: …]`, saying what changes if it is wrong.
 
-**Two questions are still open and must not be filled by inference** (`context/reader.md` §8):
+**These questions are still open and must not be filled by inference** (`context/reader.md` §8):
 
 | Unknown | Ask before |
 |---|---|
 | What he has already tried and abandoned | the first book chosen for a `gap: execution` |
 | Whether his time tracker is a physical record | the first committed action, if it matters. Harkin's effect is larger when the record is physical, and *"time tracker"* most likely means an application — that was not asked and is not inferred |
+| **Whether 30 opinions is still the right floor** for `### What real readers say` | after the **second** chapter's `P4` — he kept the default on 2026-09-14 and asked to revisit it then |
+
+**Decided on 2026-09-14, and not to be re-asked:** *"Only put things that earns"* means *earns its
+place*; comments publish by default, **except in `relationships-…`, `love-…` and `money-and-wealth`,
+where a new comment starts local.**
+
+**The growth decisions are not yours to ask about here.** `GROWTH.md` holds them with
+recommendations; raise them only when he brings up sharing, a domain or a newsletter.
 
 **Never treat an overrun as a finding.** *"if a chapter is 10 hour or unlimited long, you do it…
 Nothing happens if i don't finish a chapter."* 120 minutes against an 85-minute estimate is data

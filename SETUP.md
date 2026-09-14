@@ -92,7 +92,7 @@ git status --porcelain
 | 2 | The universe parses to its own declared totals | `node scripts/universe.mjs` | `7 / 16 / 85 / 293`, tiers `73/124/96`, weights `78/150/65` |
 | 3 | Every control refuses a real violation | `node scripts/audit.mjs` | four ` ok ` lines, `all controls pass.` — never `SKIPPED` |
 | 4 | Every colour pair clears its floor in four themes | `node scripts/contrast.mjs` | `104/104 pairs pass across 4 themes` |
-| 5 | Every web-chat prompt clears the 500-word floor | `node scripts/prompt-words.mjs` | `10/10 at or over 500 words` |
+| 5 | Every web-chat prompt clears the 500-word floor | `node scripts/prompt-words.mjs` | `11/11 at or over 500 words` — eleven since `P2b` was added on 2026-09-14 |
 | 6 | No synthetic corpus is in the tree | `git status --porcelain` | nothing under `src/content/docs/**` that you did not write, and no `.synth-corpus.json` |
 | 7 | Drafts appear zero times in `dist/` | Control 4, inside `npm run build` | no `BUILD REFUSED … AFTER RENDERING` |
 | 8 | `private: true` actually excludes a page | `npm run build` on a private page | `[WARN] [readings-docs-loader] private: N page(s) held back`, page count unchanged |

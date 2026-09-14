@@ -1,9 +1,12 @@
-# BOOK-SPEC — the shape of `book.json`
+# BOOK-SPEC — the shape of `book.json`, and of the book page
 
-**Read this at Stage 2 (BRIEF) and by `/scaffold`. Not in the chapter loop.**
+**Read this at Stage 2 (BRIEF), at Stage 2b (the book page) and by `/scaffold`. Not in the chapter
+loop.**
 
 `chapter-spine.md` governs one page. **This governs the tree that page hangs off** — the chapter
-map, the coverage law, and the fields that decide how the whole book is read.
+map, the coverage law, the fields that decide how the whole book is read — **and the book page
+itself** (§6), which since 2026-09-14 carries the release dates, the author's context and the book
+then and now.
 
 > **Everything is decided here. Generation decides nothing.**
 
@@ -23,18 +26,25 @@ Set by `kind`. It decides which template is scaffolded and which pipeline runs.
 all, and whether `exitCondition` can honestly be a target. Getting it wrong is not a formatting
 mistake: a `lifelong` book filed as `read` acquires a finish line it should never have.
 
+**All three kinds carry the dates, `## Author context` and `## Context then vs. context today`.** §6.
+
 ---
 
 ## 2 · The complete `book.json` — `kind: "read"`
 
 Lives at `<domain>/<cluster>/<book>/book.json`, beside `index.mdx`.
 
+**The values below are shapes, not facts.** Every date, name and claim in a real brief is verified at
+Stage 2 with search on (`source-rules.md` §2b); a value copied from an example in a specification is
+exactly the tier-C laundering that file exists to prevent.
+
 ```json
 {
   "slug": "deep-work",
   "title": "Deep Work",
   "author": "Cal Newport",
-  "published": 2016,
+  "published": "2016",
+  "editions": [],
   "domain": "self-command",
   "cluster": "attention-dopamine-and-digital-discipline",
   "clusterNumber": "1.3",
@@ -81,14 +91,25 @@ Lives at `<domain>/<cluster>/<book>/book.json`, beside `index.mdx`.
 }
 ```
 
+A populated `editions` entry has this shape:
+
+```json
+{ "date": "YYYY or YYYY-MM or YYYY-MM-DD",
+  "label": "what the edition is called — 'Revised and expanded edition'",
+  "change": "what materially changed — chapters added or removed, the evidence updated, an afterword that moves the argument",
+  "source": "https://… the publisher's page, the new preface, or the author's own announcement" }
+```
+
 ### Field rules
 
 | Node | Field | Rule |
 |---|---|---|
+| root | `published` | **Required on all three kinds, since 2026-09-14.** The original release: a year (`2016` or `"2016"`), a month (`"2016-01"`) or a day (`"2016-01-05"`). For a work older than print, the composition date, approximate, as `"c. 170–180 CE"` — and the first printed edition goes in `editions`. **Displayed on every page of the book** |
+| root | `editions` | **Required, an array, on all three kinds.** **Major changes only** — a revised edition with chapters added or removed, a substantially updated evidence base, an afterword that changes the argument. Not a paperback, a new cover or a corrected typo. `[]` is a real answer when a search found no major revision, and the book page says so. Each entry needs `date` and `change`; `source` is reported when absent. Oldest first |
 | root | `gap` | **`knowledge` or `execution`.** The Stage-0 diagnostic, and it comes before everything. *"This single distinction predicts most of the disappointment people report with the genre."* A book chosen for an execution gap weights the action stages and trims the explanation layer |
 | root | `familiarity` | `new` · `familiar` · `expert`. Decides the DEFAULT for `clarified` |
 | root | `questions` | **3–5, written BEFORE reading**, in the inspectional pass. Written after, they are a summary |
-| root | `outsideView` | Filled at Stage 1 with search on. **Every citation verified yourself.** *"When it's thin, say so rather than inventing consensus"* |
+| root | `outsideView` | A three-line digest, filled at Stage 2 with search on. **Every citation verified yourself.** *"When it's thin, say so rather than inventing consensus."* **The long form is `## Context then vs. context today` on the book page (§6), and where the two disagree the page is the authority and the digest is rewritten to match** |
 | root | `exitCondition` | What must be TRUE for this book to be finished. Observable, not felt |
 | root | `inventory` | `read + skipped === chapters`. **Asserted.** See §3 |
 | part | `outcome` | One sentence, starts with a verb. What you can do after this part |
@@ -108,8 +129,8 @@ Lives at `<domain>/<cluster>/<book>/book.json`, beside `index.mdx`.
 `reference` and `lifelong` books carry **no `chapters`, no `parts`, no `inventory` and no
 `antiChapters`.** `new-chapters.mjs` refuses a `chapters` array on either — *"kind "reference"
 carries no chapters"* — and returns before the coverage law is even reached. Everything above the
-`kind !== 'read'` line still applies, which is easy to miss: `gap`, `questions` and `exitCondition`
-are required on all three.
+`kind !== 'read'` line still applies, which is easy to miss: `published`, `editions`, `gap`,
+`questions` and `exitCondition` are required on all three.
 
 ### `kind: "reference"` — one of the 96 🔵 books
 
@@ -118,7 +139,11 @@ are required on all three.
   "slug": "the-elements-of-typographic-style",
   "title": "The Elements of Typographic Style",
   "author": "Robert Bringhurst",
-  "published": 1992,
+  "published": "1992",
+  "editions": [
+    { "date": "[VERIFY IN SESSION]", "label": "[VERIFY IN SESSION]",
+      "change": "[VERIFY IN SESSION]", "source": "[VERIFY IN SESSION]" }
+  ],
   "domain": "presence-style-and-expression",
   "cluster": "environment-order-and-aesthetics",
   "clusterNumber": "12.2",
@@ -146,6 +171,10 @@ are required on all three.
 }
 ```
 
+**`[VERIFY IN SESSION]` in `editions` is deliberate**: this book is widely said to have gone through
+several revised editions, and this specification may not hardcode dates nobody checked while writing
+it (`source-rules.md` §3, the same rule). The brief that is actually used fills them from a source.
+
 **The page is a dated log, appended to when consulted**, and the completion instinct never touches
 it. `exitCondition` therefore measures *use*, not coverage: "finish it" is the wrong goal for a book
 you are not reading front to back, and writing one would quietly convert a reference into a `read`.
@@ -157,7 +186,11 @@ you are not reading front to back, and writing one would quietly convert a refer
   "slug": "meditations",
   "title": "Meditations",
   "author": "Marcus Aurelius",
-  "published": 180,
+  "published": "c. 170–180 CE",
+  "editions": [
+    { "date": "[VERIFY IN SESSION]", "label": "First printed edition",
+      "change": "[VERIFY IN SESSION]", "source": "[VERIFY IN SESSION]" }
+  ],
   "domain": "philosophy-meaning-and-spirituality",
   "cluster": "stoicism-and-practical-philosophy",
   "clusterNumber": "9.2",
@@ -184,6 +217,10 @@ you are not reading front to back, and writing one would quietly convert a refer
   "exitCondition": "None. This book is never finished, and a page that implied otherwise would be lying."
 }
 ```
+
+**For a translated work, the translation you read is an edition.** Its translator and year belong in
+`editions`, and `## Context then vs. context today` says what that translation changes — a book read
+in a 2002 translation and one read in an 1862 translation are not the same text.
 
 **No pipeline, no actions, no rating.** `exitCondition` is required by the validator and the honest
 value is a sentence saying there is not one. That is a deliberate shape rather than a loophole: the
@@ -225,6 +262,11 @@ here so a brief can be checked against it before the script is ever run.
 | `slug` ≠ directory | `"slug" is "X" but the directory is "Y" — the path is the truth` |
 | `domain` ≠ directory | `"domain" is "X" but the directory says "Y"` |
 | `cluster` ≠ directory | `"cluster" is "X" but the directory says "Y"` |
+| `published` absent | `missing "published" — the original release date. Every page of the book displays it. Spec §2` |
+| `published` unreadable | `"published" is "X" — write a year ("2016"), a month ("2016-01"), a day ("2016-01-05") or an approximate date ("c. 170–180 CE")` |
+| `editions` absent or not an array | `missing "editions" — an array of MAJOR revisions only. [] is a real answer when a search found none. Spec §2` |
+| an edition with no `date`, or an unreadable one | `editions[0]: "date" is missing or unreadable — same formats as "published"` |
+| an edition with no `change` | `editions[0]: no "change" — what materially changed, not just "revised"` |
 | `gap` absent | `missing "gap" — knowledge or execution. Spec §2, and it comes before everything` |
 | `gap` not in the set | `"gap" is "X", must be knowledge or execution` |
 | `familiarity` not in the set | `"familiarity" is "X", must be one of new, familiar, expert` |
@@ -265,6 +307,7 @@ line in context/book-spec.md that says rewrite.
 |---|---|
 | over 15 chapters, empty `antiChapters` | `N chapters and an empty antiChapters. That is a table of contents, not a decision — but it scaffolds anyway.` |
 | total `estMinutes` over 20 hours | `estimated N hours of reading. The four-week ceiling is a signal, not a rule.` |
+| an edition with no `source` | `editions[0] has no "source". A date nobody can check is a date that drifts.` |
 
 **The split is deliberate and worth stating as a principle: the brief decides how much of a book to
 read; the script does not get a veto.** A structural error makes the tree wrong and is refused. A
@@ -304,6 +347,9 @@ next `--outline` silently discards whatever was written there. **An amendment th
 page is an amendment that did not happen** — which is why both flags print what they skipped and
 name each file.
 
+**A change to `published` or `editions` needs no flag.** The dates are read from `book.json` at build
+time and rendered by the page chrome (§6), so editing the file is the whole amendment.
+
 `--spine` exists because of a specific event: the explanation layer went from nine sub-sections to
 ten on 2026-08-31 (`chapter-spine.md` §3), and before it the only ways to propagate that were to
 hand-edit inside a generated region or delete and rebuild the stub, losing its frontmatter.
@@ -327,8 +373,8 @@ context.** A title that only makes sense under its parent has failed.
 
 **Rules that hold everywhere:** sentence case · no numeric prefix (`order` carries position) · at
 most one em dash · no trailing punctuation, no emoji · slugs are kebab-case, derived from the title,
-and **permanent** — renaming one after the page exists breaks every inbound link and silently resets
-its review card.
+and **permanent** — renaming one after the page exists breaks every inbound link, silently resets
+its review card, and **detaches every comment anchored to it**.
 
 **Banned:** `Introduction`, `Understanding X`, `Advanced X`, `Miscellaneous`, `Tips and tricks`, and
 any title that restates its parent.
@@ -338,6 +384,9 @@ any title that restates its parent.
 ## 5 · Pre-flight
 
 - [ ] `kind` is set, and matches how the book will actually be used.
+- [ ] `published` is set, and was read from a source this session — not from memory.
+- [ ] `editions` lists major revisions only, oldest first, each with a date, a change and a source —
+      or is `[]` because a search found none.
 - [ ] `gap` is set. Reading will not fix a doing problem, and the machine should not pretend it will.
 - [ ] `questions` were written before reading, not after.
 - [ ] `read + skipped === chapters`, and the three numbers are in `inventory`.
@@ -346,3 +395,85 @@ any title that restates its parent.
 - [ ] `clarified` is a deliberate value on every chapter, not a default nobody looked at.
 - [ ] Every slug is unique within the book, kebab-case, derived from the title.
 - [ ] `exitCondition` is observable. "Understand deep work better" is not.
+
+---
+
+## 6 · The book page — `index.mdx`
+
+**Added 2026-09-14 on his instruction** (`reader.md` §10b). Produced by **`P2b`**, after `/scaffold`
+has created the page and before the first chapter. `standards.md` §8 holds the standard each section
+is written to; `source-rules.md` §2b says what may source a date or a biographical fact.
+
+### The dates — displayed, never typed into the page
+
+> *"Every book must display its original release date, along with any major updates or version dates
+> (major changes only), shown somewhere in the presentation."*
+
+**`book.json` is the only place they are written.** The page chrome reads `published` and `editions`
+at build time and shows them **under the title of the book page** — *First published 2016 · Revised
+and expanded edition 2024* — and **beside the book's name on every chapter page of it**. Nothing in
+the MDX repeats them, so an edition added later reaches every page with one edit and cannot disagree
+with itself. A book whose `book.json` does not exist yet simply shows no line.
+
+### The sections — `kind: read`
+
+`##` headings in this order. The `###` under the two new sections are fixed strings, for the same
+reason a chapter's are: they are anchors, and comments and cross-links attach to them.
+
+| `##` | Produced by | Owes |
+|---|---|---|
+| `## Why this book, now` | **him** — his `whyNow`, in his words | The problem that made this the next book |
+| `## Author context` | **`P2b`** | The four `###` below |
+| `## Context then vs. context today` | **`P2b`** | The six `###` below |
+| `## Questions I brought to it` | **him** — `questions[]`, verbatim | Written before reading |
+| `## Chapters` | **generated** — `new-chapters.mjs`, between the `CHAPTERS` markers | The grid. Never hand-edited |
+| `## What it changed` | **him**, at Stage 10 after `P8` — and `P8` Part D's map | One of three verdicts, in his words. **`P8` Part D's book-level concept map sits under it**, with its caption — the map of how the whole argument hangs together, placed where the book is judged rather than under a new `##` |
+| `## Where I stopped, if I stopped` | **him** | Empty if finished |
+| `## Sources` | **`P2b`**, and `P8` appends | `\| Claim \| Source \| Read on \| Tier \|` for every date and fact above |
+
+**`## Author context`** — biography, in detail, because he asked for it; every fact sourced; the
+author's inner life only where the author or a biographer says so.
+
+```
+### Where and when they grew up
+### What they studied and where they worked
+### What led to this book
+### What that means for reading it
+```
+
+The last one connects the life to the book — what features of the argument those circumstances help
+explain — and **never** uses them to explain the argument away.
+
+**`## Context then vs. context today`** — symmetric: what has supported the book since publication,
+with the same effort as what has undermined it. Every point is dated and says which kind of change it
+is — the author's, the evidence's, the world's or the audience's.
+
+```
+### The world the book was written in
+### What the author has changed or said since
+### Research since — what supports it and what does not
+### What critics and other scholars argue
+### What is different today
+### What still holds
+```
+
+`### What still holds` ends in a `:::tip[What still holds]` — the book-level counterpart of a
+chapter's `### The version to hold`, and like it, a synthesis that carries a scar.
+
+### The sections — `kind: reference` and `kind: lifelong`
+
+The same `## Author context`, `## Context then vs. context today` and `## Sources`, placed after the
+page's opening section (`## What it is for` · `## What it is`) and before its log. A novel's
+`### Research since — what supports it and what does not` usually says, in one sentence, that the
+book makes no empirical claim — and then covers how its reading has changed, which is the part of
+that sub-section a novel does have.
+
+### Reading order — where the two new sections sit against the recall
+
+**`## Author context` is read before chapter one.** It describes a life, not the chapter's claims, so
+it cannot pre-digest the reading the recall protects — and it is the context he asked to have in hand.
+
+**`## Context then vs. context today` is best read after the first chapter's recall.** It contains
+criticism and later evidence about the book's claims, and read first it frames what he looks for in
+the chapter — the same reason the explanation layer comes after `## Recall`
+(`chapter-spine.md` §3, ground 3). This is guidance in `GUIDE.md`, not a lock: the page is his.

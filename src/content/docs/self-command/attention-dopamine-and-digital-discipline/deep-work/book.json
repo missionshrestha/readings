@@ -1,10 +1,11 @@
 {
-  "_placeholder": "SHAPE ONLY. Chapter titles and parts are bibliographic fact; every 'argues', 'gap', 'familiarity', 'questions', 'outsideView' and 'exitCondition' below is a STAND-IN written to exercise the scaffolding, and must be replaced wholesale by the real Stage 2 (BRIEF) output from web chat. See context/book-spec.md.",
+  "_placeholder": "SHAPE ONLY. Chapter titles and parts are bibliographic fact; every 'argues', 'gap', 'familiarity', 'questions', 'outsideView' and 'exitCondition' below is a STAND-IN written to exercise the scaffolding, and must be replaced wholesale by the real Stage 2 (BRIEF) output from web chat. 'published' is the year only and 'editions' is empty because neither was verified against a source — the real brief verifies both. See context/book-spec.md.",
 
   "slug": "deep-work",
   "title": "Deep Work",
   "author": "Cal Newport",
   "published": 2016,
+  "editions": [],
   "domain": "self-command",
   "cluster": "attention-dopamine-and-digital-discipline",
   "clusterNumber": "1.3",

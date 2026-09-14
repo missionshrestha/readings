@@ -61,6 +61,33 @@ turning it into a score reintroduces the counter this whole system removed on pu
 
 ---
 
+## 2b · Could you follow every sentence — the clarity check
+
+His standard for every page, set on 2026-09-14: *"The user must be able to interpret and understand
+every sentence produced."* It is the one property of the output that only you can measure — and it is
+measured the same way memory is, with a count rather than a feeling.
+
+**Once per chapter, after the recall**, take one section of the explanation layer and count:
+
+- **Sentences you had to read twice to understand:** _____
+- **Terms you would have had to look up:** _____
+- **Load-bearing claims with no example, worked case or analogy beside them:** _____
+
+| Result | Read it as |
+|---|---|
+| **All three zero** | The section met the standard. Move on |
+| **A term to look up, or a claim with no example** | **A defect in the page, not in you.** Send it back: *"say that again in plain words with an example, without changing the claim"* |
+| **Several sentences read twice** | Compression — terms before definitions, notes instead of sentences. `troubleshooting.md` has the line |
+| **Everything was easy and nothing surprised you** | **Not the same result as all zeros.** That is tell 1 in §1 — fluency. Check it against the recall count in §2 before you trust it |
+
+**Clear is not the same as correct.** A sentence you understood perfectly can still be wrong, and a
+simplified sentence can say less than the author did. The check for that is different: *would the
+author sign the simpler sentence?* — and the sources.
+
+**Do not track this over time and do not average it**, for the same reason as §2.
+
+---
+
 ## 3 · The AI-specific tells
 
 The transcript is evidence, and it is the evidence you are least likely to look at.

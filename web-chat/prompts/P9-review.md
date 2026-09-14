@@ -186,9 +186,14 @@ the queue and says it is overdue.
 ## What this stage cannot do, said plainly
 
 Harkin's meta-analysis (N ≈ 20,000, *d* = 0.40) finds monitoring works, and works **better when
-progress is reported to a person**. It is not, here — by choice: *"No, this is for myself."* So
+progress is reported to a person**. It was not, here — by choice: *"No, this is for myself."* So
 `/ledger` states that as a limitation in words and **never simulates it**. No streak, no badge, no
 encouraging copy, no count of books finished.
+
+**Qualified on 2026-09-14, not removed.** He now plans to *"read each chapter and share the progress
+publicly"*. A public post is closer to reported progress, and it is still a broadcast rather than a
+person who asks what the count was. Whether it produces the effect for him is untested, and nothing
+in this review counts it as if it did (`context/reader.md` §5).
 
 A website cannot supply a person, and pretending otherwise is the exact failure this system exists
 to avoid.

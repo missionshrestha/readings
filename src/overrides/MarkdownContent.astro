@@ -1,0 +1,110 @@
+---
+/**
+ * MarkdownContent — Starlight's, plus the comments he left on the page.
+ *
+ * SITE CHROME, NOT AN AUTHORING COMPONENT. Nothing in a chapter imports it and
+ * nothing in a paste can change it; the four-component ceiling in
+ * src/components/index.ts is untouched.
+ *
+ * ---------------------------------------------------------------------------
+ * WHAT IT ADDS, ON A READING PAGE ONLY
+ *
+ *   · the page's comments as JSON, for src/scripts/reader-annotations.ts to mark
+ *     on the passages they were written on;
+ *   · the comments list itself, SERVER-RENDERED, in a drawer that opens from
+ *     the header. Rendered here rather than by script so the list exists
+ *     without JavaScript, and so what is published is visible in dist/ and can
+ *     be checked there;
+ *   · the one client script for comments, dialogue turns and diagram Expand.
+ *
+ * His instruction, 2026-09-14: "In production, that comment stays tied to its
+ * specific scroll section, and a general, whole-page TOC-like comment icon
+ * appears in the sidebar; clicking it opens/expands the comments for view-only
+ * access." context/md-spec.md section 5d.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY THE DRAWER IS A POPOVER
+ *
+ * `popover="manual"` puts it in the browser's TOP LAYER, above every stacking
+ * context on the page — and this page has several: the fixed header, the
+ * drawer-sidebar, and `.main-pane`, which carries a view-transition-name for
+ * the page turn. A fixed-position element nested inside those would have to win
+ * a z-index fight it cannot see. `manual` rather than `auto` so a click on the
+ * page — to read the passage a comment is about — does not close it.
+ *
+ * ---------------------------------------------------------------------------
+ * WHAT IS PUBLISHED
+ *
+ * In a build: public comments only, and only on pages that are built at all —
+ * a draft or private page has no route, so its comments go nowhere. In dev:
+ * every comment, marked local where it is, plus the editor.
+ *
+ * IN A SENSITIVE DOMAIN A NEW COMMENT STARTS LOCAL. His decision, 2026-09-14:
+ * comments publish by default everywhere except relationships, love and money,
+ * where a note written mid-read is most likely to be about a real person. The
+ * domain list is the one Control 2 already enforces (scripts/guards.mjs), and it
+ * is checked against the PATH for the same reason: the directory is the truth.
+ * Forgetting to tick "keep local" there would publish something personal;
+ * forgetting to untick it on a harmless note costs nothing.
+ */
+import Default from '@astrojs/starlight/components/MarkdownContent.astro';
+import { isAuthored } from '../lib/visibility';
+import { loadComments } from '../lib/comments';
+import { renderCommentItem } from '../lib/comments-shared';
+import { SENSITIVE_DOMAINS } from '../../scripts/guards.mjs';
+
+const route = Astro.locals.starlightRoute;
+const entry = route.entry as unknown as { id?: string; filePath?: string; data: { reader?: boolean } };
+const entryId = String(entry.id ?? '');
+const isReader = isAuthored(entryId) || entry.data.reader === true;
+const editable = import.meta.env.DEV;
+const comments = isReader ? loadComments(entry.filePath, { includeLocal: editable }) : [];
+const show = isReader && (editable || comments.length > 0);
+const defaultLocal = SENSITIVE_DOMAINS.has(entryId.split('/')[0] ?? '');
+
+/* `<` escaped so a comment containing "</script>" cannot end this element. */
+const payload = JSON.stringify({ page: entry.filePath ?? '', editable, defaultLocal, comments }).replace(
+	/</g,
+	'\\u003c'
+);
+const listHtml = comments.map((c) => renderCommentItem(c, { editable })).join('');
+const hint = !editable
+	? 'Written while reading, each on the passage it is about. Choose an entry to go to its passage, or a marked passage to come back here.'
+	: defaultLocal
+		? 'Select any passage on the page — a heading, a paragraph or a few words — and press Comment. This page is in a sensitive area, so a new comment starts local and is never published unless you untick the box.'
+		: 'Select any passage on the page — a heading, a paragraph or a few words — and press Comment. Comments publish with the page unless you mark one local.';
+---
+
+<Default><slot /></Default>
+
+{show && <script is:inline type="application/json" data-rd-comments set:html={payload} />}
+
+{
+	show && (
+		<aside
+			id="rd-comments"
+			class="rd-cdrawer"
+			popover="manual"
+			aria-labelledby="rd-cdrawer-title"
+			data-rd-cdrawer
+		>
+			<div class="rd-cdrawer__head">
+				<h2 id="rd-cdrawer-title" class="rd-cdrawer__title">
+					My comments
+				</h2>
+				<button type="button" class="rd-btn" data-rd-cdrawer-close>
+					Close
+				</button>
+			</div>
+			<p class="rd-cdrawer__hint">{hint}</p>
+			<p class="rd-cdrawer__empty" data-rd-cempty hidden={comments.length > 0}>
+				No comments on this page yet.
+			</p>
+			<ol class="rd-cdrawer__list" data-rd-clist set:html={listHtml} />
+		</aside>
+	)
+}
+
+<script>
+	import '../scripts/reader-annotations';
+</script>

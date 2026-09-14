@@ -17,6 +17,10 @@ reported**, not absorbed.
 > ends**, and a chapter that takes three sittings has cost nothing. The reading figures below are
 > **observations of his own pace**, recorded so an estimate has something to be measured against —
 > they are not targets and nothing anywhere may treat an overrun as a failure.
+>
+> **Growth work is machine time too.** Since 2026-09-14 the site is meant to be shared
+> (`context/reader.md` §10f, `GROWTH.md`). Titles, share images, a feed or a newsletter are all
+> machine rows, and they count against the ratio below like any other.
 
 ---
 
@@ -35,17 +39,20 @@ and nothing else → web chat, where prose is cheapest. Validation needs the fil
 | Work | Tool | Frequency |
 |---|---|---|
 | Select the next book | **Web chat** · `P1` | Between books |
-| Brief the book | **Web chat** · `P2` | Per book |
+| Brief the book — with its release date and editions | **Web chat** · `P2` | Per book |
 | Scaffold the chapters | **Claude Code** · `/scaffold` | Per book |
+| **Write the book page** — author context, then vs. today | **Web chat** · `P2b` | Per book |
 | **Orient, clarify, explain, argue, decide, recap** | **Web chat** · `P3`–`P7` | Every chapter |
-| **Read it. Recall it closed-book.** | **You** | Every chapter |
+| **Read it — and comment as you go** | **You**, on `npm run dev` | Every chapter |
+| **Recall it closed-book** | **You** | Every chapter |
 | Paste it in | **You** | One paste |
 | **Validate** | **Claude Code** · `/validate` | Every chapter |
 | Records | **Claude Code** · `/progress` | Every chapter |
 | Ledger drift | **Claude Code** · `/ledger` | Weekly |
 | Ship | **Claude Code** · `/deploy` | Every chapter |
 
-**Claude Code never authors a chapter.** Asked to, it declines and offers to validate instead.
+**Claude Code never authors a chapter, a book page or a comment.** Asked to, it declines and offers to
+validate instead.
 
 ---
 
@@ -55,12 +62,12 @@ and nothing else → web chat, where prose is cheapest. Validation needs the fil
 |---|---|---|---|---|
 | 1 | `P3` **part A** — `## Pre-context`. Every chapter | Web chat | 2 min to run | machine |
 | 2 | `P3` **part B** — the rebuild. **Only when `clarified: true`** | Web chat | 3 min to run | machine |
-| 3 | **Read it** — the original wherever you can | You | **uncapped** | reading |
-| 4 | **`## Recall`, closed book** | **You** | **uncapped**, ~10 min typical | reading |
+| 3 | **Read it** — the original wherever you can. **Comment on any passage as you go**, on `npm run dev` | You | **uncapped** | reading |
+| 4 | **`## Recall`, closed book** — comments do not count: they were written with the page open | **You** | **uncapped**, ~10 min typical | reading |
 | 5 | `P4` explain, and it marks your recall | Web chat | 3 min to run | machine |
-| 6 | **Read the explanation** | You | **uncapped** | reading |
-| 7 | `P5` argue — **question first, position second** | Web chat | as long as it takes | reading |
-| 8 | `P6` decide — menu, then you write one sentence | Web chat | 10–15 min | mixed |
+| 6 | **Read the explanation** — and comment on it | You | **uncapped** | reading |
+| 7 | `P5` argue — **question first, position second**, then record the whole exchange | Web chat | as long as it takes | reading |
+| 8 | `P6` decide — two to ten candidates, then you write one sentence | Web chat | 10–15 min | mixed |
 | 9 | `P7` recap, paste, `/validate` | Both | **10 min, and this one IS a ceiling** | machine |
 | 10 | Fill `## Open questions`, set `status: complete` | **You** | 5 min | reading |
 | | **Machine total** | | **~25 min** | |
@@ -73,6 +80,10 @@ fixed.
 **Step 4 is not optional and not compressible.** A generated chapter is not a read chapter.
 Generation is minutes; reading and recall are the hours. **If that ratio ever inverts, the pipeline
 has become the hobby.**
+
+**Why step 3 happens on `npm run dev`.** The comment editor exists only there (`context/md-spec.md`
+§5d). A stub is visible in dev, so a chapter can be read and commented on before it is pasted — and
+the comments are saved beside the page and published with it.
 
 ### The ratio, which is the only number here worth watching
 
@@ -89,7 +100,8 @@ has become the hobby.**
 1. **Both the reading and the recall, every chapter.** They are not interchangeable.
 2. **One book at a time.** Two in progress means zero finished.
 3. **Four-week ceiling.** Beyond that it is the wrong book — a signal, not a character failure.
-4. **Extraction is uncapped. Commitment is ONE.** Reconciliation row 2.
+4. **Two to ten actions per chapter are recorded. Commitment is ONE per book.** Reconciliation
+   row 2, amended 2026-09-14.
 5. **You write every commitment yourself, and you name the obstacle.** Rows 10 and `P0`.
 6. **Publish before moving on.** No chapter is done until its page is live.
 7. **Answer the previous recap from memory before opening it.** Row 7 — retrieval, not rereading.
@@ -98,6 +110,10 @@ has become the hobby.**
 9. **A missed day is not a broken streak.** Resume tomorrow, same chapter.
 10. **Dropping a book is a decision, not a failure.** One line on the book page: where, and why.
 11. **Thirty days before the next book.** Not because the reading needs it — because the doing does.
+12. **A comment is a note, not a recall.** Write as many as you like while reading; none of them
+    replaces step 4.
+13. **Clear before short.** A page you could not follow is a defect in the page, however correct it
+    is. Send it back to the prompt that produced it. `context/standards.md` §2b.
 
 ---
 
@@ -112,7 +128,8 @@ from memory, then open the page. A missed review goes to the back of the queue.
 
 **AUDIT — `node scripts/audit.mjs`.** The **four** build controls plus anything stuck at `generated`
 for more than a week, duplicate action ids, books with more than one committed `now`, committed
-actions with no obstacle, and unknown `status` values.
+actions with no obstacle, unknown `status` values, **chapters outside two to ten actions, and a
+`book.json` whose release date or editions are missing or unreadable.**
 
 **PROMPT LENGTH — `node scripts/prompt-words.mjs`.** Not on a schedule; run it after touching a
 prompt. Every body must clear 500 words, and on 2026-08-31 none of the ten did.
@@ -125,6 +142,7 @@ prompt. Every body must clear 500 words, and on 2026-08-31 none of the ten did.
 |---|---|
 | **A chapter is generated** | It builds, every link resolves, and it is live |
 | **A chapter is READ** | You wrote the recall closed-book **before** the explanation layer, and filled `## Open questions` yourself. Not "read it". Not "the page looks good" |
+| **A book page is written** | `## Author context` and `## Context then vs. context today` are filled, every date and fact above has a row in its `## Sources`, and `book.json` carries `published` and `editions` |
 | **A book is done** | Every chapter in the brief is read or explicitly skipped, the ledger has its actions, and the verdict is written |
 | **An action is real** | It has a trigger, an obstacle, a start date, and a day-30 outcome — **including if that outcome is "dropped"** |
 
@@ -144,6 +162,10 @@ Recorded so it is not rebuilt by someone who cannot see the harm.
 | Rereading the previous recap | Retrieval beats rereading, and the drafts cited the retrieval study in support of rereading |
 | A per-section word budget, and a rate table converting words to minutes | **He rejected the premise.** There is no length budget; `estMinutes` is descriptive. Building one would have imported a constraint he explicitly declined — `context/reader.md` §2 |
 | Deciding on his behalf what does and does not apply to him | *"you don't remove, alter the things that author wanted to say for original intent, you can give extra instead."* The transfer question is additive. §4 |
+| *"I read fast"* in `P0`, and *"three sentences is a normal answer"* in `P3` | **He asked for the opposite, 2026-09-14**: *"length should not be a concern; user understanding is the priority."* Both pushed the model toward compression, and the sample book he read was correct and hard to follow |
+| *"A conceptual chapter may support no action"* | **He set a floor and a ceiling**: two to ten per chapter. A conceptual chapter meets the floor with reference-tier rules, never with invented habits |
+| A `### What real readers say` built from three or four reviewers | *"not just 3-4 specific users, since that sample size won't reflect reality."* Clusters, counts and venues, or THIN with the number — `context/chapter-spine.md` §3b |
+| A dialogue record of one question and one answer | *"the middle portion of a dialogue can be longer and more involved."* The whole exchange is recorded |
 
 ---
 
@@ -158,7 +180,8 @@ skill.
 | 2 | The build is green and the page looks wrong | **Flip `draft: false` and validate again.** A draft page's MDX is compiled by nothing — a clean build over a draft proves nothing at all. `CLAUDE.md` fact 11 | Believing the green build |
 | 3 | A link fails on a path you know is correct | It is `/shelf/`, `/ledger/` or `/review/`. They are `.astro` pages the validator cannot see, and they are enumerated in `astro.config.mjs`. A fourth computed view must be added there | Deleting the link |
 | 4 | A control refuses | Read what it says. All four name the file, the reason and the fix. `scripts/guards.mjs` | Working around it |
-| 5 | The chapter had to invent its own structure | **The brief was incomplete.** Go back to `P2`, amend `book.json`, and push it with `--outline`. That defect is upstream and fixing it on the page hides it | Patching the page |
-| 6 | The web-chat session produces the wrong shape | It is working from a stale copy of `00-CONTEXT-PACK.md`. Ask it the five verification questions; re-upload the Project knowledge files | Correcting it turn by turn |
-| 7 | Three chapters in a row produced no pushback | A finding about the transcript, not the book. Reach for the **Contrarian** toggle and say so in `## Dialogue` | Continuing |
-| 8 | You have spent more time on the machine than on the book | **Stop and say so.** This is rung 8 because it is the one nobody escalates | Adding a feature |
+| 5 | A comment is listed as detached | A re-paste reworded the passage it was on. If the rewording was not needed, restore the words and it re-attaches; if it was, leave it — it keeps its original quote | Editing the comments file by hand |
+| 6 | The chapter had to invent its own structure | **The brief was incomplete.** Go back to `P2`, amend `book.json`, and push it with `--outline`. That defect is upstream and fixing it on the page hides it | Patching the page |
+| 7 | The web-chat session produces the wrong shape | It is working from a stale copy of `00-CONTEXT-PACK.md`. Ask it the verification questions; re-upload the Project knowledge files | Correcting it turn by turn |
+| 8 | Three chapters in a row produced no pushback | A finding about the transcript, not the book. Reach for the **Contrarian** toggle and say so in `## Dialogue` | Continuing |
+| 9 | You have spent more time on the machine than on the book | **Stop and say so.** This is the last rung because it is the one nobody escalates — and since the site became something to share, it is the likeliest to be reached | Adding a feature |

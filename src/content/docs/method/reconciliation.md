@@ -55,6 +55,9 @@ prompt library in `web-chat/prompts/` already reflects it.
 Rows 13 and 14 are **internal** contradictions — the protocol against itself, or against
 `universe.md`. They are here because they are settled in the same place.
 
+**Rows 2, 4, 5, 6 and 12 were amended on 2026-09-14 by his own instructions**, after he read a
+complete sample book. The rows below stay as written; the amendments are at the foot of this file.
+
 ---
 
 ### 1 · There is no closed-book recall stage, and it is the most important one
@@ -362,6 +365,28 @@ would turn a typo in a pasted chapter into a build failure, which is the wrong t
 that arrives from a session that cannot see this filesystem. The cost is that `complete`, `Complete`
 and `done` differ silently — so `scripts/audit.mjs` reports them, and that is the only thing that
 will.
+
+---
+
+### Amendments — his second set of instructions, 2026-09-14
+
+**Not a fifteenth conflict between the protocol and the evidence.** These are changes **he** made
+after reading a complete sample book, quoted in `reader.md` §10. Where one of them touches a row
+above, **his instruction is operative** — the same standing his 2026-08-31 answers already have over
+the drafts — and the row above stays as the record of what was decided before.
+
+| # | Touches | What changed | Where it landed |
+|---|---|---|---|
+| A | Row 2 · *extraction uncapped* | **Two to ten actions per chapter.** Commitment is unchanged: one `committed` + `tier: now` per book. *"a conceptual chapter may support none"* is withdrawn | `chapter-spine.md` §6c · `P6` · `<Actions />` · `audit.mjs` |
+| B | Row 4 · *P5 question-first* | **The whole exchange is recorded**, not one pair. The question still comes first and the position second — that order is the audit and it is untouched. `### How the exchange went` is added between the position and the ending | `chapter-spine.md` §6 · `P5` |
+| C | Row 5 · *P0 trimmed to the constraint set* | **Clarity replaces brevity** in the constraint set. `P0`'s *"I read fast"* is gone; the character sketch stays out, because the reason for removing it — personalisation raises sycophancy — is unchanged | `standards.md` §2b · `P0` |
+| D | Row 6 · *summaries delete the machinery* | **Confirmed, from a third direction.** *"not oversimplified to the point where meaning is lost. Keep the original meaning intact"* is the same rule arrived at from the reader's side. Nothing about `clarified` changes | `standards.md` §2b a |
+| E | Row 12 · *solo private site, stated as a limitation* | **He now plans to share progress publicly.** The limitation is qualified, not removed: a public post is not a person who asks, its effect is untested, and nothing simulates it | `reader.md` §5 and §10f |
+
+**One amendment touches no row, and is recorded because it reverses an earlier call made in this
+repository rather than in the protocol:** `### Where the author was standing` was told on 2026-08-31
+*not* to become biography. At book level, biography is now owed — `## Author context`
+(`book-spec.md` §6) — and the chapter sub-section keeps only what bears on its own chapter.
 
 ---
 

@@ -37,6 +37,24 @@ only structural defence this step has.
 
 ---
 
+## Comments are not the recall
+
+**Since 2026-09-14 you can comment on any passage while reading on `npm run dev`** (`md-spec.md`
+§5d). Those comments are yours — no prompt writes one and the AI never does — and they are worth
+writing. **They are not this step.**
+
+| | A comment | `## Recall` |
+|---|---|---|
+| Written | While reading, **with the page open** | After reading, **with the page closed** |
+| What does the remembering | The text beside it | You |
+| What it produces | Annotation — your reaction to words in front of you | Retrieval — the effort the 61% against 40% was measured on |
+
+So: comment freely while you read, then close the page and write the recall anyway. **Do not paste
+your comments into `## Recall`, and do not write the recall by reading back through them** — that is
+rereading, one step removed, and it marks as a good recall while teaching nothing.
+
+---
+
 ## What to write
 
 Book closed. Page closed. Two parts, and the second is the one people drop.

@@ -856,17 +856,25 @@
  * A page whose left edge moves twice per section reads as broken, and a card at
  * 300px two-up inside the measure was never the problem it was solving.
  *
- * A DIAGRAM MAY, because unlike a card it cannot reflow: mermaid lays out to
- * whatever width it is given and then scales down, so 627px is not a narrower
- * presentation of the diagram, it is a smaller one. MEASURED: 500px of drawing
- * inside a 627px column. The negative margin is clamped at 0, so a viewport too
- * narrow to break out simply keeps the measure and nothing overflows.
+ * NOR, AS OF 2026-09-14, MAY A DIAGRAM — and this reverses the other half of the
+ * same change. The break-out was written for a diagram that SCALED DOWN to fit
+ * the column, where 627px meant a smaller drawing rather than a narrower one.
+ * Since 2026-09-04 no diagram scales (useMaxWidth: false, astro.config.mjs): a
+ * diagram wider than its frame keeps its intrinsic size and scrolls inside it,
+ * whatever the frame's width. So the break-out was buying back only the ragged
+ * edge the card grid was pulled in to remove. MEASURED at 1280 before this
+ * change: every diagram frame at x=144, 928px wide, under a paragraph at x=310,
+ * 595px wide — the same 166px step. At 420 the clamp had already resolved it to
+ * the column (x=16, 388px both), so a phone sees no change.
+ *
+ * A diagram that needs more room than the text gets it from the fullscreen
+ * expand, not from the page margin. In the column, the frame's own overflow-x
+ * scroll and its edge shadows (below) remain the answer.
  */
 [data-reader] .sl-markdown-content pre.mermaid {
-	--rd-break: min(58rem, calc(100vw - 4rem));
-	inline-size: max(100%, var(--rd-break));
-	max-inline-size: none;
-	margin-inline: min(0px, calc((100% - var(--rd-break)) / 2));
+	inline-size: 100%;
+	max-inline-size: 100%;
+	margin-inline: 0;
 }
 
 /* Wide screens get a margin for marginalia to move into. */
@@ -961,11 +969,5 @@ pre.mermaid:not([data-processed]) {
 		margin-inline: 0;
 		padding: 0.5rem 0.75rem;
 		border-inline-start: 2px solid #999;
-	}
-	/* A diagram that broke out of the measure must not break out of the sheet. */
-	[data-reader] .sl-markdown-content pre.mermaid {
-		inline-size: 100%;
-		max-inline-size: 100%;
-		margin-inline: 0;
 	}
 }

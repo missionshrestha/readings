@@ -1,8 +1,8 @@
 # The web-chat half — where all the judgment happens
 
 Claude Code built the container and now only scaffolds, validates, aggregates and ships.
-**Everything that requires judgment happens here**: choosing the book, the brief, every chapter, the
-explanation layer, the argument, the actions.
+**Everything that requires judgment happens here**: choosing the book, the brief, the book page,
+every chapter, the explanation layer, the argument, the actions.
 
 **One book = one Claude Project.** That Project is the persistent memory, and it is the only reason
 nothing has to be re-pasted between sessions.
@@ -47,13 +47,14 @@ of five inputs will generate happily against the two it invented, and the output
   1  ACQUIRE     find it, and the OUTSIDE VIEW before you commit           ⚙ search on
   2  BRIEF       the whole book: chapter map, questions, exit condition    -> book.json
                  ↓  /scaffold in Claude Code
+ 2b  BOOK PAGE   the author's context, and the book then and now           ⚙ search on
      ╔═══════════════════ THE CHAPTER LOOP ═══════════════════╗
-  3  ║ CLARIFY   only when the material is unfamiliar          ║
+  3  ║ CLARIFY   pre-context always · rebuild if unfamiliar    ║
   4  ║ READ      the chapter — the ORIGINAL where you can      ║  ⏹ AI OFF
   5  ║ RECALL    closed book, from memory, BEFORE any AI       ║  ⏹ AI OFF  ← the learning
   6  ║ EXPLAIN   the teaching layer + the world's reading      ║  ⚙
   7  ║ ARGUE     question first, position second               ║  ⚙
-  8  ║ DECIDE    candidates with honest impact. YOU choose one ║  ⚙ menu only
+  8  ║ DECIDE    2–10 recorded · YOU commit ONE per book       ║  ⚙ menu only
   9  ║ RECAP     concept map, the 30-second version, publish   ║  ⚙
      ╚══════════════════════ next chapter ════════════════════╝
                  ↓
@@ -64,6 +65,11 @@ of five inputs will generate happily against the two it invented, and the output
 **Stages 4, 5 and 8 have the AI OFF, and that is where the learning is.** Everything else is
 logistics. Stage 5 has its own page — [`prompts/recall.md`](prompts/recall.md) — because it is the
 one step in the pipeline with no prompt, and it was the one step with no artifact at all.
+
+**Stage 2b runs once per book, between `/scaffold` and the first chapter.** It writes the book page's
+`## Author context` and `## Context then vs. context today`, and checks the release dates in
+`book.json`. Read the first section before chapter one; the second is best read after the first
+chapter's recall, because it contains criticism that would frame the reading.
 
 **This numbering is not `context/protocol.md`'s.** That file was written before the closed-book
 recall existed, so it has EXPLAIN at 5 and READ II at 6; inserting the recall pushed everything after
@@ -78,11 +84,12 @@ that name this work — this one, protocol's, and `WORKFLOW.md`'s chapter-loop s
 |---|---|---|---|
 | P0 | [Setup](prompts/P0-setup.md) | Once per book, before anything | The standing contract |
 | P1 | [Select](prompts/P1-select.md) | Between books. **15 min, hard limit** | A go / no-go |
-| P2 | [Brief](prompts/P2-brief.md) | Once per book | `book.json` |
+| P2 | [Brief](prompts/P2-brief.md) | Once per book | `book.json`, with its release dates |
+| P2b | [Book page](prompts/P2b-book-page.md) | Once per book, after `/scaffold`, before chapter one. **Search on** | `## Author context` · `## Context then vs. context today` · `## Sources` |
 | P3 | [Clarify](prompts/P3-clarify.md) | **Part A every chapter; part B only when unfamiliar** | Pre-context, then the rebuild |
 | P4 | [Explain](prompts/P4-explain.md) | Per chapter, after the recall | Ten sub-sections |
-| P5 | [Argue](prompts/P5-argue.md) | Per chapter | The dialogue |
-| P6 | [Decide](prompts/P6-decide.md) | Per chapter | Candidate actions |
+| P5 | [Argue](prompts/P5-argue.md) | Per chapter | The whole dialogue — five sub-sections |
+| P6 | [Decide](prompts/P6-decide.md) | Per chapter | Two to ten candidate actions |
 | P7 | [Recap](prompts/P7-recap.md) | Per chapter | The finished page |
 | P8 | [Ledger](prompts/P8-ledger.md) | End of book | Synthesis |
 | P9 | [Review](prompts/P9-review.md) | Day 3, week 2, week 6, month 3 | What survived |
@@ -91,7 +98,7 @@ And three files in the same directory that are not prompts:
 
 | | For |
 |---|---|
-| [`prompts/spine-map.md`](prompts/spine-map.md) | **Which prompt owns which heading.** The twelve `##`, the ten `###`, and the `clarified` flip that decides who produces sections 2 and 3 |
+| [`prompts/spine-map.md`](prompts/spine-map.md) | **Which prompt owns which heading.** The twelve `##`, the ten `###`, the five `###` of the dialogue, the book page, and the `clarified` flip that decides who produces sections 2 and 3 |
 | [`prompts/recall.md`](prompts/recall.md) | **Stage 5, which has no prompt.** What to write closed-book, and the one measurement worth taking |
 | [`prompts/toggles.md`](prompts/toggles.md) | Twelve fragments to append when a book calls for one — with what each looks like when it did **not** land |
 
@@ -118,6 +125,13 @@ And three files in the same directory that are not prompts:
 ```
 
 **Steps 5 and 6 are the deliverable. Everything else is logistics.**
+
+**The book page runs this loop once, before the first chapter:** `P2b` at step 1, pasted over the
+book page's stub sections at step 3, validated at step 4. It has no recall and no `## Open questions`.
+
+**Comments are yours, and they are not the recall.** While reading on `npm run dev` you can comment
+on any passage; the AI never writes one. A comment is written with the page open, so it cannot stand
+in for step 5's closed-book recall — comment while you read, then close the page and recall anyway.
 
 ---
 

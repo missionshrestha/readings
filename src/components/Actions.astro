@@ -10,13 +10,19 @@
  * ---------------------------------------------------------------------------
  * WHAT THE RECONCILIATION PUT HERE
  *
- * ROW 2 — extraction is uncapped, COMMITMENT is capped at one per book.
+ * ROW 2 — COMMITMENT is capped at one per book.
  *   "Adding intentions doesn't raise the ~53% conversion rate; it divides
  *    attention." -- evidence/reading.md:568
- *   Every candidate is still recorded, because a ledger row costs nothing and a
- *   forgotten idea costs the idea. Only one carries `committed: true` with
- *   `tier: now`. audit.mjs warns above one; it never refuses, because that is
- *   his life and not a build.
+ *   Only one carries `committed: true` with `tier: now`. audit.mjs warns above
+ *   one; it never refuses, because that is his life and not a build.
+ *
+ * AMENDED 2026-09-14 — EXTRACTION is two to ten per chapter, his instruction:
+ *   "A list of action items for each chapter — minimum 2, maximum 10."
+ *   It replaced "extraction is uncapped" and the old empty-state text, which
+ *   told a reader that a chapter with no action was a legitimate result. The
+ *   count is stated on the page when it is outside the range, and reported by
+ *   /validate and audit.mjs — never refused by the build, for the same reason
+ *   `status` is not an enum. context/chapter-spine.md section 6c.
  *
  * ROW 10 — an action that is committed MUST name its inner obstacle.
  *   Oettingen & Mayer is the strongest negative finding in the whole corpus:
@@ -72,12 +78,29 @@ const committed = actions.filter((a) => a.committed);
 {
 	actions.length === 0 ? (
 		<p class="rd-actions__none">
-			No action from this chapter. That is a legitimate result — a conceptual chapter
-			may support none, and inventing one to fill the section is how a ledger stops
-			meaning anything.
+			No actions recorded for this chapter yet. Every chapter carries between two and
+			ten, each following from a claim the chapter makes.
 		</p>
 	) : (
 		<div class="rd-actions">
+			{/*
+			  TWO TO TEN, his instruction of 2026-09-14. Said on the page rather than
+			  refused by the build, the same trade as `status`: a pasted chapter with
+			  one action must still build. /validate and audit.mjs report it too.
+			*/}
+			{actions.length === 1 && (
+				<p class="rd-actions__warn">
+					One action recorded. A chapter carries at least two — a conceptual chapter
+					meets that with a rule to apply when the situation arises, never with an
+					invented habit.
+				</p>
+			)}
+			{actions.length > 10 && (
+				<p class="rd-actions__warn">
+					{actions.length} actions recorded. A chapter carries at most ten; the ones
+					that carry the least weight belong in the notes, not in the ledger.
+				</p>
+			)}
 			{committed.length > 1 && (
 				<p class="rd-actions__warn">
 					{committed.length} actions are marked committed. One at a time converts;

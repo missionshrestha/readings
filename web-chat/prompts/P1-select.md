@@ -2,7 +2,7 @@
 
 **Stage 0. Fifteen minutes, hard limit.** Between books, never during one.
 
-**Length: 986 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 1081 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
 
 > **The gate is real.** This stage can end in *"not now"*, and a selection stage that always says yes
 > is theatre. It can also end in *"this is an execution gap and another book will not fix it"*,
@@ -79,8 +79,11 @@ comfortable option. I want to know when I am doing it.
     Not the weakest one you can answer. If you cannot find a critic
     after a real look, say that you looked and found none — that is a
     fact about the book's reception, not evidence that it is right.
-  · What has aged badly since publication? Give me the year and what
-    changed.
+  · What has aged badly since publication? Give me the year it was
+    first published, as you found it and where, and what changed
+    since. The year is only a screen here: P2 verifies it against the
+    publisher or a library record before it goes into book.json,
+    because every page of the book will display it.
   · Does it contain a PROCEDURE, or only a thesis? Given two books,
     the one with exercises and sequences beats the one with an
     argument and anecdotes.
@@ -112,6 +115,11 @@ Do NOT tell me the book is excellent, seminal, or a must-read; give me
 the evidence and let me decide. If I argue you into a yes after you
 said no, say that I have just done that.
 
+Fifteen minutes is a limit on the stage, not on clarity. Write in
+complete sentences, define any term I would have to look up, and put
+an example beside a claim that is not obvious. A short answer I cannot
+follow costs more of the fifteen minutes than a longer one I can.
+
 MISSING INPUTS — NAME THEM AND STOP
 
 If you do not have search, say so in the first line and stop: section 3
@@ -139,6 +147,10 @@ sections.
 | Section 4's recommendation, in your words | `whyNow` |
 
 A "not now" produces no `book.json` at all. It goes in `reader-profile.md`, with its condition.
+
+**The publication year seen here is not recorded yet.** `P2` verifies it against the publisher or a
+library record and writes it into `book.json` as `published`, with any major revision in `editions`
+— since 2026-09-14 both are displayed on every page of the book (`book-spec.md` §2).
 
 ## Landed / Did not
 

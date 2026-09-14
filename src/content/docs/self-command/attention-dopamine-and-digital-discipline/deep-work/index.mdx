@@ -16,26 +16,105 @@ sidebar:
 ---
 import { Aside, Badge, Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
+{/* THE BOOK PAGE, not a chapter. Different rules, and four of them catch people:
+
+    1. THE CHAPTERS REGION IS GENERATED. Never edit between the CHAPTERS
+       markers — `--refresh` discards whatever is there, silently. Run
+       `node scripts/new-chapters.mjs <d> <c> <b> --refresh` after every paste
+       or the grid drifts and nobody notices.
+    2. THIS PAGE HAS NO ## Recall AND NO ## Actions. Those live on chapters.
+       A book-level action is a chapter's action that was not attributed.
+    3. `status` here tracks THE BOOK, not a chapter: reading -> complete, or
+       `dropped` with the reason in the last section. Never delete a dropped
+       book's page — the record of a decision is the point.
+    4. THE DATES ARE NOT WRITTEN HERE. The first-published date and every major
+       edition live in book.json as `published` and `editions`, and the page
+       chrome shows them under the title and on every chapter. Typing them into
+       this page as well would give them two places to disagree.
+
+    Author context, Context then vs. context today and Sources are produced by
+    web-chat/prompts/P2b-book-page.md, with search on, after /scaffold and
+    before the first chapter. context/book-spec.md section 6 fixes the headings;
+    context/standards.md section 8 is the standard they are written to.
+
+    Everything below is TODO on purpose. This template is scaffolded by
+    scripts/new-book.mjs and nothing in it is authored by Claude Code. */}
+
 ## Why this book, now
 
-TODO — one paragraph. The problem that made this the next book rather than an easier one.
+TODO — one paragraph, in your words. The problem that made this the next book rather than an easier one.
 
-## The outside view
+## Author context
 
-{/* Stage 1, with search on, and EVERY CITATION VERIFIED YOURSELF. Where the
-    evidence is thin, say so — never manufacture consensus. */}
+{/* P2b. BIOGRAPHY, IN DETAIL, BECAUSE HE ASKED FOR IT — "the time and
+    surroundings they were born and raised in, where they worked, and the
+    experiences that led the author to think the way they do".
 
-### What has been tested
+    Every fact has a row in Sources. The author's inner life only where the
+    author or a biographer says so; anything else is labelled interpretation.
+    Circumstances explain why a claim looks the way it does. They never refute
+    it. Read this section BEFORE chapter one. */}
+
+### Where and when they grew up
+
+TODO
+
+### What they studied and where they worked
 
 TODO
 
-### What critics say
+### What led to this book
 
 TODO
 
-### What has aged badly
+### What that means for reading it
 
 TODO
+
+## Context then vs. context today
+
+{/* P2b. SYMMETRIC: what has SUPPORTED the book since it was published, with the
+    same effort and sourcing as what has undermined it. Every point is dated and
+    says which kind of change it is — the author's, the evidence's, the world's,
+    or the audience's.
+
+    Best read AFTER the first chapter's recall. It contains criticism of the
+    book's claims, and read first it frames what you look for in the chapter.
+
+    THE STOPPING RULE IS A NUMBER, not a feeling — context/source-rules.md
+    section 4. Stop when all five hold: three independent sources, none of them
+    the book, its publisher or the author's own site; at least one an actual
+    critic; at least one piece of independent support, or a sentence saying you
+    looked and found none; every claim on the standing replication list looked
+    up; and you can state the strongest objection in a sentence you would not
+    be embarrassed to show its author. CEILING: if 20 minutes has produced no
+    substantive critic, stop and write THAT down. */}
+
+### The world the book was written in
+
+TODO
+
+### What the author has changed or said since
+
+TODO
+
+### Research since — what supports it and what does not
+
+TODO
+
+### What critics and other scholars argue
+
+TODO
+
+### What is different today
+
+TODO
+
+### What still holds
+
+:::tip[What still holds]
+TODO — what survives everything above, with its qualification.
+:::
 
 ## Questions I brought to it
 
@@ -98,10 +177,31 @@ Not an omission. Each of these was surfaced at the brief and cut, with a reason.
 
 {/* Written at Stage 10, after the last chapter. One of three, and all three
     are legitimate — only the first is growth.
-    changed something / confirmed something / entertainment */}
+    changed something / confirmed something / entertainment
+
+    THE TEST IS NOT A FEELING. "changed something" means a row in /ledger with
+    day30: running and a date on it. If nothing is running, the honest verdict
+    is one of the other two however good the book was — and a shelf where every
+    book "changed something" is a shelf that has stopped being measured.
+
+    THIS LINE IS HIS. Claude Code never writes it, and neither does web chat:
+    P8 is instructed to produce the synthesis and stop before the verdict. */}
 
 TODO
 
 ## Where I stopped, if I stopped
 
-{/* Dropping a book is a DECISION, not a failure. One line: where, and why. */}
+{/* Dropping a book is a DECISION, not a failure. One line: where, and why.
+
+    Leave the section empty if the book was finished. An empty heading here is
+    correct; a heading saying "N/A" is noise, and one saying "didn't finish,
+    will come back to it" is a book that was dropped without deciding. */}
+
+## Sources
+
+{/* Every date, biographical fact and claim above, one row each.
+    context/source-rules.md sections 1 and 2b. */}
+
+| Claim | Source | Read on | Tier |
+| --- | --- | --- | --- |
+| TODO | TODO | TODO | TODO |

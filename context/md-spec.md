@@ -1,7 +1,8 @@
 # MD-SPEC — the complete authoring contract
 
-**Handed verbatim to whichever tool writes a chapter**, alongside `chapter-spine.md`. It is the only
-reference. If a component is not here it does not exist, and using it fails the build.
+**Handed verbatim to whichever tool writes a chapter or a book page**, alongside `chapter-spine.md`
+and `standards.md`. It is the only reference. If a component is not here it does not exist, and
+using it fails the build.
 
 > **Why `.mdx` and stock components.** Stock Starlight components are **publicly documented** — any
 > model already knows `<Aside>` and `<CardGrid>`. A bespoke directive vocabulary is a private
@@ -45,6 +46,14 @@ actions:
     committed: true
     started: 2026-09-14
     day30: not-yet
+  - id: dw-02-single-study
+    if: "a claim in this book rests on a single study"
+    then: "I look up whether it replicated before I repeat it to anyone"
+    trigger: "the moment I quote the book in conversation or in a post"
+    tier: reference
+    impact: "small, and it costs two minutes each time"
+    committed: false
+    day30: not-yet
 ---
 ```
 
@@ -57,7 +66,11 @@ actions:
 | `private` | Excludes the page from `build`. **Required, explicitly, in a sensitive domain** |
 | `status` | `stub` → `reading` → `generated` → `recalled` → `explained` → `complete`, plus `skipped` and `dropped`. Set by hand. **Eight values, and `stub` is one of them** — see below |
 | `read` | When it was actually read, not generated. Renders as "Last updated" |
-| `actions[]` | See §4. `obstacle` is required whenever `committed: true` |
+| `actions[]` | See §4. **Two to ten on every chapter.** `obstacle` is required whenever `committed: true` |
+
+**No release date in a chapter's frontmatter, and none in the book page's either.** The dates live
+in `book.json` (`published`, `editions`) and the page chrome shows them on every page of the book
+(`book-spec.md` §6). A second copy would be a second place for them to disagree.
 
 ### `status` — all eight values, and why `stub` was missing from this list
 
@@ -83,7 +96,8 @@ spec that under-declares teaches you to hand-write a value the tooling then quie
 **No field is an enum and no number is range-checked.** Enforcing `status` would turn a typo in a
 pasted chapter into a build failure, which is the wrong trade for content that arrives by paste. The
 cost is real and stated: `complete`, `Complete` and `done` are three different values, and only
-`node scripts/audit.mjs` will ever say so.
+`node scripts/audit.mjs` will ever say so. **The same trade governs the action count**: fewer than
+two or more than ten is reported by `/validate` and `audit.mjs`, and never refuses a build.
 
 ### How a bad field degrades — the four cases, verified against zod@4.5.4
 
@@ -142,7 +156,8 @@ thing the drafted pipeline was missing.
 ```
 
 Reads the frontmatter. Actions are **data**, not prose — writing them twice guarantees the two
-disagree, and the ledger is computed from the data.
+disagree, and the ledger is computed from the data. **It renders a visible note when the chapter
+carries fewer than two actions or more than ten.**
 
 ### `<Passage>` — optional
 
@@ -172,24 +187,43 @@ The scheduling advice assumes the interruptions are yours to refuse.
 Floats into the outer margin above 1200px, collapses inline below. Never load-bearing: anything
 needed to follow the argument belongs in the column.
 
+### Three things that look like components and are not
+
+**Added 2026-09-14.** Each is **site chrome**: it works on every page automatically, there is nothing
+to import, and nothing in a paste can switch it on or off.
+
+| Feature | What it does | What a paste owes it |
+|---|---|---|
+| **Expand on every diagram** | A control on each Mermaid diagram opens it to fill the screen, with zoom; Close or Escape returns it to the column | Nothing. Draw the diagram to read inside the column anyway — §6 |
+| **Dialogue turns** | Under `### How the exchange went`, each paragraph beginning `**Me:**` or `**AI:**` is shown as one side of a conversation | The labels, exactly. §5c |
+| **Comments** | While reading on `npm run dev` he selects any passage and writes a comment; the built site shows them read-only, anchored to the passage, with a list behind one button | **Nothing, ever.** Comments are never pasted and never generated. §5d |
+
 ---
 
 ## 4 · Actions
 
-One YAML object per action. **Extraction is uncapped; commitment is not.**
+One YAML object per action. **Two to ten per chapter; one committed per book.**
+
+> *"A list of action items for each chapter — minimum 2, maximum 10."* — his instruction, 2026-09-14.
+> `chapter-spine.md` §6c has the four tests an action must pass to earn its place, and what to do at
+> either edge.
 
 | Field | Rule |
 |---|---|
-| `id` | **Permanent.** The review key, and rendered visibly. Renaming it silently resets that action's schedule |
+| `id` | **Permanent.** The review key, and rendered visibly. Renaming it silently resets that action's schedule. Unique across the whole book |
 | `if` / `then` | The rule. One line, observable. *Could someone watching tell whether you did it?* |
 | `trigger` | A concrete situation — a time, a place, a person. **Never a feeling** |
 | `obstacle` | The **inner** obstacle. **Required when `committed: true`** |
-| `tier` | `now` · `next` · `later` · `reference` |
+| `tier` | `now` · `next` · `later` · `reference`. `reference` is a rule applied when a situation arises, and it is how a conceptual chapter meets the floor honestly |
 | `impact` | Honest, **including "probably marginal"** |
 | `committed` | True only when **he** wrote the sentence. The AI never writes one |
 | `day30` | `not-yet` · `running` · `adapted` · `dropped`. Filled in honestly, failures included |
 
-**At most one action across the whole book carries `committed: true` with `tier: now.`**
+**At most one action across the whole book carries `committed: true` with `tier: now`.**
+
+**Every action is anchored to a claim in its chapter.** `P6` names the claim for each candidate; an
+action that follows from no claim was invented, and a filler action written to reach two is the
+defect the floor makes most likely.
 
 **Nothing anywhere asks him to picture the outcome.** Positive fantasy predicts worse attainment —
 the strongest negative finding in the evidence base.
@@ -340,26 +374,130 @@ Composition is where a first draft usually breaks, and the failures are not symm
 **A heading inside any component is always wrong.** Headings are anchors, the twelve `##` are a
 corpus-wide contract, and one nested inside a `<Card>` is invisible to every one of them.
 
+---
+
+## 5c · Writing a dialogue exchange
+
+`## Dialogue` has **five** `###` since 2026-09-14 (`chapter-spine.md` §6). The first three are prose.
+**`### How the exchange went` is a sequence of turns, and the label is the syntax:**
+
+```mdx
+### How the exchange went
+
+**Me:** I think the shutdown ritual only works if the day already has an end. Mine often does not.
+
+**AI:** That objection is fair to the chapter's example, which assumes a fixed finishing time. The
+mechanism it names is different, though: it is about closing open loops, not about ending the day.
+For example, a nurse finishing a night shift at 07:00 has the same open loops as an office worker at
+17:30 …
+
+- the first point, kept in full
+- the second point, kept in full
+
+**Me:** Then the real test is whether writing the loops down works at 23:00 as well as at 17:30.
+
+**AI (as sceptic):** …
+```
+
+| Rule | Because |
+|---|---|
+| **A turn starts with a paragraph whose first words are `**Me:**`, `**AI:**` or `**AI (as sceptic):**`** — bold, colon inside the bold, then a space | The page draws each turn as one side of a conversation from exactly these labels. Any other spelling renders as an ordinary bold word |
+| **A paragraph, list or quote with no label belongs to the turn above it** | So a long turn can have several paragraphs and lists without repeating the label |
+| **No heading between turns, no component around them** | A heading is an anchor, and a component would hide the turns from the styling |
+| **Blank line between every paragraph and list** | The same rule as everywhere: without it, Markdown joins them |
+
+Without JavaScript the turns still read correctly, as labelled paragraphs.
+
+---
+
+## 5d · Comments are not content
+
+**Added 2026-09-14.** He comments on passages while he reads, on `npm run dev`. Those comments are:
+
+- **stored beside the page**, as `<chapter-slug>.comments.json` (and `index.comments.json` for a book
+  page), written only by the dev server — `scripts/comments-dev.mjs`;
+- **never pasted, never edited by hand, and never generated.** They are in the prohibition zone with
+  `## Recall` and `## Open questions`: **the AI never writes what only he can know**;
+- **published by default**, read-only and anchored to the passage he selected, **unless he marks one
+  local** — then it stays in the repository and is left out of every build. **On a page in
+  `relationships-…`, `love-…` or `money-and-wealth` a new comment starts local** (his decision,
+  2026-09-14): a note written mid-read there is most likely to be about a real person, so publishing
+  one takes a deliberate untick;
+- **never published from a `private: true` or `draft: true` page**, because those pages are not built.
+
+**What a paste owes them: stable text.** A comment finds its passage by the words he selected. A
+re-paste that rewords that passage **detaches** the comment — it is kept, and listed as detached with
+its original quote, but it no longer points anywhere. So a correction to a chapter he has already
+commented on changes as few words as the correction needs.
+
+---
+
 ## 6 · Free from Markdown and the build
 
 Headings and anchors · GFM tables, footnotes, task lists · lists · blockquotes · inline formatting ·
 full-text search · four reading themes with a toggle · breadcrumbs · prev/next · build-time link
-validation · "Last updated" from `read`.
+validation · "Last updated" from `read` · the book's release dates on every page of it · Expand on
+every diagram · comments.
 
-**Diagrams are Mermaid**, in a ` ```mermaid ` fence. Six types, and pick the one that matches the
-shape rather than "a diagram":
+**Tables are Markdown tables.** He listed tables with the diagrams; a GFM table is the right tool for
+anything tabular, and Mermaid does not draw them.
 
-| Type | For |
-|---|---|
-| `mindmap` | A chapter concept map — ideas branching from a centre |
-| `flowchart TD` | A process, a decision tree, a causal chain |
-| `graph LR` | Relationships that are not hierarchical |
-| `timeline` | A book's arc, or historical context |
-| `quadrantChart` | A two-axis comparison |
-| `journey` | A sequence with a felt quality at each step |
+### Diagrams are Mermaid — used wherever they help
 
-**Show the RELATIONSHIPS, not a list of nouns.** A diagram that restates the paragraph above it has
-not earned its place. Never hard-code a colour: they re-theme across all four themes automatically.
+> *"the user wants Mermaid used to its full capacity wherever relevant/required — including tables,
+> graphics, bar graphs, charts, pie charts, line graphs, histograms, mindmaps, etc."*
+> — his instruction, 2026-09-14
+
+In a ` ```mermaid ` fence, **in any section that is prose** — `## Key points`, `## The clarified
+chapter`, any sub-section of the explanation layer, and `## Concept map`. Pick the type that matches
+the **shape** of what is being shown, rather than "a diagram".
+
+**Nineteen types, since 2026-09-14.** Each was rendered on `/elements/` in all four reading themes, at
+1280px and at 420px, and measured: no render error, no invalid paint, and no text under its contrast
+floor. **A type not in this table is not themed and may be unreadable in two of the four themes** —
+the `-beta` suffix is part of the opening line where it is shown. **Fits** means it reads inside the
+column at 1280px; **expand** means it scrolls or shrinks there and relies on the Expand control.
+
+| Type | Opening line | For | At 1280 | Watch for |
+|---|---|---|---|---|
+| Mind map | `mindmap` | A chapter concept map — ideas branching from a centre | expand | Keep it to about twelve nodes |
+| Flowchart, top-down | `flowchart TD` | A process, a decision tree, a causal chain. **The concept map's default** | fits | — |
+| Flowchart, left-right | `flowchart LR` | A causal chain read left to right | expand | Wide beyond about four nodes; prefer `TD` |
+| Relationship graph | `graph LR` | Relationships that are not hierarchical | expand | Left-to-right grows wide — keep it short |
+| Timeline | `timeline` | A book's arc, a life, historical context | expand | — |
+| Quadrant chart | `quadrantChart` | A two-axis comparison | fits | — |
+| Journey | `journey` | A sequence with a felt quality at each step | expand | Keeps its natural width and scrolls |
+| Pie chart | `pie` | Parts of one whole | fits | **At most six slices** (six colours). Numbers sourced |
+| Bar, line, bar-and-line, histogram | `xychart-beta` | Effect sizes, trends, a distribution | fits | **One y-axis: combine bars and a line only in the same unit.** Shrinks rather than scrolls on a phone. Numbers sourced |
+| Sankey | `sankey-beta` | Where a quantity went | fits | **Draws no title** — the caption carries it. Flow bands are deliberately faint |
+| Radar | `radar-beta` | One book, or two, across several criteria | fits | Title unquoted; legend labels over about twelve characters crowd the frame |
+| Treemap | `treemap-beta` | A nested whole — how big each part is | fits | **A small leaf silently loses its label** |
+| Venn | `venn-beta` | Where ideas or groups overlap | fits | Overlap labels collide above about ten characters |
+| Fishbone | `ishikawa-beta` | Why something failed — causes branching to one effect | fits | Indentation defines the tree; the first line is the effect |
+| Cynefin | `cynefin-beta` | **Only when the book itself uses the Cynefin framework** | fits | Prints the framework's own domain descriptions by default |
+| Sequence | `sequenceDiagram` | A question-first dialogue; who said what, in order | expand | Long message labels set the width |
+| State | `stateDiagram-v2` | The life of an action or a habit — its states and transitions | fits | — |
+| Gantt | `gantt` | A book across weeks | fits | Write `tickInterval 1week` and `todayMarker off` — a moving "today" line misleads on a static page |
+| Block | `block-beta` | The structure of an argument, as blocks | expand | Width is the longest label times the columns |
+
+**Rejected: `classDiagram`.** It models software; `flowchart` and `graph` already cover relationships
+between ideas, and its multiplicity labels clip in every theme.
+
+**Every diagram obeys five rules**, whatever its type:
+
+1. **It earns its place.** It shows something the prose cannot show as quickly. A diagram that
+   restates the paragraph above it is decoration.
+2. **A caption sentence comes before it**, in the prose: what it shows, how to read it, and — for a
+   chart — how strong the evidence behind the numbers is.
+3. **It reads inside the text column.** Every diagram gets an Expand control, but Expand is for
+   detail, not rescue: grow down rather than across, keep labels to about five words, and split a
+   diagram that needs more than about twelve nodes. `chapter-spine.md` §6b.
+4. **A chart is a claim.** Every plotted number has a row in `## Sources`, or the chart's title says
+   the numbers are illustrative. `source-rules.md` §3b.
+5. **Never hard-code a colour.** Diagrams re-theme across all four reading themes automatically, and a
+   literal colour will be wrong — or invisible — in at least one of them.
+
+**Show the RELATIONSHIPS, not a list of nouns.**
 
 **Maths is NOT ENABLED.** `$$…$$` hard-fails — the braces parse as MDX.
 
@@ -370,7 +508,7 @@ not earned its place. Never hard-code a colour: they re-theme across all four th
 1. **`<` and `{` are syntax, not text.** Put them in backticks. **Measured 2026-08-31, and it is
    narrower and nastier than "any bare `<` fails":** `a < b` with spaces around it compiles fine;
    `a <b` is a hard parse error, and `{threshold}` is a RUNTIME error that only fires if the page
-   has a route. See §9 for all three verbatim.
+   has a route. See §8 for all three verbatim.
 2. **Blank lines around every component's inner content.**
 3. **The paste fence is FOUR backticks.** A chapter contains three-backtick blocks, and a
    three-backtick wrapper closes on the first one — you paste half a file.
@@ -384,6 +522,8 @@ not earned its place. Never hard-code a colour: they re-theme across all four th
 9. **MDX comments are `{/* … */}`**, and **must not contain a literal `*/`**.
 10. **Images live BESIDE the chapter**, referenced `./name.png`. Never `public/`. `alt` is never
     empty. You cannot create binary files — ask for the screenshot rather than inventing a path.
+11. **Dialogue turn labels are exactly `**Me:**`, `**AI:**` and `**AI (as sceptic):**`.** §5c.
+12. **Every diagram has a caption sentence before it.** §6.
 
 ---
 
@@ -522,7 +662,11 @@ was validated by nothing at all, and the errors surface later, looking like a re
 | A fifth custom component | Say it in one sentence instead. A new one requires him to ask explicitly, in writing, in that session |
 | Any second diagram tool | Mermaid is the ceiling |
 | Writing in `## Recall` or `## Open questions` | Those are his. The prohibition zone |
+| **Writing, pasting or editing a comment** | His, like the recall. §5d |
 | Writing an action, an obstacle, or an IF–THEN commitment | `P0`'s one rule |
+| An action anchored to no claim in its chapter | It was invented, and the ledger is the only measure this system has |
 | Asking him to visualise an outcome | Contradicts the evidence the whole system is built on |
+| A chart whose numbers are neither sourced nor titled illustrative | `source-rules.md` §3b |
+| A "real-life" incident with no source | It is an invented citation in narrative form. `standards.md` §2 rule 9 |
 | Emoji in a heading | Breaks anchors, pollutes the search index |
 | An unpinned claim — "studies show" | Undated facts rot silently; dated facts rot visibly |

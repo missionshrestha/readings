@@ -1,0 +1,600 @@
+/*
+ * annotations.css — comments, the dialogue thread, and diagram Expand.
+ *
+ * SITE CHROME, added 2026-09-14 on his instruction after reading the sample book
+ * (context/reader.md section 10). The behaviour is src/scripts/reader-annotations.ts
+ * and, in dev only, src/scripts/comment-editor.ts.
+ *
+ * NO NEW COLOURS. Every value below is a --rd-* token that scripts/contrast.mjs
+ * already measures in all four themes, or a color-mix() of one against
+ * transparent. The two surfaces that composite a tint over the page — the comment
+ * mark and the dialogue rule — were measured in the browser, and the numbers are
+ * beside them.
+ *
+ * Unlayered, like custom.css and reading.css, so a rule here beats Starlight's
+ * @layer starlight.* rules without !important.
+ */
+
+/* ==========================================================================
+ * SHARED BUTTON — the Aa panel's buttons, for chrome that lives outside it
+ * ========================================================================== */
+.rd-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.3rem;
+	min-block-size: 2rem;
+	padding: 0.3rem 0.7rem;
+	font-family: var(--rd-font-ui);
+	font-size: 0.8125rem;
+	font-weight: 600;
+	line-height: 1.2;
+	color: var(--rd-ink);
+	background: var(--rd-ground);
+	border: 1px solid var(--rd-border);
+	border-radius: var(--ds-r-sm, 0.375rem);
+	cursor: pointer;
+}
+.rd-btn:hover {
+	border-color: var(--rd-border-strong);
+}
+.rd-btn:disabled {
+	opacity: 0.6;
+	cursor: progress;
+}
+/*
+ * A CLASS THAT SETS `display` BEATS THE BROWSER'S [hidden] RULE. MEASURED
+ * 2026-09-14 in a screenshot of the editor: "Delete" showed on a NEW comment
+ * with `hidden` correctly set, because `.rd-btn { display: inline-flex }` is more
+ * specific than the UA's `[hidden] { display: none }`. The header toggle hit the
+ * same trap the same day. Every element here toggled with `hidden` needs this.
+ */
+.rd-btn[hidden] {
+	display: none;
+}
+.rd-btn--primary {
+	color: var(--rd-on-accent);
+	background: var(--rd-accent);
+	border-color: var(--rd-accent);
+}
+.rd-btn--primary:hover {
+	border-color: var(--rd-heading);
+}
+.rd-btn--danger {
+	color: var(--rd-tier-core);
+}
+/* State is shape AND colour, the same rule as the Aa panel. */
+.rd-btn[aria-selected='true'] {
+	color: var(--rd-accent);
+	border-color: var(--rd-accent);
+	box-shadow: inset 0 -2px 0 var(--rd-accent);
+}
+
+/* The header toggle is rendered hidden and shown by script only when the page
+   has comments (or in dev). A class rule setting display would otherwise beat
+   the UA's [hidden] rule and show it on every page. */
+[data-rd-comments-toggle][hidden] {
+	display: none !important;
+}
+
+/* ==========================================================================
+ * 3 · DIAGRAMS — in the column, with Expand
+ * ========================================================================== */
+.rd-diagram {
+	position: relative;
+	margin-block: var(--ds-5, 1.5rem);
+}
+/*
+ * The wrapper owns the vertical rhythm now. Starlight's markdown CSS puts
+ * margin-top on every sibling (CLAUDE.md stack fact 18), which would push the
+ * absolutely-placed Expand button a line down from the corner it belongs in.
+ */
+.rd-diagram > pre.mermaid,
+.rd-diagram > .rd-diagram__expand {
+	margin-block: 0;
+}
+.rd-diagram__expand {
+	position: absolute;
+	inset-block-start: 0.5rem;
+	inset-inline-end: 0.5rem;
+	z-index: 1;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	min-block-size: 2rem;
+	padding: 0.25rem 0.6rem;
+	font-family: var(--rd-font-ui);
+	font-size: calc(0.75rem * var(--rd-scale, 1));
+	font-weight: 600;
+	color: var(--rd-muted);
+	background: var(--rd-surface);
+	border: 1px solid var(--rd-border);
+	border-radius: 999px;
+	cursor: pointer;
+}
+.rd-diagram__expand:hover,
+.rd-diagram__expand:focus-visible {
+	color: var(--rd-accent);
+	border-color: var(--rd-accent);
+}
+
+.rd-diagram-dialog {
+	inline-size: 100vw;
+	block-size: 100dvh;
+	max-inline-size: none;
+	max-block-size: none;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	color: var(--rd-ink);
+	background: var(--rd-surface);
+}
+.rd-diagram-dialog[open] {
+	display: flex;
+	flex-direction: column;
+}
+.rd-diagram-dialog::backdrop {
+	background: rgb(0 0 0 / 55%);
+}
+.rd-diagram-dialog__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.6rem max(1rem, env(safe-area-inset-right)) 0.6rem max(1rem, env(safe-area-inset-left));
+	border-block-end: 1px solid var(--rd-border);
+}
+.rd-diagram-dialog__title {
+	margin: 0;
+	margin-inline-end: auto;
+	font-family: var(--rd-font-ui);
+	font-size: 0.9375rem;
+	font-weight: 600;
+	color: var(--rd-heading);
+}
+.rd-diagram-dialog__stage {
+	flex: 1;
+	min-block-size: 0;
+	overflow: auto;
+	display: flex;
+	align-items: safe center;
+	justify-content: safe center;
+	padding: 1rem;
+}
+/*
+ * THE DIAGRAM FILLS THE STAGE, AND ZOOM IS A PERCENTAGE OF IT.
+ *
+ * Mermaid writes `style="max-width: …px"` on its SVG to cap it at its natural
+ * width — correct in the column, and the reason a full-screen view would
+ * otherwise show the same small drawing in the middle of a large empty dialog.
+ * The inline style only yields to !important. At zoom 1 the SVG's own
+ * preserveAspectRatio fits it to the stage in both directions; above 1 the
+ * stage scrolls, and `safe` alignment keeps the top-left reachable.
+ */
+.rd-diagram-dialog__stage pre.mermaid {
+	flex: none;
+	inline-size: calc(var(--rd-zoom, 1) * 100%);
+	block-size: calc(var(--rd-zoom, 1) * 100%);
+	max-inline-size: none;
+	margin: 0;
+	padding: 0;
+	overflow: visible;
+	background: transparent;
+	border: 0;
+}
+.rd-diagram-dialog__stage pre.mermaid svg {
+	inline-size: 100% !important;
+	block-size: 100% !important;
+	max-inline-size: none !important;
+}
+
+/* ==========================================================================
+ * 1 · COMMENTS — the mark on the passage
+ *
+ * MEASURED 2026-09-14 on the built site (astro preview), headless Chromium, by
+ * compositing the mark's computed background over the page ground and reading
+ * the pixel — body ink against the result:
+ *
+ *              at rest    hovered    first frame of the save flash (45%)
+ *   day        12.74:1    11.00:1
+ *   sepia       9.71:1     8.27:1
+ *   dusk        9.90:1     7.97:1
+ *   night      10.32:1     8.34:1    4.92:1 — the lowest point, for 1.5s
+ *
+ * The flash is the floor, which is why it stops at 45% and fades from there.
+ * ========================================================================== */
+mark.rd-cmark {
+	color: inherit;
+	background: color-mix(in srgb, var(--rd-accent) 14%, transparent);
+	box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--rd-accent) 65%, transparent);
+	border-radius: 2px;
+	cursor: pointer;
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+mark.rd-cmark:hover {
+	background: color-mix(in srgb, var(--rd-accent) 24%, transparent);
+}
+mark.rd-cmark.is-flash {
+	animation: rd-cflash 1.5s ease-out;
+}
+@keyframes rd-cflash {
+	from {
+		background: color-mix(in srgb, var(--rd-accent) 45%, transparent);
+	}
+}
+
+/* ==========================================================================
+ * 1 · COMMENTS — the drawer
+ * ========================================================================== */
+.rd-cdrawer {
+	position: fixed;
+	inset: 0 0 0 auto;
+	inline-size: min(26rem, 100vw);
+	block-size: 100dvh;
+	max-block-size: none;
+	margin: 0;
+	padding: 0;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	font-family: var(--rd-font-ui);
+	color: var(--rd-ink);
+	background: var(--rd-surface);
+	border: 0;
+	border-inline-start: 1px solid var(--rd-border-strong);
+	box-shadow: var(--rd-shadow);
+}
+/*
+ * A PHONE GETS THE WHOLE WIDTH. 26rem is 416px, so at 420px the drawer left a
+ * 4px sliver of page and a border beside it — MEASURED 2026-09-14, 416px wide
+ * on a 420px viewport. Below 30rem there is no page worth keeping in view.
+ */
+@media (max-width: 30rem) {
+	.rd-cdrawer {
+		inline-size: 100vw;
+		border-inline-start: 0;
+	}
+}
+.rd-cdrawer__head {
+	position: sticky;
+	inset-block-start: 0;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.85rem 1rem;
+	background: var(--rd-surface);
+	border-block-end: 1px solid var(--rd-border);
+}
+.rd-cdrawer__title {
+	margin: 0;
+	margin-inline-end: auto;
+	font-family: var(--rd-font-serif);
+	font-size: calc(1.25rem * var(--rd-scale, 1));
+	font-weight: 600;
+	line-height: 1.2;
+	color: var(--rd-heading);
+}
+.rd-cdrawer__hint,
+.rd-cdrawer__empty {
+	margin: 0.75rem 1rem 0;
+	font-size: calc(0.8125rem * var(--rd-scale, 1));
+	line-height: 1.5;
+	color: var(--rd-muted);
+}
+.rd-cdrawer__list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	margin: 0.9rem 0 1.5rem;
+	padding: 0 1rem;
+	list-style: none;
+}
+.rd-citem {
+	padding: 0.75rem 0.85rem;
+	background: var(--rd-ground);
+	border: 1px solid var(--rd-border);
+	border-radius: var(--ds-r-md, 0.75rem);
+}
+.rd-citem.is-flash {
+	outline: 2px solid var(--rd-accent);
+	outline-offset: 2px;
+}
+.rd-citem.is-detached {
+	border-style: dashed;
+}
+.rd-citem__where {
+	display: block;
+	inline-size: 100%;
+	margin: 0 0 0.55rem;
+	padding: 0;
+	font: inherit;
+	text-align: start;
+	color: inherit;
+	background: none;
+	border: 0;
+	cursor: pointer;
+}
+.rd-citem__heading {
+	display: block;
+	font-size: calc(0.6875rem * var(--rd-scale, 1));
+	font-weight: 700;
+	letter-spacing: 0.07em;
+	text-transform: uppercase;
+	color: var(--rd-accent);
+}
+.rd-citem__quote {
+	display: block;
+	margin-block-start: 0.25rem;
+	padding-inline-start: 0.6rem;
+	font-family: var(--rd-font-serif);
+	font-size: calc(0.875rem * var(--rd-scale, 1));
+	font-style: italic;
+	line-height: 1.5;
+	color: var(--rd-muted);
+	border-inline-start: 2px solid var(--rd-border-strong);
+}
+.rd-citem__where:hover .rd-citem__quote,
+.rd-citem__where:focus-visible .rd-citem__quote {
+	color: var(--rd-ink);
+}
+.rd-citem__body,
+.rd-ceditor__preview {
+	font-family: var(--rd-font-serif);
+	font-size: calc(1rem * var(--rd-scale, 1));
+	line-height: 1.6;
+	color: var(--rd-ink);
+	overflow-wrap: anywhere;
+}
+:is(.rd-citem__body, .rd-ceditor__preview) > * {
+	margin: 0 0 0.6em;
+}
+:is(.rd-citem__body, .rd-ceditor__preview) > :last-child {
+	margin-block-end: 0;
+}
+:is(.rd-citem__body, .rd-ceditor__preview) :is(ul, ol) {
+	padding-inline-start: 1.3rem;
+}
+:is(.rd-citem__body, .rd-ceditor__preview) :is(ul, ol) :is(ul, ol) {
+	margin: 0.2em 0;
+}
+:is(.rd-citem__body, .rd-ceditor__preview) blockquote {
+	margin-inline: 0;
+	padding-inline-start: 0.7rem;
+	color: var(--rd-muted);
+	border-inline-start: 2px solid var(--rd-border-strong);
+}
+:is(.rd-citem__body, .rd-ceditor__preview) code {
+	font-size: 0.85em;
+}
+.rd-citem__meta,
+.rd-citem__detached {
+	margin: 0.55rem 0 0;
+	font-size: calc(0.75rem * var(--rd-scale, 1));
+	line-height: 1.45;
+	color: var(--rd-muted);
+}
+.rd-citem__detached {
+	font-style: italic;
+}
+.rd-citem__local {
+	font-weight: 600;
+	color: var(--rd-ink);
+}
+.rd-citem__actions {
+	display: flex;
+	gap: 0.4rem;
+	margin: 0.6rem 0 0;
+}
+
+/* ==========================================================================
+ * 1 · COMMENTS — writing one (dev only; the elements exist only in dev)
+ * ========================================================================== */
+.rd-cadd {
+	position: fixed;
+	inset: auto;
+	margin: 0;
+	padding: 0.4rem 0.8rem;
+	font-family: var(--rd-font-ui);
+	font-size: 0.8125rem;
+	font-weight: 700;
+	color: var(--rd-on-accent);
+	background: var(--rd-accent);
+	border: 0;
+	border-radius: 999px;
+	box-shadow: var(--rd-shadow);
+	cursor: pointer;
+}
+
+/*
+ * `margin: auto` IS WHAT CENTRES A MODAL <dialog>, and Starlight's reset takes it
+ * away — `* { margin: 0 }`, @astrojs/starlight/style/reset.css:8-10. MEASURED
+ * 2026-09-14 in a screenshot: the editor opened pinned to the top-left corner.
+ * Unlayered, so it beats the layered reset.
+ */
+.rd-ceditor {
+	margin: auto;
+	inline-size: min(44rem, calc(100vw - 1.5rem));
+	max-inline-size: none;
+	max-block-size: calc(100dvh - 1.5rem);
+	padding: 0;
+	font-family: var(--rd-font-ui);
+	color: var(--rd-ink);
+	background: var(--rd-surface);
+	border: 1px solid var(--rd-border-strong);
+	border-radius: var(--ds-r-md, 0.75rem);
+	box-shadow: var(--rd-shadow);
+}
+.rd-ceditor[open] {
+	display: flex;
+	flex-direction: column;
+}
+.rd-ceditor::backdrop {
+	background: rgb(0 0 0 / 45%);
+}
+.rd-ceditor__head,
+.rd-ceditor__foot {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1rem;
+}
+.rd-ceditor__head {
+	border-block-end: 1px solid var(--rd-border);
+}
+.rd-ceditor__foot {
+	border-block-start: 1px solid var(--rd-border);
+}
+.rd-ceditor__title {
+	margin: 0;
+	margin-inline-end: auto;
+	font-family: var(--rd-font-serif);
+	font-size: 1.2rem;
+	font-weight: 600;
+	color: var(--rd-heading);
+}
+.rd-ceditor__spacer {
+	flex: 1;
+}
+.rd-ceditor__scroll {
+	display: flex;
+	flex-direction: column;
+	gap: 0.65rem;
+	padding: 0.85rem 1rem;
+	overflow: auto;
+}
+.rd-ceditor__where {
+	margin: 0;
+	font-size: 0.6875rem;
+	font-weight: 700;
+	letter-spacing: 0.07em;
+	text-transform: uppercase;
+	color: var(--rd-accent);
+}
+.rd-ceditor__quote {
+	max-block-size: 7.5rem;
+	margin: 0;
+	padding-inline-start: 0.75rem;
+	overflow: auto;
+	font-family: var(--rd-font-serif);
+	font-style: italic;
+	line-height: 1.5;
+	color: var(--rd-muted);
+	border-inline-start: 3px solid var(--rd-accent);
+}
+.rd-ceditor__bar,
+.rd-ceditor__tabs,
+.rd-ceditor__tools {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.3rem;
+}
+.rd-ceditor__bar {
+	justify-content: space-between;
+}
+.rd-ceditor__tools[hidden] {
+	display: none;
+}
+.rd-ceditor__text,
+.rd-ceditor__preview {
+	box-sizing: border-box;
+	inline-size: 100%;
+	min-block-size: 14rem;
+	padding: 0.7rem 0.8rem;
+	border-radius: var(--ds-r-sm, 0.375rem);
+}
+.rd-ceditor__text {
+	resize: vertical;
+	font-family: var(--rd-font-serif);
+	font-size: 1.0625rem;
+	line-height: 1.6;
+	color: var(--rd-ink);
+	background: var(--rd-ground);
+	border: 1px solid var(--rd-border-strong);
+}
+.rd-ceditor__text[hidden],
+.rd-ceditor__preview[hidden] {
+	display: none;
+}
+.rd-ceditor__preview {
+	border: 1px dashed var(--rd-border-strong);
+}
+.rd-ceditor__nothing,
+.rd-ceditor__help,
+.rd-ceditor__note {
+	margin: 0;
+	font-size: 0.8125rem;
+	line-height: 1.5;
+	color: var(--rd-muted);
+}
+.rd-ceditor__help code,
+.rd-ceditor__help kbd {
+	font-size: 0.9em;
+}
+.rd-ceditor__local {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.875rem;
+}
+.rd-ceditor__error {
+	margin: 0;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--rd-tier-core);
+}
+
+/* ==========================================================================
+ * 2 · DIALOGUE — the turns under `### How the exchange went`
+ *
+ * One continuous rule per turn — the accent for his, the strong border for the
+ * model's — so the eye can follow who is speaking down a long exchange without
+ * reading every label. A continuation paragraph pulls up to meet the one above
+ * it, cancelling Starlight's sibling margin, so the rule does not break.
+ * ========================================================================== */
+[data-reader] .sl-markdown-content [data-rd-turn] {
+	padding-inline-start: 1rem;
+	border-inline-start: 2px solid var(--rd-border-strong);
+}
+[data-reader] .sl-markdown-content [data-rd-turn='me'] {
+	border-inline-start-color: var(--rd-accent);
+}
+[data-reader] .sl-markdown-content :is(ul, ol)[data-rd-turn] {
+	padding-inline-start: 2.25rem;
+}
+[data-reader] .sl-markdown-content [data-rd-turn]:not([data-rd-turn-start]) {
+	margin-block-start: 0;
+	padding-block-start: 0.9em;
+}
+[data-reader] .sl-markdown-content [data-rd-turn-start] {
+	margin-block-start: 1.5em;
+}
+[data-reader] .sl-markdown-content [data-rd-turn-start] > strong:first-child {
+	margin-inline-end: 0.3em;
+	font-family: var(--rd-font-ui);
+	font-size: 0.74em;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--rd-muted);
+}
+[data-reader] .sl-markdown-content [data-rd-turn='me'][data-rd-turn-start] > strong:first-child {
+	color: var(--rd-accent);
+}
+
+/* ==========================================================================
+ * PAPER — chrome does not print; a comment mark prints as an underline
+ * ========================================================================== */
+@media print {
+	.rd-diagram__expand,
+	.rd-cdrawer,
+	.rd-cadd,
+	.rd-ceditor,
+	.rd-diagram-dialog {
+		display: none !important;
+	}
+	mark.rd-cmark {
+		background: none;
+		box-shadow: inset 0 -1px 0 #000;
+	}
+}

@@ -1,9 +1,10 @@
 ---
 /**
- * PageTitle — Starlight's, plus the one thing a chapter page never said.
+ * PageTitle — Starlight's, plus the two things a book's pages never said: which
+ * book a chapter belongs to, and when that book was published.
  *
  * ---------------------------------------------------------------------------
- * WHAT THIS FIXES
+ * 1 · THE CRUMB
  *
  * MEASURED 2026-09-01 on a chapter page: the book's title appeared NOWHERE in
  * the document. `bookNameOnPage: false`, no breadcrumb element of any kind. You
@@ -16,7 +17,25 @@
  * and unreachable on a phone.
  *
  * ---------------------------------------------------------------------------
- * WHY IT READS universe.json RATHER THAN THE COLLECTION
+ * 2 · THE DATES — added 2026-09-14
+ *
+ * His instruction, after reading the sample book: "Every book must display its
+ * original release date, along with any major updates or version dates (major
+ * changes only), shown somewhere in the presentation."
+ *
+ *   book page      "First published 5 January 2016 · Revised edition, 2024"
+ *                  under the title
+ *   chapter page   "(2016 · revised 2024)" beside the book's name in the crumb
+ *
+ * READ FROM book.json, NEVER TYPED INTO A PAGE. `published` and `editions` live
+ * in one file per book (context/book-spec.md section 2), so an edition added
+ * later reaches the book page and every chapter with one edit, and the pages
+ * cannot disagree with each other about when the book came out.
+ * scripts/new-chapters.mjs refuses a brief without them; a book whose brief does
+ * not exist yet simply shows no line rather than a wrong one.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY IT READS universe.json AND book.json RATHER THAN THE COLLECTION
  *
  * The slugs are already in the chapter's own frontmatter — build control 3 in
  * scripts/guards.mjs refuses the build if `domain`, `cluster` or `book` ever
@@ -56,6 +75,7 @@ const idParts = String(route.entry.id ?? '')
 /* A crumb belongs on a CHAPTER — depth 4 — and not on the book index, which is
    already the page the crumb would point at. */
 const isChapter = idParts.length >= 4;
+const isBookPage = idParts.length === 3;
 
 type Book = { slug: string; title: string; cluster: string; domain: string };
 type Cluster = { slug: string; domain: string; number: string; name: string };
@@ -72,12 +92,64 @@ const cluster = book
 	: undefined;
 
 const bookHref = book ? `/${book.domain}/${book.cluster}/${book.slug}/` : null;
+
+/* ---- the dates ---------------------------------------------------------- */
+
+type Brief = { published?: unknown; editions?: Array<{ date?: unknown; label?: unknown }> };
+
+/*
+ * Eager, and only the three-deep book.json files, so a stray JSON anywhere else
+ * under the docs tree can never be mistaken for a brief. At 293 books this is a
+ * few kilobytes of build-time data and none of it reaches the browser.
+ */
+const briefs = import.meta.glob<Brief>('../content/docs/*/*/*/book.json', {
+	eager: true,
+	import: 'default',
+});
+const brief =
+	idParts.length >= 3 ? briefs[`../content/docs/${idParts.slice(0, 3).join('/')}/book.json`] : undefined;
+
+const MONTHS = [
+	'January', 'February', 'March', 'April', 'May', 'June',
+	'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+/** "2016-01-05" → "5 January 2016" · "2016-01" → "January 2016" · anything else as written. */
+function when(v: unknown): string | null {
+	if (typeof v === 'number' && Number.isInteger(v)) return String(v);
+	if (typeof v !== 'string' || !v.trim()) return null;
+	const s = v.trim();
+	let m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+	if (m && MONTHS[Number(m[2]) - 1]) return `${Number(m[3])} ${MONTHS[Number(m[2]) - 1]} ${m[1]}`;
+	m = /^(\d{4})-(\d{2})$/.exec(s);
+	if (m && MONTHS[Number(m[2]) - 1]) return `${MONTHS[Number(m[2]) - 1]} ${m[1]}`;
+	return s;
+}
+/** The year alone where there is one, for the compact chapter crumb. */
+const yearOf = (v: unknown) => {
+	const s = when(v);
+	return s ? (/\b\d{4}\b/.exec(s)?.[0] ?? s) : null;
+};
+
+const firstPublished = when(brief?.published);
+const editions = (Array.isArray(brief?.editions) ? brief.editions : [])
+	.map((e) => ({
+		date: when(e?.date),
+		year: yearOf(e?.date),
+		label: typeof e?.label === 'string' && e.label.trim() ? e.label.trim() : 'Revised edition',
+	}))
+	.filter((e) => e.date);
+const latest = editions.at(-1);
+const crumbDates = firstPublished
+	? `${yearOf(brief?.published)}${latest ? ` · revised ${latest.year}` : ''}`
+	: null;
 ---
 
 {
 	book && bookHref && (
 		<p class="rd-crumb">
 			<a href={bookHref}>{book.title}</a>
+			{crumbDates && <span class="rd-crumb__dates"> ({crumbDates})</span>}
 			{cluster && (
 				<>
 					<span aria-hidden="true"> · </span>
@@ -91,6 +163,20 @@ const bookHref = book ? `/${book.domain}/${book.cluster}/${book.slug}/` : null;
 }
 
 <h1 id={PAGE_TITLE_ID}>{data.title}</h1>
+
+{
+	isBookPage && firstPublished && (
+		<p class="rd-edition">
+			<span>First published {firstPublished}</span>
+			{editions.map((e) => (
+				<span>
+					<span aria-hidden="true"> · </span>
+					{e.label}, {e.date}
+				</span>
+			))}
+		</p>
+	)
+}
 
 <style>
 	@layer starlight.core {
@@ -129,5 +215,17 @@ const bookHref = book ? `/${book.domain}/${book.cluster}/${book.slug}/` : null;
 	.rd-crumb a:focus-visible {
 		color: var(--rd-accent);
 		border-block-end-color: currentColor;
+	}
+	/* The dates read as a qualifier on the book's name, not as a third crumb. */
+	.rd-crumb__dates {
+		letter-spacing: 0.03em;
+		text-transform: none;
+	}
+	.rd-edition {
+		margin: 0.5rem 0 0;
+		font-family: var(--rd-font-ui);
+		font-size: calc(0.9375rem * var(--rd-scale, 1));
+		line-height: 1.5;
+		color: var(--rd-muted);
 	}
 </style>

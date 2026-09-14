@@ -160,6 +160,25 @@ This is the one check that would have caught the sibling project's defect, where
 the page and **published its raw source at HTTP 200** — invisible because it needed a draft and a
 deploy simultaneously.
 
+### Comments — the third thing that publishes with a page
+
+**Added 2026-09-14.** His comments are written on `npm run dev` and saved beside the page as
+`<page>.comments.json` (`context/md-spec.md` §5d). **A build publishes every comment not marked local,
+on every page that is built** — rendered as text inside the page, so they reach the search index and
+anyone who shares the link.
+
+| | What reaches `dist/` |
+|---|---|
+| A comment on a published page | **Published.** Its text is in that page's HTML |
+| A comment marked **local** | **Never.** Filtered out before render in every build — `src/lib/comments.ts` |
+| A new comment on a page in `relationships-…`, `love-…` or `money-and-wealth` | **Never, unless he unticks "keep local".** It starts local there — his decision, 2026-09-14, using Control 2's own domain list |
+| Any comment on a `draft: true` or `private: true` page | **Never.** The page is not built, so nothing on it is |
+| The endpoint that writes comments | **Never.** It is a dev-server middleware registered in `astro:server:setup`, which `astro build` does not run — `scripts/comments-dev.mjs` |
+| The editor's code | **Never.** Imported behind `import.meta.env.DEV`, which the build replaces with `false` and removes |
+
+**So the privacy decision for a sensitive-domain page covers its comments too**, and a page published
+on purpose can still carry a comment that should not be. Mark those local.
+
 > **It was a `grep -r "<slug>" dist/ | wc -l` until 2026-08-31, and that version is wrong.** The day
 > `/method/protocol/` was published the count went from 0 to 2, because the protocol document
 > *illustrates a directory layout* using `02-deep-work-is-rare.mdx` as an example filename. A slug
@@ -196,6 +215,8 @@ looked right:
 | `curl -s localhost:8787/robots.txt \| head -3` | `Allow: /`, and **no `Sitemap:` line while on workers.dev** | §4. A `Sitemap:` line on a temporary host invites the wrong hostname into the index |
 | `curl -sI localhost:8787/_astro/<hashed>.css \| grep -i cache-control` | `immutable` | `public/_headers` did not ship |
 | `curl -s localhost:8787/ \| grep -c 'name="robots"'` | `1` while on workers.dev, `0` on a real domain | `isIndexable()` is derived from `SITE`; if this is wrong, `SITE` is wrong |
+| `grep -l -E 'Keep this comment local\|__rd/comments' dist/_astro/*.js \| wc -l` | `0` | The comment editor or its endpoint reached the public bundle — something un-guarded `import.meta.env.DEV` (§5, *Comments*). Measured `0` on 2026-09-14 |
+| `curl -sI localhost:8787/__rd/comments` | `404` | A comments writer exists outside `astro dev`. It must never |
 
 Then, and the tags matter because they say **who acts**:
 

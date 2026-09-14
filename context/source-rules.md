@@ -10,6 +10,10 @@ explanation layer that repeats the book's description of its own evidence has ve
 it has laundered a claim through a second voice, which makes it *read* as corroborated. That is
 the single most likely way this site ends up teaching something false, confidently.
 
+**It governs the book page too.** Since 2026-09-14 the book page carries `## Author context`,
+`## Context then vs. context today` and its own `## Sources` (`book-spec.md` §6). Every rule below
+applies there exactly as it does on a chapter.
+
 ---
 
 ## 1 · The four tiers
@@ -18,7 +22,7 @@ the single most likely way this site ends up teaching something false, confident
 |---|---|---|
 | **A — Primary** | The study, the meta-analysis, the pre-registration, the dataset, the original text | Anything |
 | **B — Independent secondary** | A replication, a review by someone with no stake, a critic, an encyclopaedia entry | Anything, if the primary is named in it |
-| **C — The book itself** | What this book says about its own evidence | **Only what the book claims.** Never what is true |
+| **C — A source reporting its own claim** | What this book says about its own evidence — **and any summary quoted for what it says**, such as an AI-generated summary of reader opinion (§1b) | **Only what that source claims.** Never what is true |
 | **D — Unsourced** | "Studies show", "research suggests", a number with no owner | **Nothing.** Delete it or mark it |
 
 **Tier C is the trap, not tier D.** Tier D is loud — it reads as vague and a reader discounts it.
@@ -47,6 +51,38 @@ study" has told you something true and useful. A chapter that says "X" has not.
 
 ---
 
+## 1b · Reader opinion is evidence about RECEPTION, never about truth
+
+**Added 2026-09-14**, with the overhaul of `### What real readers say` (`chapter-spine.md` §3b).
+
+A Reddit thread, a Goodreads review or a Hacker News comment is **primary evidence of what that
+reader thought**. It is evidence of nothing else. So:
+
+| A reader source may support | It may never support |
+|---|---|
+| "In the 3 r/productivity threads I read (180 comments), the largest group of commenters — roughly 40 of them — said the shutdown ritual was the part they kept." | "The shutdown ritual works." |
+| "Several Goodreads reviewers who described themselves as parents said the scheduling advice assumed evenings they did not have." | "The advice does not work for parents." |
+
+**Counts are claims.** *"Most readers"* needs a denominator, and the denominator must be opinions
+**actually read in this session** — never an estimate of how many exist, and never the size of a
+thread that was only skimmed. Write *"n of N read"*, not a percentage of an unknown population.
+
+**An AI-generated summary of reader opinion is tier C.** Reddit Answers (reddit.com/answers) and
+similar features summarise many posts at once, which is exactly what he asked for — and what they
+summarise, how they sampled and what they left out are not visible. So:
+
+- **Quote it as what the summary says**: the query, the date, the tool, and the summary text.
+  *"Reddit Answers, asked 'Is Deep Work worth reading' on 2026-09-14, summarised that…"*
+- **Treat it as a lead, not a finding.** The clusters in `### What real readers say` are built from
+  threads actually read. Where the summary and the threads disagree, say so.
+- **If it cannot be retrieved, say so plainly** and give him the query and the links instead —
+  `chapter-spine.md` §3b step 4. Never paraphrase what a summary would probably have said.
+
+**In `## Sources`**, a reader source is a row like any other, with its tier written as **`B ·
+reception`**, and an AI summary as **`C · AI summary`**.
+
+---
+
 ## 2 · Pin and date, or do not write it
 
 Every empirical claim carries **who, when, and what kind of thing it is**:
@@ -62,6 +98,27 @@ reader can argue with; *"accountability helps a lot"* is not.
 
 ---
 
+## 2b · Biography and dates are facts too
+
+**Added 2026-09-14**, because `## Author context` and the release date are now on every book page.
+
+| Fact | Acceptable source | Tier |
+|---|---|---|
+| **When a book was first published, and by whom** | The publisher's page, a national library or WorldCat record, the copyright page of the edition in hand | A |
+| **A major revised edition** | The publisher's page for that edition, or the author announcing it | A |
+| **What changed in a revision** | The new edition's own preface or foreword, or the author's own account | A for what the author says changed |
+| **Where and when the author was born, schooled and worked** | The author's own site, memoir or interview (for what they say about themselves); an encyclopaedia, obituary or published profile | A self-reported · B independent |
+| **What shaped their thinking** | Only where the author or a biographer **says so**. Anything else is interpretation, and is written as interpretation | A / B, or labelled |
+
+**A date nobody can check is a date that drifts.** `book.json` `editions[]` carries a `source` for
+each entry, and `/validate` reports an entry without one.
+
+**Major changes only.** A new cover, a paperback release or a corrected typo is not a version. A
+revised edition with new or removed chapters, a new afterword that changes the argument, or a
+substantially updated evidence base is.
+
+---
+
 ## 3 · Say how strong it is, in the sentence
 
 A claim that does not carry its own weight gets read at full strength. Four words, and one is
@@ -73,6 +130,10 @@ required whenever the claim is doing work:
 | **Single study** | One lab, one sample. Interesting, not settled |
 | **Contested** | Real, competent people disagree about it now |
 | **Failed to replicate** | Say it, and say it *where the original claim is made* — not in a footnote |
+
+**Plain language does not remove the word.** §2b of `standards.md` asks for simpler sentences, and a
+strength word is exactly the kind of precise term it says to keep and define: *"did not replicate —
+when other labs ran the same experiment, they did not get the same result."*
 
 ### The standing list
 
@@ -99,9 +160,30 @@ because the next reader treats it as verified.
 
 ---
 
-## 4 · `outsideView` is where this lands at book level
+## 3b · A chart is a claim
 
-`book.json` carries it, and Stage 2 is where it is filled — before a single chapter is generated:
+**Added 2026-09-14**, because Mermaid is now used for bar charts, line charts, pie charts and the rest
+(`md-spec.md` §6). A number drawn as a bar reads as more certain than the same number in a sentence,
+and it carries no strength word.
+
+- **Every plotted value appears in `## Sources`**, with the tier of the source it came from. A chart
+  built from three studies has three rows.
+- **Or the chart's own title says the numbers are illustrative** — *"Illustrative, not data: how
+  attention residue would compound across a fragmented day"*. An illustrative chart is allowed; an
+  unlabelled one is tier D drawn in colour.
+- **The sentence before the chart says what it shows and how strong the evidence is**, because the
+  chart itself cannot carry a strength word.
+- **Never round toward the argument, never truncate an axis to exaggerate a difference, and never
+  drop the error bars or confidence interval** where the source reports one — say it in the caption
+  if the chart type cannot draw it.
+
+---
+
+## 4 · The book page is where this lands at book level
+
+`book.json` carries `outsideView` as a three-line digest, and the book page carries the long form in
+`## Context then vs. context today` (`book-spec.md` §6). Both are filled **before a single chapter is
+generated**, and every chapter inherits them.
 
 ```
 outsideView: {
@@ -113,24 +195,27 @@ outsideView: {
 
 **"Their strongest point, not their weakest"** is the whole value of the field. A steelman you
 cannot answer is the most useful thing a book can give you; a strawman is flattery with extra
-steps.
+steps. **And the book page adds the other side**, which the digest never had: what has *supported*
+the book since, with the same effort (`standards.md` §8).
 
-`kind: lifelong` is exempt. A novel makes no empirical claim, so there is nothing to tier.
+`kind: lifelong` is exempt from the replication rows. A novel makes no empirical claim, so there is
+nothing to tier — but its book page still carries `## Author context`, and its dates.
 
 ### The stopping rule — a number, not a feeling
 
-`outsideView` research is unbounded by nature: there is always one more review to read. Left
-without a floor and a ceiling it becomes either two minutes of skimming or an afternoon. Both are
-failures, and only the first is obvious.
+This research is unbounded by nature: there is always one more review to read. Left without a floor
+and a ceiling it becomes either two minutes of skimming or an afternoon. Both are failures, and only
+the first is obvious.
 
-**Stop when all four of these are true, and not before:**
+**Stop when all five of these are true, and not before:**
 
 | | Floor |
 |---|---|
 | 1 | **At least three independent sources consulted**, none of them the book, its publisher, or the author's own site |
 | 2 | **At least one is a critic** — someone arguing the book is wrong, not someone noting it is imperfect |
-| 3 | **Every claim on the standing list in §3 that the book makes has been looked up**, and carries its qualifier |
-| 4 | **You can state the strongest objection in a sentence you would not be embarrassed to show its author** |
+| 3 | **At least one is supporting evidence found independently** — research or a scholar reaching a similar conclusion by a different route — or a sentence saying you looked for it and found none |
+| 4 | **Every claim on the standing list in §3 that the book makes has been looked up**, and carries its qualifier |
+| 5 | **You can state the strongest objection in a sentence you would not be embarrassed to show its author** |
 
 **And a ceiling: if 20 minutes of searching has not produced (2), stop and write that down.**
 
@@ -150,6 +235,8 @@ inherits it.
 - **Invent a citation.** A plausible author, year and journal is the easiest thing in the world to
   generate and the hardest thing on this page to catch. **If it cannot name the source, it says
   so** — `[UNVERIFIED: …]` is a correct output and an empty `## Sources` is not.
+- **Invent a real-life incident, a reader quote, a reader count or a chart value.** Each is a
+  citation in a different costume (§1b, §3b, `standards.md` §2).
 
 ### What `[UNVERIFIED: …]` must contain
 
@@ -172,16 +259,20 @@ it needs email to be a large share of the week, not 28% of it.]
 
 Compare: `[UNVERIFIED: could not confirm]`. That tells the next reader nothing, and it will still
 be there in a year.
+
 - **Upgrade a tier.** Reading the book's account of a study does not produce a tier-A citation,
   and describing it in the third person does not either.
 - **Round a number toward the argument**, or drop the confidence interval because it was untidy.
 
 ---
 
-## 6 · Pre-flight — three questions before `## Sources` is done
+## 6 · Pre-flight — six questions before `## Sources` is done
 
 1. **Does every empirical claim in the body appear here, with a name and a year?**
 2. **Is anything tier C written as though it were tier A?** — the sentence test in §1.
 3. **Is there a claim on the replication list in §3 with no qualifier next to it?**
+4. **Does every real-life incident, reader quote and reader count have a row?** §1b.
+5. **Does every chart either have a row per plotted value or say "illustrative" in its title?** §3b.
+6. **On a book page: does every date and every biographical fact have a row?** §2b.
 
-Any "no" is a defect in the chapter, not a note for later.
+Any "no" is a defect in the page, not a note for later.

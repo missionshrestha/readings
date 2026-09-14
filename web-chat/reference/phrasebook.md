@@ -22,6 +22,21 @@ the belief and the sycophancy trigger is absent.
 
 ---
 
+## When you cannot follow it
+
+> - "Say that again in plain words with an example, without changing the claim."
+> - "What does [term] mean? Define it where it first appears, and keep it defined there."
+> - "Would the author sign that simpler sentence? If not, put the claim back and simplify the words."
+> - "That is an analogy. Where does it break?"
+> - "Is that incident real? Give me the source, or label it as a hypothetical."
+> - "Walk me through one case, step by step, so I can see the *because*."
+
+**Asking for clarity is not asking for a summary.** His standard is *"The user must be able to
+interpret and understand every sentence produced"*, and length is never the concern. A plainer
+answer that comes back shorter than the claim it replaced has lost something — check what.
+
+---
+
 ## When you are about to accept something
 
 > - "Who disagrees with that, and what is their strongest point?"
@@ -35,13 +50,28 @@ moment a conversation feels comfortable.
 
 ---
 
+## When you want to know what readers actually think
+
+> - "How many opinions did you actually read, and where? Give me N."
+> - "That is *n* of what? Give me the denominator you read, not the size of the thread."
+> - "Give me the Reddit Answers query and the threads."
+> - "Which of these opinions are about this chapter, and which are about the book?"
+> - "Who wrote these — what can this sample not tell me?"
+
+**A count you cannot trace is an invented citation.** THIN with an honest number is a correct answer;
+*"most readers"* with no denominator is not.
+
+---
+
 ## When it starts doing your work
 
 > **Stop. That is mine.** Ask me the question instead.
 
-> Do not give me the plan. Give me three candidates with honest impact estimates and let me choose.
+> Do not give me the plan. Give me candidates with honest impact estimates and let me choose.
 
 > I have not written my recall yet. Do not explain this chapter to me.
+
+> Do not write comments for me. Those are mine, and they are not the recall.
 
 ---
 
@@ -57,9 +87,21 @@ nothing distinguishes them from it working.
 
 ---
 
+## When the argument is over
+
+> Record the whole exchange — every turn, in order. My turns in my words; yours with every point kept.
+
+> Where did either of us move, and at which turn? If nobody moved, say that.
+
+---
+
 ## When you are choosing an action
 
-> Give me candidates and stop. Do not recommend one.
+> Give me two to ten candidates and stop. Do not recommend one.
+
+> Which named claim in the chapter does this action follow from?
+
+> That is filler to reach two. Give me a reference rule anchored to a claim, or tell me there is none.
 
 > Ask me what will actually stop me. Refuse a vague answer.
 

@@ -2,12 +2,14 @@
 
 **Stage 10. End of book, forty-five minutes.**
 
-**Length: 775 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 1073 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
 
 ## Paste with it
 
 `00-CONTEXT-PACK` ● · every chapter recap ● · the book's `book.json` ● · `standards` ● ·
-`book-spec` ○ — `GUIDE.md` Appendix A. **A new chat**, not the last chapter's.
+`book-spec` ○ · the book page's `## Author context` and `## Context then vs. context today` ○ —
+`GUIDE.md` Appendix A, which has no column for the book page yet. **A new chat**, not the last
+chapter's.
 
 The brief matters here because Part B checks the book against **the questions you wrote before you
 opened it**, and those live in `questions[]` where they have sat untouched since Stage 2.
@@ -63,8 +65,10 @@ PART B — THE SYNTHESIS
   · What would I have lost by not reading it? If the honest answer is
     "the confidence to keep doing what I was doing", say that.
   · Where did the author's own circumstances shape the argument in a
-    way that matters for me? Pull together what the chapters said
-    about where they were standing.
+    way that matters for me? Start from ## Author context on the book
+    page, then pull together what the chapters said about where the
+    author was standing. Circumstances explain why a claim looks the
+    way it does; they never show that it is wrong.
 
 PART C — WHAT THIS OPENS
 
@@ -79,10 +83,40 @@ PART C — WHAT THIS OPENS
 
 PART D — THE BOOK-LEVEL CONCEPT MAP
 
-  One mermaid diagram of the whole argument. Relationships, not nouns,
-  with labelled edges. Chapter-level nodes, not idea-level: this is the
-  map of how the book hangs together, and the per-chapter maps already
-  exist. Never hard-code a colour.
+  One mermaid diagram of the whole argument, with a caption of one or
+  two sentences BEFORE it saying what it shows and how to read it.
+  Relationships, not nouns, with labelled edges. Chapter-level nodes,
+  not idea-level: this is the map of how the book hangs together, and
+  the per-chapter maps already exist.
+
+  It follows the chapter concept map's rules, because it is read in
+  the same text column:
+  · grow down — flowchart TD or mindmap — with no more than about four
+    nodes side by side at any level
+  · about twelve nodes is a signal to split: a long book gets one map
+    per part, each with its own caption
+  · labels of about five words; every edge labelled in two to four
+    words, saying how the two chapters relate
+  · at least one cross-link that is not hierarchy — the late chapter
+    that undercuts an early one
+  · never hard-code a colour
+
+HOW TO WRITE ALL OF IT
+
+  Complete sentences, not notes. Define any term the first time it
+  appears. Where a synthesis point is abstract, give the example from
+  the chapter that shows it. Never shorten by compressing, and never
+  pad: no recap of the book's chapters in order.
+
+SOURCES
+
+  Anything you state that is not already sourced on a chapter page or
+  on the book page — a fact about another book in Part C, a date, a
+  number — needs a source. After Part D, list those as rows:
+    | Claim | Source | Read on | Tier |
+  I append them to the book page's ## Sources. If you cannot source
+  one, leave the claim out or mark it [UNVERIFIED: …] with all four
+  parts.
 
 CONSTRAINTS
 
@@ -98,13 +132,21 @@ CONSTRAINTS
   consolidation and a consolidation of a subset is worse than none —
   it will merge two actions that are not duplicates and miss the pair
   that is. If my opening questions are not above, ask for them rather
-  than reconstructing what I probably wanted to know.
+  than reconstructing what I probably wanted to know. If the book
+  page's Author context is not above, say so before the last bullet of
+  Part B rather than rebuilding a biography from memory.
 ````
 
 ## What lands on the page
 
-The **book's** `index.mdx`, not a chapter's: `## What it changed`, and Part D's diagram. Part A's
-merges and corrections go back into the chapters' `actions:` frontmatter, where the ledger reads them.
+The **book's** `index.mdx`, not a chapter's:
+
+| From | Lands |
+|---|---|
+| Part B | The material **you** write `## What it changed` from. `P8` stops before the verdict, and the line is yours |
+| Part D | The book-level map, with its caption, **under your verdict in `## What it changed`** — `book-spec.md` §6. Never under a new `##` |
+| The source rows after Part D | **Appended** to the book page's `## Sources`, below the rows `P2b` wrote |
+| Part A | Merges and corrections go back into the chapters' `actions:` frontmatter, where the ledger reads them |
 
 Nothing here writes a chapter section. If Part B produced something that belongs on a chapter page,
 it belongs in that chapter's `## Open questions`, and you write it.
@@ -123,6 +165,10 @@ it belongs in that chapter's `## Open questions`, and you write it.
 | **Did not** | It accepted an abstraction. If you could have written the sentence before reading, it confirmed |
 | **Landed** | It named which books this makes redundant |
 | **Did not** | A reading list. "What should I not read" is the more useful half and the one that does not get volunteered |
+| **Landed** | Part B tied a circumstance from `## Author context` to a specific feature of the argument |
+| **Did not** | *"His background explains why he got this wrong."* Circumstances used as a refutation |
+| **Landed** | Part D reads inside the column, with a caption before it, or is split by part |
+| **Did not** | One wide map of every chapter, legible only after Expand |
 
 ## If it comes back wrong
 

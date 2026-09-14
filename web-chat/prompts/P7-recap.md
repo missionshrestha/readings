@@ -2,7 +2,12 @@
 
 **Stage 9. Eight minutes.** Publishes the finished chapter page.
 
-**Length: 949 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 1371 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+
+> **The concept map changed on 2026-09-14.** He asked for *"a clean concept map designed to fit within
+> the current flow of paragraphs and side widths, with the ability to expand/collapse to fill the
+> whole screen."* The site now adds Expand to every diagram; this prompt owns the other half — a map
+> that reads inside the text column without it. `chapter-spine.md` §6b, `md-spec.md` §6.
 
 ## Paste with it
 
@@ -20,33 +25,63 @@ Assemble the rest of chapter [N]'s page. These sections only:
 
   ## Concept map
 
-    A mermaid diagram. Pick the type that matches the SHAPE of what
-    the chapter argues — not "a diagram":
+    FIRST, a caption: one or two sentences in the prose BEFORE the
+    fence, saying what the map shows and how to read it. A diagram
+    whose meaning has to be worked out from its shape has explained
+    nothing.
 
-      mindmap        ideas branching from a centre
-      flowchart TD   a process, a decision tree, a causal chain
-      graph LR       relationships that are not hierarchical
-      timeline       an arc, or historical context
-      quadrantChart  a two-axis comparison
-      journey        a sequence with a felt quality at each step
+    Then a mermaid diagram — one of the nineteen types in md-spec §6,
+    with its opening line written exactly, -beta included. Pick the
+    type that matches the SHAPE of what the chapter argues — not "a
+    diagram". For a concept map that is almost always one of two:
 
-    SHOW THE RELATIONSHIPS, NOT A LIST OF NOUNS. Label the edges. An
-    unlabelled edge asserts that two things are connected without
-    saying how, which is the diagram equivalent of "studies show".
+      flowchart TD   ideas and how they act on each other, top-down.
+                     The default: it grows down, so it fits the column
+      mindmap        ideas branching from a centre, when the chapter
+                     really is one idea with parts
+
+    Reach past those two only when the chapter's structure is that
+    shape: stateDiagram-v2 for states and transitions, sequenceDiagram
+    for an exchange in order, ishikawa-beta for causes of one effect,
+    venn-beta for overlapping ideas. A type not in md-spec §6 is not
+    themed and may be unreadable in two of the four reading themes.
+
+    IT MUST READ INSIDE THE TEXT COLUMN — about 595px at normal text
+    size, and a phone's width on a phone. The site gives every diagram
+    an Expand control, but Expand is for detail, not for rescue: the
+    version in the column has to be readable on its own. So:
+      · GROW DOWN, NOT ACROSS. Prefer flowchart TD or mindmap. No more
+        than about four nodes side by side at any level. graph LR grows
+        wide; use it only for a short chain.
+      · ABOUT TWELVE NODES IS A SIGNAL TO SPLIT. Two maps, each with
+        its own caption, beat one dense one. One or two diagrams in
+        this section, never a gallery.
+      · SHORT LABELS, about five words. The node names the idea; the
+        explanation belongs in the prose. Mermaid sizes a box to its
+        label and clips a long one rather than wrapping it.
+
+    SHOW THE RELATIONSHIPS, NOT A LIST OF NOUNS. Label EVERY edge, in
+    two to four words saying HOW the two ideas relate. An unlabelled
+    edge asserts that two things are connected without saying how,
+    which is the diagram equivalent of "studies show".
 
     THE TEST: if the graph is a star — one root, N leaves, no
     cross-links — you have drawn a table of contents. A concept map
     earns its place through the links that are NOT hierarchical: the
     idea in section 3 that undercuts the claim in section 1, the two
-    mechanisms that turn out to be the same mechanism.
+    mechanisms that turn out to be the same mechanism. At least one.
 
     A diagram that restates the paragraph above it has not earned its
-    place — say so and omit the section rather than drawing one.
+    place. If the chapter does not have that kind of structure, say
+    so and omit the fence rather than drawing one.
+
+    A CHART IS A CLAIM. If a diagram plots numbers — a bar, line or pie
+    chart — every plotted value needs a row in ## Sources, or the
+    chart's own title says the numbers are illustrative, and the
+    caption says how strong the evidence behind them is.
 
     Never hard-code a colour: the site re-themes across four reading
     themes and a fixed fill will be invisible in at least one of them.
-    Keep node labels short; mermaid measures the label to size the box
-    and a long one is clipped rather than wrapped.
 
   ## The 30-second version
 
@@ -57,6 +92,10 @@ Assemble the rest of chapter [N]'s page. These sections only:
     Keep it to roughly the core message plus three sentences. If it is
     longer than that it has become a fourth summary, and the page
     already has enough of those.
+
+    SHORT BY DESIGN IS NOT COMPRESSED. Complete sentences, no
+    shorthand, and no term I would have to look up. If the chapter's
+    own term is needed, say what it means in the same sentence.
 
     Then, at the end, the cross-links: other chapters and other books
     in my universe that this connects to, and SAY HOW they connect —
@@ -80,15 +119,16 @@ Assemble the rest of chapter [N]'s page. These sections only:
 CONSTRAINTS
 
   Do NOT write ## Recall or ## Open questions. Those are mine, and
-  they are the two sections the whole design exists to protect.
+  they are the two sections the whole design exists to protect. The
+  same goes for my comments on the page: never write one.
 
   Do NOT write the actions — they are frontmatter, and <Actions />
   renders them from the data. Writing them twice guarantees the two
   disagree, and the ledger is computed from the data.
 
   Do NOT write ## Sources; P4 owns it. If assembling this made you
-  notice a claim that is missing from it, say so in prose OUTSIDE the
-  fence and I will go back to P4.
+  notice a claim that is missing from it — including a chart value you
+  plotted — say so in prose OUTSIDE the fence and I will go back to P4.
 
   Do NOT add a heading that is not one of these twelve, in this order.
   An extra ## is a defect: headings are anchors, and anchors are
@@ -146,12 +186,18 @@ Four-backtick fence. Nothing outside it.
 
 | | |
 |---|---|
+| **Landed** | A caption sentence before the diagram says what it shows and how to read it |
+| **Did not** | A diagram with no caption, so its meaning has to be reverse-engineered from its shape |
+| **Landed** | The map reads in the column without Expand — it grows down, with no more than about four nodes side by side |
+| **Did not** | A wide `graph LR` shrunk to fit until every label is 7px, legible only after Expand. That is Expand used as rescue |
 | **Landed** | The diagram has a cross-link — an idea in one section that undercuts a claim in another |
 | **Did not** | A star: one root, N leaves, no cross-links. That is a table of contents drawn sideways |
 | **Landed** | Every edge is labelled with how the two things relate |
 | **Did not** | Unlabelled edges. An unlabelled edge asserts a connection without saying what it is, which is the diagram equivalent of "studies show" |
 | **Landed** | It said the chapter did not need a diagram and omitted the section |
 | **Did not** | A diagram restating the paragraph above it, drawn because the heading was there |
+| **Landed** | The 30-second version is complete sentences, and every term in it is explained where it is used |
+| **Did not** | A lift pitch built from the chapter's jargon — correct, short, and meaningless to anyone who has not read it |
 | **Landed** | Cross-links say **how** — "argues the opposite from neurochemistry" |
 | **Did not** | *"Related: Atomic Habits."* Related how? |
 | **Landed** | Uncertain targets came back as plain text, flagged as uncertain |
@@ -170,6 +216,14 @@ say so.
 ````text
 These edges are unlabelled: [list them]. Label each with how the two
 nodes relate, or remove the edge.
+````
+
+````text
+The concept map is too wide to read inside the text column. Redraw it
+growing down — flowchart TD or mindmap — with no more than about four
+nodes at any level and labels of about five words. If it needs more
+than about twelve nodes, split it into two maps, each with its own
+caption sentence before it.
 ````
 
 ## Then, in Claude Code

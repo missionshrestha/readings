@@ -38,6 +38,7 @@ import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseUniverse } from './universe.mjs';
+import { checkBookDates } from './book-dates.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DOCS = join(ROOT, 'src', 'content', 'docs');
@@ -169,6 +170,16 @@ function validate(raw) {
 		fault(`"domain" is "${raw.domain}" but the directory says "${domainSlug}"`);
 	if (raw.cluster && raw.cluster !== clusterSlug)
 		fault(`"cluster" is "${raw.cluster}" but the directory says "${clusterSlug}"`);
+
+	/*
+	 * THE RELEASE DATE AND THE MAJOR EDITIONS, on all three kinds — so before the
+	 * `kind !== 'read'` return below. His instruction, 2026-09-14: every book
+	 * displays them, and src/overrides/PageTitle.astro reads them from this file.
+	 * scripts/book-dates.mjs holds the formats and the exact messages.
+	 */
+	const dates = checkBookDates(raw);
+	problems.push(...dates.problems);
+	warnings.push(...dates.warnings);
 
 	if (!raw.gap) fault('missing "gap" — knowledge or execution. Spec §2, and it comes before everything');
 	else if (!GAPS.includes(raw.gap)) fault(`"gap" is "${raw.gap}", must be ${GAPS.join(' or ')}`);
@@ -318,18 +329,26 @@ function outlineBlock(ch, book, part) {
  * contextualises; and the explanation layer is read AFTER the closed-book recall,
  * so author context cannot frame — and bias — the retrieval.
  */
+/*
+ * Two notes revised 2026-09-14 on his instruction (context/reader.md section 10):
+ * the first no longer carries the biography, which moved to the book page, and
+ * the fifth follows the reader-opinion method in chapter-spine.md section 3b.
+ */
 const EXPLANATION = [
 	[
 		'Where the author was standing',
-		'Who they were, when, what problem they were living inside, what they were reacting against — and what that predicts about where the argument bends. NOT biography, and it never explains the argument away.',
+		'What about the author and their moment bears on THIS chapter\'s claim, and what that predicts about where its argument bends. The full biography is on the book page, under Author context — link to it rather than repeating it. It never explains the argument away.',
 	],
-	['What the author is actually saying', 'The argument, stated more plainly than the chapter states it.'],
-	['Where readers get confused', 'The specific misreadings, not "some find it difficult".'],
-	['The teaching pass', 'The mechanism, taught rather than summarised.'],
-	['What real readers say', 'From actual threads. If it is thin, SAY SO — never manufacture consensus.'],
+	['What the author is actually saying', 'The argument, stated more plainly than the chapter states it, with an example of the claim in action.'],
+	['Where readers get confused', 'The specific misreadings, each with the correct reading beside it — not "some find it difficult".'],
+	['The teaching pass', 'The mechanism, taught rather than summarised: at least one worked case, and an analogy where the idea is abstract.'],
+	[
+		'What real readers say',
+		'Clusters of opinion from a wide sample, chapter-spine.md section 3b: where you looked and N read; each cluster as n of N with linked quotes; who is speaking; the Reddit Answers summary quoted, or the query and the threads to read; what it adds up to. Under 30 opinions, write THIN with the number.',
+	],
 	['What critics say', 'The strongest case against, argued properly.'],
-	["What's been tested since", 'Replication, later evidence, what has failed to hold.'],
-	['How practitioners actually use it', 'What people who operate this do, at a stated scale.'],
+	["What's been tested since", 'Replication, later evidence, what has failed to hold — and what has supported it. Every chart value sourced, or the chart titled illustrative.'],
+	['How practitioners actually use it', 'What people who operate this do, at a stated scale, with real and sourced cases.'],
 	[
 		"Where it doesn't transfer",
 		'Where the CLAIM\'S CONDITIONS differ — economics, institutions, country, stage of life. Describe the difference; never conclude that it therefore does not apply to him. That conclusion is his, and it belongs with the recall. ADD, never subtract.',

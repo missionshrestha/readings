@@ -2,10 +2,15 @@
 
 **Stage 8. Menu only.** The AI proposes; you choose and you write the sentence.
 
-**Length: 1209 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 1611 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
 
 > **`P0`'s one rule is live here and nowhere else matters as much.** If it writes your commitment,
 > it produces something excellent, you feel finished, and nothing happens.
+
+> **Two to ten per chapter, since 2026-09-14.** *"A list of action items for each chapter — minimum 2,
+> maximum 10. Only put things that earns"* — his instruction. The sentence stopped there, and he
+> confirmed on 2026-09-14 that it means **earns its place**. It withdrew *"extraction is uncapped"*
+> and *"a conceptual chapter may support none"*. **It did not touch the commitment: one per book.** `chapter-spine.md` §6c, `reconciliation.md` amendment A.
 
 ## Paste with it
 
@@ -20,6 +25,11 @@ the chapter's weight falls.
 ````text
 For chapter [N], propose CANDIDATE actions. Do not choose for me and do
 not write my commitment.
+
+HOW MANY: between TWO and TEN. That is my rule — "A list of action
+items for each chapter — minimum 2, maximum 10." It is a floor and a
+ceiling, not a target: the number is however many honest candidates
+this chapter supports, inside those bounds.
 
 For each candidate:
 
@@ -44,26 +54,50 @@ For each candidate:
                   is that it changes little but costs little, say
                   that — a cheap marginal action is a reasonable thing
                   to keep, and pretending it is transformative is not.
-  WHERE IT COMES  the specific claim in the chapter it follows from.
-  FROM            An action with no anchor in the chapter is one you
-                  invented, and I want it labelled as such.
+  WHERE IT COMES  the specific, named claim in this chapter it follows
+  FROM            from — quote it or point to where it is made. EVERY
+                  candidate has one. An action that follows from no
+                  claim was invented, and it does not go on the list.
+
+WHAT "EARNS ITS PLACE" MEANS HERE
+
+  My sentence was "Only put things that earns", and I have confirmed
+  it means EARNS ITS PLACE. A candidate stays on the list only if
+  all four hold:
+    1 ANCHORED     it follows from a named claim in this chapter
+    2 OBSERVABLE   someone watching could tell whether it happened
+    3 DISTINCT     no other action in this book is satisfied by the
+                   same behaviour. Two that are, are one — merge them
+                   and say you did
+    4 WORTH A ROW  its honest impact says what it would change, even
+                   when that is "probably marginal but costs nothing"
+
+AT THE TWO EDGES
+
+  · MORE THAN TEN honest candidates: keep the ten that carry the most
+    weight. List the rest AFTER the YAML, outside it, under the label
+    "Considered, not kept", each with a one-line reason. They do not
+    reach the page. Keeping ten is not recommending one.
+  · FEWER THAN TWO honest candidates — usually a conceptual chapter:
+    meet the floor with tier: reference rules, which are real and are
+    not habits. A reference rule is applied when a situation arises:
+    "When I next meet a claim resting on one study, I look for its
+    replication before repeating it." NEVER INVENT A HABIT TO REACH
+    TWO. A filler action makes the ledger meaningless, and the ledger
+    is the only measure this whole system has. If even two honest
+    reference rules cannot be anchored to claims in this chapter, say
+    so, emit the ones you have, and tell me the chapter was probably
+    mis-weighted in the brief. I decide what happens next.
 
 RULES
 
-· Extract everything genuinely distinct. No cap — an action is data
-  and a ledger row costs nothing. Extraction is uncapped; commitment
-  is not.
-· Two candidates that would be satisfied by the same behaviour are one
-  candidate. Merge them and say you did.
-· IF THE CHAPTER DOES NOT REALLY SUPPORT AN ACTION, SAY SO. A
-  conceptual chapter may support none, and that is a legitimate
-  result. Inventing one to fill the section makes the ledger
-  meaningless, and the ledger is the only measure this whole system
-  has.
 · Do not propose an action that is really a decision I have to make
   once. Those are not habits and they do not belong in a ledger with
   a day-30 review.
 · Do not propose "read more about X".
+· Write every field in plain, complete words that I will understand a
+  month from now with the chapter closed. No shorthand, no undefined
+  term, no arrow where a verb belongs.
 
 THEN, after the prose menu, emit the same candidates a SECOND time as
 a YAML block I can paste straight into the page's frontmatter. Use
@@ -94,29 +128,37 @@ comes from.
               dropped are outcomes and only a review writes them.
   committed   false on EVERY row you emit, without exception.
 
-AND THIS IS THE LINE YOU DO NOT CROSS: for the one I am going to
-commit to, emit the row with "if", "then" and "obstacle" LEFT EMPTY. I
-write those three. If you fill them, you have written my commitment —
-refuse, and say which rule you are refusing under. An excellent
-commitment you wrote produces the feeling of being finished and no
-change in behaviour.
+The YAML holds two to ten rows. Nothing about the candidates you did
+not keep goes inside it.
 
-Then STOP. Do not recommend one. Do not rank them. Do not tell me
-which you would pick if you were me.
+AND THIS IS THE LINE YOU DO NOT CROSS: if I tell you I will commit from
+this chapter, emit that row with "if", "then" and "obstacle" LEFT
+EMPTY. I write those three. If you fill them, you have written my
+commitment — refuse, and say which rule you are refusing under. An
+excellent commitment you wrote produces the feeling of being finished
+and no change in behaviour. At most ONE action in the whole book is
+committed. If I have already committed from an earlier chapter, every
+row here is recorded and none is committed.
+
+Then STOP. Do not recommend one. Do not rank them for me. Do not tell
+me which you would pick if you were me.
 
 If you do not have the chapter, or its node from my brief, say which
 and stop. Actions invented from a book's reputation are the fastest
 way to fill a ledger with things no chapter argued for.
 ````
 
-## Step 2 — you choose ONE, and you write it
+## Step 2 — you commit to ONE per book, and you write it
 
-**One.** Not three.
+**One, across the whole book.** Two to ten are recorded per chapter; one is committed per book.
 
 > Adding intentions does not raise the ~53% conversion rate — **it divides the same attention.**
 > One implemented beats five considered.
 
-Write it yourself:
+**If this book already has its committed action, skip steps 2 to 4.** Every row from this chapter goes
+into the ledger as recorded, not committed.
+
+Otherwise, write it yourself:
 
 ```
 If [concrete situation], then [specific behaviour].
@@ -139,7 +181,8 @@ On the row you commit to, and only that row, you set by hand:
 
 `/validate` flags an `obstacle` under six words as probably vague, and `audit.mjs` refuses a
 duplicate `id` anywhere in the book — an id is the review key and two actions sharing one collapse
-into a row that measures neither.
+into a row that measures neither. **Fewer than two or more than ten actions on a chapter is reported
+by `/validate` and `audit.mjs`, and never refuses a build** (`md-spec.md` §1).
 
 ## Step 3 — you name the obstacle, and it asks you to
 
@@ -214,18 +257,25 @@ commitment.
 
 **Frontmatter, never prose.** `## Actions` contains `<Actions />` and nothing else; the component
 renders the rows from the data. Writing the actions twice guarantees the two disagree, and the ledger
-is computed from the data, not from the section.
+is computed from the data, not from the section. **Two to ten rows**, and the component shows a
+visible note when a chapter carries fewer or more.
 
-`md-spec.md` §4 has the field rules.
+The *considered, not kept* list stays in the chat. `md-spec.md` §4 has the field rules.
 
 ## Landed / Did not
 
 | | |
 |---|---|
+| **Landed** | Every candidate names the claim in the chapter it follows from |
+| **Did not** | *WHERE IT COMES FROM: the chapter's overall theme.* That is no anchor, and the action was invented |
+| **Landed** | A conceptual chapter met the floor with two `tier: reference` rules, each anchored to a claim |
+| **Did not** | Two thin habits written to reach two — *"reflect on focus each week"*. A filler action is the defect the floor makes most likely |
+| **Landed** | Twelve honest candidates came back as ten rows in the YAML and two under *Considered, not kept*, each with a reason |
+| **Did not** | Twelve rows in the YAML, or ten with no word about the two it dropped |
+| **Landed** | Every candidate it kept passes all four earns-its-place tests, and the ones it dropped say which test they failed |
+| **Did not** | It kept a candidate that fails a test — usually DISTINCT — because the list looked short |
 | **Landed** | Every trigger is something you could photograph — a time, a place, a person, a moment that already happens without your arranging it |
 | **Did not** | *"When I feel scattered."* You do not notice feeling scattered; that is the problem, and a trigger you have to remember to look for is not a trigger |
-| **Landed** | It said this chapter supports no action, and stopped |
-| **Did not** | It found three anyway. A conceptual chapter supporting none is a legitimate result; inventing one to fill the section makes the ledger meaningless, and the ledger is the only measure this system has |
 | **Landed** | An impact estimate that says "probably marginal" somewhere |
 | **Did not** | Every candidate transformative. That is a menu written to be chosen from, not to be judged |
 | **Landed** | The YAML came back with `committed: false` on every row and the committed row's `if`/`then`/`obstacle` empty |
@@ -252,6 +302,20 @@ You proposed an action the chapter does not support: [name it]. Either
 point me at the specific claim it follows from, or withdraw it. An
 action with no anchor in the chapter is one you invented and I want it
 labelled as such.
+````
+
+````text
+These look like filler, written to reach two: [name them]. Withdraw
+each one that follows from no named claim. If fewer than two remain,
+give me tier: reference rules anchored to claims in this chapter — or
+tell me that even two cannot be anchored, and stop.
+````
+
+````text
+You gave me more than ten rows. Keep the ten that carry the most
+weight, re-emit the YAML with those alone, and list the rest after it
+under "Considered, not kept", one line each on why. Do not recommend
+one.
 ````
 
 ## Then

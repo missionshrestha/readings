@@ -31,6 +31,7 @@ import {
 	checkVisibilityGate,
 	checkNoHiddenRouteEmitted,
 } from './guards.mjs';
+import { checkBookDates } from './book-dates.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DOCS = join(ROOT, 'src', 'content', 'docs');
@@ -174,7 +175,45 @@ for (const d of onDisk)
 	if (!known.has(d))
 		findings.push(`${d}\n      has a directory but no entry in context/universe.md at that path.\n      Either the book was retitled (its slug is frozen by this directory) or it moved cluster.`);
 
-// 6 · books started, for the report line.
+// 6 · two to ten actions per chapter — his instruction, 2026-09-14,
+//     context/chapter-spine.md section 6c. REPORTED, never refused, for the same
+//     reason `status` is not an enum: a pasted chapter with one action should not
+//     take the build down. Only chapters that have been written in are checked —
+//     a stub or a draft has not reached P6 yet.
+for (const p of pages) {
+	if (p.rel.endsWith('/index.mdx') || p.rel.split('/').length < 4) continue;
+	const status = p.get?.('status');
+	if (p.get?.('draft') === 'true' || status === 'stub' || status === 'skipped' || status === 'dropped') continue;
+	const n = p.actionIds?.length ?? 0;
+	if (n < 2 || n > 10)
+		findings.push(
+			`${p.rel}\n      ${n} action(s). A chapter carries two to ten, each anchored to a claim in it.\n` +
+				(n < 2
+					? '      A conceptual chapter meets the floor with tier: reference rules, never with invented habits.'
+					: '      Keep the ten that carry most weight; the rest belong in the notes, not the ledger.')
+		);
+}
+
+// 7 · the release date and major editions, which every page of a book now
+//     displays. new-chapters.mjs refuses a brief without them; this catches a
+//     book.json edited after scaffolding, and every book scaffolded before
+//     2026-09-14. context/book-spec.md section 2.
+for (const dir of new Set(pages.map((p) => p.rel.split('/').slice(0, 3).join('/')))) {
+	const file = join(DOCS, dir, 'book.json');
+	if (!existsSync(file)) continue;
+	let raw;
+	try {
+		raw = JSON.parse(readFileSync(file, 'utf8'));
+	} catch (e) {
+		findings.push(`${dir}/book.json\n      is not valid JSON: ${e.message}`);
+		continue;
+	}
+	const { problems, warnings } = checkBookDates(raw);
+	for (const m of problems) findings.push(`${dir}/book.json\n      ${m}`);
+	for (const m of warnings) notes.push(`${dir}/book.json — ${m}`);
+}
+
+// 8 · books started, for the report line.
 const started = [...onDisk].length;
 
 /* --- report -------------------------------------------------------------- */

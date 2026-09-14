@@ -11,6 +11,10 @@ for value.
 **Two or three per book, not per chapter.** If you find yourself pasting the same toggle into every
 chapter, it belongs in `P0` instead, once.
 
+**Every toggle's output is held to the clarity standard** like the rest of the page (`standards.md`
+§2b): complete sentences, terms defined, an example beside a difficult idea. A toggle adds material;
+it never licenses shorthand.
+
 ---
 
 ## Scripts
@@ -60,20 +64,23 @@ Include a one-page cheat sheet and comparison tables.
 **Earns its cost** on frameworks, finance and reference books — the 96 🔵 tier especially.
 
 **Landed** when it is genuinely usable without the chapter beside it. **Did not** when it is the
-chapter's headings in a table. Test: cover the chapter and see whether the sheet still tells you
-what to do.
+chapter's headings in a table, or a page of fragments that only make sense to someone who has just
+read the chapter — tables are exempt from full sentences, but they must still read alone. Test: cover
+the chapter and see whether the sheet still tells you what to do.
 
 ## Decision tree
 
 ```
-Convert this into IF-THEN rules and a Mermaid decision tree.
+Convert this into IF-THEN rules and a Mermaid decision tree — flowchart TD, a caption sentence before it, readable inside the text column.
 ```
 
 **Earns its cost** on anything procedural.
 
 **Landed** when a branch has a condition you could evaluate in the moment without thinking about it.
 **Did not** when the branches are *"if the situation is complex"* — which is a decision tree that
-requires you to have already made the decision.
+requires you to have already made the decision. **Also did not** when the tree is too wide to read
+until you press Expand: grow down, about four nodes side by side at most, and split it past about
+twelve.
 
 ## Flags
 
@@ -146,14 +153,17 @@ longer tell what the book said.
 
 ```
 Show the actual numbers, calculations and thresholds, adapted to NPR and Nepali market
-conditions — and keep the original figures beside them so I can see what changed.
+conditions — and keep the original figures beside them so I can see what changed. State the
+exchange rate or local figure you used, its date and its source, with a row in Sources.
 ```
 
 **Earns its cost** on finance, health and business.
 
-**Landed** when both sets of figures are visible and the conversion is stated. **Did not** when only
-the converted numbers survive: a rule of thumb calibrated to a different economy, silently
-re-denominated, is a number that has lost its meaning while keeping its authority.
+**Landed** when both sets of figures are visible and the conversion is stated, with where the rate
+came from. **Did not** when only the converted numbers survive: a rule of thumb calibrated to a
+different economy, silently re-denominated, is a number that has lost its meaning while keeping its
+authority. **Also did not** when the rate has no date or source — a converted number is a claim like
+any other (`standards.md` §2).
 
 ## Contrarian
 
@@ -182,7 +192,7 @@ transcript, not about the book.
 
 ## Where a toggle goes, and where it must not
 
-**Three prompts take toggles. The other seven do not, and each refusal has a reason.**
+**Three prompts take toggles. The other eight do not, and each refusal has a reason.**
 
 | Add to | Toggles |
 |---|---|
@@ -190,17 +200,23 @@ transcript, not about the book.
 | `P4` (the explanation layer) | Reflection · Flags · Mindset · Contrarian · Local |
 | `P6` (candidate actions) | Drills · Decision tree · Self-assessment · Timeline |
 
+**On `P6`, a toggle never pushes the actions past ten.** Drills, a decision tree or a timeline are
+prose in the menu. The YAML still holds two to ten actions, each anchored to a named claim, and a
+drill that is not anchored to one does not become an action by being listed.
+
 | Never | Because |
 |---|---|
 | **`P0`** | It is the standing contract. A toggle there applies to every chapter of the book without your noticing — which is exactly how a toggle stops meaning anything |
 | **`P1`** | A fifteen-minute gate. Anything added to it is a reason to spend longer choosing, and choosing is not reading |
 | **`P2`** | Its output is a JSON object validated key by key. A toggle produces a key the schema has no home for, and the scaffolder refuses the whole brief |
-| **`P5`** | Its shape *is* its content — a question with nothing attached, then a position. Every toggle adds material to the first message, which is the one message that must carry no belief. **Contrarian is the toggle you want here, and it belongs on `P4`,** where it lands in `### What critics say` and is on the page |
+| **`P2b`** | Its output is fixed headings and a sources table — four `###` under `## Author context`, six under `## Context then vs. context today`. A toggle adds a section that no contract names and no producer owns, which is the same defect as a thirteenth `##` on a chapter: an anchor nobody promised, on a page his comments attach to |
+| **`P5`** | Its shape *is* its content — a question with nothing attached, then a position, then the record of what followed. Every toggle adds material to the first message, which is the one message that must carry no belief. **Contrarian is the toggle you want here, and it belongs on `P4`,** where it lands in `### What critics say` and is on the page |
 | **`P7`** | Two sections and a closed component list. A toggle here produces a thirteenth heading, and an extra `##` is a defect — headings are anchors and anchors are contracts |
 | **`P8`, `P9`** | Both are about what actually happened. There is nothing to add to a count |
 
 **Where in the prompt.** Paste the toggle line **inside the fence, at the end**, above the
 four-backtick reminder where one exists. Outside the fence it is a comment to nobody.
 
-**No toggle may produce content in `## Recall` or `## Open questions`.** Those are the prohibition
-zone, and a toggle that asks the model to draft reflection answers has walked straight into it.
+**No toggle may produce content in `## Recall` or `## Open questions`, or write a comment.** Those are
+the prohibition zone, and a toggle that asks the model to draft reflection answers has walked straight
+into it.

@@ -221,10 +221,13 @@ if (haveProfile) console.log(`    kept      ${profilePath.replace(ROOT + '/', ''
 console.log(`\n  url       /${domain.slug}/${cluster.slug}/${book.slug}/`);
 console.log('\n  next');
 if (kind === 'read') {
-	console.log('    1  Stage 2 (BRIEF) in web chat produces book.json');
+	console.log('    1  Stage 2 (BRIEF) in web chat produces book.json, with its release date and editions');
 	console.log(`    2  save it to src/content/docs/${domain.slug}/${cluster.slug}/${book.slug}/book.json`);
 	console.log(`    3  node scripts/new-chapters.mjs ${domain.slug} ${cluster.slug} ${book.slug}`);
+	console.log('    4  Stage 2b (P2b) writes Author context and Context then vs. context today into index.mdx');
 } else {
-	console.log(`    A ${kind} book has no chapter map. Append to its log as you consult it.`);
+	console.log(`    1  Stage 2 (BRIEF, block B) produces book.json — a ${kind} book has no chapter map`);
+	console.log('    2  Stage 2b (P2b) writes Author context and Context then vs. context today into index.mdx');
+	console.log('    3  then append to its log as you consult it');
 }
 console.log('');

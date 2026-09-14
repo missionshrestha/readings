@@ -2,7 +2,7 @@
 
 **Stage 3. TWO PARTS, and only the second is conditional.** Three to six minutes.
 
-**Length: 776 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 1190 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
 
 > **This prompt used to be conditional in its entirety, and that was a defect.**
 >
@@ -16,6 +16,13 @@
 > it does not, `## Core message` and `## Key points` are produced by `P4` instead, after your
 > closed-book recall has been marked — which is the better place for them anyway.
 > `chapter-spine.md` §1, and [spine-map.md](spine-map.md) is the table that would have caught it.
+
+> **"Three sentences is a normal answer" was removed from part A on 2026-09-14.** He read the sample
+> chapters and asked for the opposite: *"Avoid being short, imprecise, confusing, unclear, or
+> misleading. Expand and add more detail where needed — length should not be a concern; user
+> understanding is the priority."* A pre-context is now as long as it needs to be. What stops it
+> becoming a summary was always the conditions-not-claims test, never the word count.
+> `standards.md` §2b.
 
 ## Paste with it
 
@@ -45,7 +52,8 @@ WHAT PRE-CONTEXT IS
   me; it does not tell me what the chapter says.
 
   Include, where they exist:
-    · a term the chapter uses without defining, defined
+    · a term the chapter uses without defining, defined in plain words
+      and with an example beside it
     · the claim from the previous chapter this one builds on
     · the debate or the position the author is answering
     · the thing a reader of THIS chapter is assumed to already accept
@@ -60,9 +68,23 @@ WHAT IT IS NOT
   CLAIM from the reading? If it is a claim, cut it. I would rather
   open the chapter under-prepared than pre-digested.
 
-LENGTH
-  As long as it needs and no longer. Three sentences is a normal
-  answer. If you find yourself at four paragraphs, you are summarising.
+LENGTH AND CLARITY
+  As long as it needs to be. There is no length limit, and brevity is
+  not the goal: a pre-context I cannot follow has prepared me for
+  nothing. What keeps it from becoming a summary is the test above,
+  not a word count — however long it runs, every sentence states a
+  condition for reading and none states a claim from the reading.
+
+  Write every sentence so I can follow it a week from now, alone:
+    · complete sentences, not notes — no arrows, slash-lists or
+      dropped articles
+    · one main idea per sentence
+    · a plain definition AND an example for every term, the first time
+      it appears
+    · no word I would have to look up, unless you define it
+    · an analogy where an idea is abstract, saying where it breaks
+  Padding is still banned: no preamble, no "in this chapter", no
+  restating the heading.
 
 MISSING INPUTS
   If I have pasted the whole chapter rather than its opening, say so
@@ -110,18 +132,41 @@ that is shorter than the original is not, by itself, better. But:
   the author meant, and you may NOT conclude on my behalf that it does
   not apply to me.
 
+WRITE EVERY SENTENCE SO I CAN FOLLOW IT — my standard: "The user must
+be able to interpret and understand every sentence produced."
+  · Complete sentences, not notes. One main idea per sentence.
+  · Define every term where it first appears, in plain words.
+  · An example beside every claim that is not self-evident; a worked
+    case for every mechanism; an analogy where an idea is abstract,
+    saying where the analogy breaks.
+  · A real-life incident is the author's own, cited to the chapter, or
+    one you can source — otherwise it is a labelled hypothetical about
+    someone else. Never a story asking me to picture my own success.
+  · SIMPLER WORDS, SAME CLAIM. Simplifying may change the words. It may
+    never change a claim's strength, its scope or its conditions. The
+    test: would the author sign the simpler sentence? If not, restore
+    the claim and simplify the words instead.
+  · A mermaid diagram may go in the rebuild or in Key points where it
+    shows something the prose cannot show as quickly. Put a caption
+    sentence before it, keep it readable inside the text column, and
+    never hard-code a colour.
+
 Emit these sections, and only these:
 
   ## Core message
-    One sentence, in a :::note[Core message] block. If it takes two,
-    the chapter has two messages — say so explicitly and say which one
-    the chapter actually argues for.
+    One sentence, in plain words, in a :::note[Core message] block. If
+    it takes two, the chapter has two messages — say so explicitly and
+    say which one the chapter actually argues for.
 
   ## Key points
     The load-bearing claims: the ones the argument RESTS on. Not a
-    précis. Load-bearing claims are unevenly sized, so if every point
-    comes out the same length and in chapter order, you have written a
-    summary under a different heading.
+    précis. EACH POINT is one plain sentence in bold — the claim —
+    followed by as much explanation as that claim needs: what it
+    means, why the author holds it, and an example. No length limit.
+    Order them by how much of the argument rests on each. Load-bearing
+    claims are unevenly sized, so if every point comes out the same
+    length and in chapter order, you have written a summary under a
+    different heading.
 
   ## The clarified chapter
     The rebuild. Then, in an <Aside type="note" title="What I cut, and
@@ -159,12 +204,18 @@ sections 2 and 3 come from `P4`. [spine-map.md](spine-map.md) has the flip in on
 |---|---|
 | **Landed** | Every pre-context sentence states a CONDITION for reading |
 | **Did not** | *"The chapter argues that depth is becoming rare."* That is a claim from the reading — the test the prompt names, failed |
+| **Landed** | Every term in the pre-context has a plain definition and an example beside it |
+| **Did not** | Three tidy sentences that use two terms you would have to look up. Short, and it prepared you for nothing |
+| **Landed** | Each key point is a bold claim with *what it means*, *why the author holds it* and an example after it |
+| **Did not** | A list of bold assertions with nothing beneath them. That is a précis with the explanation deleted |
 | **Landed** | The cut list has nouns in it. "The Roosevelt anecdote, third instance of the same point" |
 | **Did not** | *"Some repetition and throat-clearing."* A cut list with no nouns is a claim that cutting happened |
 | **Landed** | The numbers and the named cases survived the rebuild |
 | **Did not** | A clarified chapter that is all argument. That is the summary this stage exists to avoid, produced under a different heading |
 | **Landed** | Where his situation differs, a paragraph was **added** beside the author's claim |
 | **Did not** | The claim was rewritten into advice for Kathmandu and you can no longer tell what the book said |
+| **Landed** | A simplified sentence says exactly what the author claimed, in plainer words |
+| **Did not** | *"did not replicate"* became *"was questioned"*. Simpler, and it now says less than the truth |
 
 ## If it comes back wrong
 
@@ -180,14 +231,24 @@ which repetition — with a noun for each — and why dropping it was
 safe. If you cut nothing, say you cut nothing.
 ````
 
+````text
+These key points are bare claims: [list them]. Under each, add what it
+means, why the author holds it, and an example from the chapter. Do
+not shorten the claim to make room — there is no length limit.
+````
+
 ## What to check
 
 - **Part A ran at all.** It is the one that gets skipped by habit, because the old version of this
   file made the whole prompt conditional.
+- **Could you understand every sentence of the pre-context without looking anything up?** If a term
+  sent you elsewhere, it needed a definition and an example.
 - Did it keep the **numbers and the examples**? A clarified chapter that is all argument has done
   exactly the thing this stage exists to avoid.
 - Is `## Core message` really one sentence?
+- Does **every key point** have an explanation and an example beneath it?
 - Does the cut list **name** what was removed, or does it say "some repetition"? A real cut list has
   nouns in it.
+- Did simplifying keep the claim's strength, scope and conditions? *Would the author sign it?*
 - Did it add where your situation differs, rather than subtracting? *"you don't remove, alter the
   things that author wanted to say for original intent, you can give extra instead."*

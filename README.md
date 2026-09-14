@@ -30,6 +30,18 @@ No CMS, no database, no runtime. Everything is build-time derivation from files 
 Every one of those is a documented reversal of the original design, with the citation, in
 [`context/reconciliation.md`](context/reconciliation.md).
 
+And, since 2026-09-14, on the reader's own instructions after reading a sample book
+([`context/reader.md`](context/reader.md) §10):
+
+- **Every page is held to one clarity standard** — complete sentences, terms defined, an example
+  beside every difficult idea, and no length limit on explanation.
+- **Every book shows its release date and major editions**, and its page carries the author's context
+  and what has changed since it was written — for and against.
+- **Comments while reading** — select any passage on the dev site and write; the public site shows them
+  read-only, marked on their passages.
+- **The whole argument is recorded**, not one question and one answer; **reader opinion is reported as
+  clusters with counts**; **diagrams fit the column and expand to full screen.**
+
 ## The reading room
 
 Four themes — Day, Sepia, Dusk, Night — a system serif at a measured 62/68/75 characters per line,

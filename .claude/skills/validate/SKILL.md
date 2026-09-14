@@ -34,8 +34,10 @@ as a regression in something else.
    about a check the build was not running.
 3. Fix what breaks. Re-run until both are clean.
 4. **Check the paste against the spine and the brief.** See *Coverage*. The build cannot see this.
-5. Report every defect with its **file and line**, and what it would have caused.
-6. **Update the records** — the paste changed what exists.
+5. `node scripts/audit.mjs` — it now also reports a chapter outside two to ten actions and a
+   `book.json` with a missing or unreadable release date.
+6. Report every defect with its **file and line**, and what it would have caused.
+7. **Update the records** — the paste changed what exists.
 
 ## The failure modes, in the order they actually happen
 
@@ -66,11 +68,17 @@ The first four are loud. The last three are the dangerous ones.
    from a session that **cannot create binary files**, so this is expected when one has not been
    supplied yet. **Do not "fix" it by pointing at `public/`**: that builds and silently costs the
    optimisation, the hashed filename, the dimensions and the year-long cache. Ask for the image.
+9. **A Mermaid diagram that renders an error box**, not a diagram. The build does not parse Mermaid
+   — it renders in the browser — so a syntax error is **green at build and red on the page**. Open
+   the page on `npm run dev` and look. Since 2026-09-14 more diagram types are allowed
+   (`context/md-spec.md` §6); a type not in that table may not be themed for all four reading themes.
 
 ## Coverage — the checks the build cannot run
 
 The brief decided this chapter before it was written. **Nothing in the build knows that**, so a
 chapter missing half its sections is indistinguishable from a complete one at exit 0.
+
+### A chapter
 
 1. **The twelve `##` headings**, exact strings, in the order in `context/chapter-spine.md` §1. An
    extra `##`, a missing one or a reordering is a finding. **Any `####` at all** means the chapter
@@ -79,25 +87,61 @@ chapter missing half its sections is indistinguishable from a complete one at ex
    defects: present when false wastes the sitting on a summary; absent when true drops READ I.
 2a. **`## Pre-context` is present EVEN WHEN `clarified: false`**, and so are `## Core message` and
    `## Key points`. On an unclarified chapter those last two come from `P4`, after the recall, not
-   from `P3`. Until 2026-08-31 all three had no producer at all on the majority case — if a paste
-   is missing them, the session is working from the old shape and the fix is upstream.
+   from `P3`.
 2b. **The explanation layer has TEN `###` sub-sections**, and the first is
    `### Where the author was standing`. Nine means the session is on a stale context pack.
+2c. **`## Dialogue` has FIVE `###`** — `What I asked`, `What it said`, `What I then argued`,
+   `How the exchange went`, `Where we ended up`, in that order — and the turns under the fourth begin
+   with `**Me:**`, `**AI:**` or `**AI (as sceptic):**`. Four `###` means the session is on the
+   pre-2026-09-14 shape. `chapter-spine.md` §6.
 3. **`## Recall` is not empty**, and the `## Dialogue` section shows the question before the
    position. If the page states a conclusion first, the answer that follows it is suspect.
 4. **`## Open questions` contains nothing but the placeholder.** The AI never writes there.
-5. **Actions.** At most one carries `committed: true` with `tier: now` across the whole book; every
-   committed action names an `obstacle`, and one under six words is probably vague.
+5. **Actions — two to ten in the frontmatter.** At most one carries `committed: true` with
+   `tier: now` across the whole book; every committed action names an `obstacle`, and one under six
+   words is probably vague. **Fewer than two or more than ten is a finding**, never a build failure
+   (`chapter-spine.md` §6c).
 6. **Nothing anywhere asks him to visualise an outcome.**
 7. **`## Sources` against `context/source-rules.md`.** Not *does a citation exist* — the spine
    already asks that — but **is anything tier C written as though it were tier A.** *"Knowledge
    workers spend 28% of the week on email"* and *"Newport cites a 2012 McKinsey figure that…"* are
    the same sentence with the provenance removed, and only the second one is honest. Also: any claim
-   on the replication list (priming, ego depletion, power posing, learning styles, 10,000 hours)
-   with no qualifier beside it.
+   on the replication list (priming, ego depletion, power posing, learning styles, 10,000 hours,
+   handwriting) with no qualifier beside it.
+8. **`### What real readers say` names its venues and an N**, reports clusters as *n of N*, and
+   either quotes an AI summary as tier C or gives the query and the threads. **No N at all, or N under
+   30 without the word THIN, is a finding** (`chapter-spine.md` §3b).
+9. **Every diagram has a caption sentence before it, and every chart either has a `## Sources` row per
+   plotted value or says "illustrative" in its title** (`source-rules.md` §3b).
+10. **The clarity tells** (`context/standards.md` §2b) — report as candidates, never rewrite:
+    arrows or slash-lists standing in for sentences in prose; a key point with no example and no
+    "because"; a technical term used before it is defined; an analogy with no stated limit; a
+    "real-life" incident with no source row.
+
+### A book page
+
+1. **`## Author context`** with its four `###`, and **`## Context then vs. context today`** with its
+   six, the last ending in `:::tip[What still holds]` — `context/book-spec.md` §6.
+2. **`## Sources`** holds a row for every date and biographical fact above it.
+3. **No release date typed into the page.** It renders from `book.json`; a typed copy is a second
+   place for it to be wrong.
+4. **`book.json` carries `published` and `editions`** — `node scripts/audit.mjs` reports it if not.
+5. **`## Context then vs. context today` reports support as well as criticism.** One that only finds
+   problems is a finding (`context/standards.md` §8).
 
 **These are candidates, not verdicts.** Report them and let him decide. A genuine omission goes back
 to web chat, not into your edit.
+
+## Comments — never yours to touch
+
+A `<page>.comments.json` beside a chapter is **his**, written by the dev server while he reads
+(`context/md-spec.md` §5d). **Never create, edit, reformat or delete one**, including to "fix" it.
+Two things are yours to report:
+
+- **A detached comment** — its passage was reworded by a paste. Say which comment and which passage;
+  he decides whether the rewording was needed.
+- **A comments file the build warns is not valid JSON** — `[readings:comments] … is not valid JSON`.
+  The page builds without its comments. Report it; do not repair it.
 
 ## Records — a clean build is not the end of the paste
 
@@ -116,12 +160,14 @@ minutes, and copying the estimate into it destroys the one comparison the column
   cannot be fixed, report it and stop.
 - **Never invent a frontmatter value** to satisfy the schema. Every custom field is
   `.optional().catch(undefined)` precisely so a missing one degrades instead of breaking.
+- **Never add an action to reach two**, or delete one to reach ten. Report the count; the actions are
+  his decision and `P6`'s menu.
 - **`status` is unvalidated, and there are EIGHT known values**: `stub`, `reading`, `generated`,
   `recalled`, `explained`, `complete`, `skipped`, `dropped`. `complete`, `Complete` and `done` all
   differ. `audit.mjs` reports an unknown one as *"not a known value. It counts as not-complete
   everywhere, silently"*; the schema will not.
-- **`private: true` now really does exclude a page from `build`** — no route, no sitemap entry, no
-  Pagefind record. It did not until 2026-08-31, and `CLAUDE.md` claimed it did the whole time.
-  **It also inherits the draft hole**: a private page has no route, so its MDX is compiled by
-  nothing either. Step 0 applies to both flags.
+- **`private: true` really does exclude a page from `build`** — no route, no sitemap entry, no
+  Pagefind record, **and none of its comments.** It did not until 2026-08-31, and `CLAUDE.md` claimed
+  it did the whole time. **It also inherits the draft hole**: a private page has no route, so its MDX
+  is compiled by nothing either. Step 0 applies to both flags.
 - **"Didn't run" is never "passed."**

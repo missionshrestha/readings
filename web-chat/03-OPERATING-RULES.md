@@ -45,7 +45,7 @@ someone otherwise makes by feel.
 | Give background you lack | Identify where it applies in your life |
 | Assemble the criticism | Judge whether the criticism is right |
 | Test whether you understood | **Produce the understanding** |
-| Draft candidate if–then plans | **Choose one and write the sentence** |
+| Draft candidate if–then plans | **Commit to one and write the sentence** |
 | Attack your plan | **Write the plan** |
 | Interrogate your tracking data | **Record the tracking data** |
 
@@ -70,7 +70,13 @@ improvising.
 4. **Instruct at length.** A short prompt gets you the harmful configuration by default. The
    measured difference was **500+ words against ~50** — the length was the safeguard, not decoration.
 5. **Make it adversarial about you, generous about the book.**
-6. **Distrust the tail.** Request takeaways and action items separately, and short.
+6. **Distrust the tail.** Request takeaways and action items separately — never as the last paragraph
+   of a long answer — and require every action to name the claim in the chapter it follows from. An
+   action with no anchor is the tail talking.
+
+**Rule 6 lost the words "and short" on 2026-09-14.** Short was never the protection; separate was.
+He asked for the opposite of short — *"length should not be a concern; user understanding is the
+priority"* — and set two to ten actions per chapter, so the safeguard that remains is the anchor.
 
 ---
 
@@ -104,6 +110,12 @@ non-negotiable**:
 - **`## Recall`** — written closed-book, before any AI contact.
 - **The obstacle** — what will actually stop you.
 - **The IF–THEN commitment** — you write the sentence.
+- **Your comments** — left on passages while you read on the dev site. The AI never writes one.
+
+**A comment is not the recall.** You write a comment with the page open, beside the words it answers,
+so the text is doing the remembering for you. `## Recall` is written with the page closed, and that
+effort is where the learning is. Comment as much as you like while reading — then close the page and
+write the recall anyway. [`prompts/recall.md`](prompts/recall.md).
 
 Everything else in a chapter is fair game.
 
@@ -117,6 +129,8 @@ Everything else in a chapter is fair game.
   ones most useful to you.
 - **Is that documented, or observed?** And against which edition?
 - **Who disagrees, and at what scale do they operate?**
+- **Could I explain every sentence of this to someone else?** If a sentence needed rereading, a term
+  sent you elsewhere, or a claim had no example, the page failed his standard — send it back.
 - **Am I accepting this because it is right, or because it flatters a decision I already made?**
 
 ---
@@ -127,8 +141,10 @@ Stated here because a system that only lists what it solves is marketing.
 
 **Tell a human being.** Monitoring works, and it works **better when progress is reported to
 someone** and **better when the record is physical** — Harkin, *d* = 0.40, N ≈ 20,000, larger on
-both counts. A private page ticked by the person who wrote it satisfies neither. `/ledger` says so
-in its own words rather than simulating it with a streak.
+both counts. A private page ticked by the person who wrote it satisfies neither. **Sharing progress
+publicly — his plan as of 2026-09-14 — is closer, and still not the same thing:** a public post is a
+broadcast, not a person who asks. Whether it produces the effect for him is untested. `/ledger` says
+so in its own words rather than simulating it with a streak.
 
 **Thirty days between books.** Not because the reading needs the gap, but because the doing does.
 The genre's central risk is that **consuming it feels like doing it**, and that failure is
@@ -141,9 +157,13 @@ indistinguishable from productive effort while it is happening.
 - **Let AI do everything about the book. Do everything about yourself.**
 - **Ask before you tell.** Never state your conclusion first.
 - **Attempt from memory, every time.** This one rule prevents most of the crutch effect.
+- **A comment is not a recall.** Comment with the page open; recall with it closed.
 - **On familiar material, go back to the original** rather than a clarified version.
 - **One chapter per upload.** Never the whole book.
-- **Choose ONE action.** One implemented beats five considered.
+- **Clear before short.** Every sentence understandable on its own, every difficult idea with an
+  example beside it, and no length limit on explanation.
+- **Commit to ONE action per book; record two to ten per chapter.** One implemented beats five
+  considered.
 - **Name the obstacle. Never picture the outcome.**
 - **Record the failures too.** A ledger with no dropped rows measures nothing.
-- **Never delegate:** the recall, the obstacle, the commitment.
+- **Never delegate:** the recall, the obstacle, the commitment, your comments.

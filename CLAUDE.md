@@ -42,10 +42,32 @@ disagree**, and every row cites both sides by line number.
 The five that change what you do:
 
 1. **A closed-book `## Recall` comes before the explanation layer.** Retrieval, not rereading.
-2. **One committed action per book**, not "no cap". Extraction is uncapped; commitment is not.
+2. **One committed action per book**, not "no cap". **Two to ten actions are recorded per chapter**
+   (his instruction, 2026-09-14); commitment is still one per book.
 3. **One chapter per upload**, never the whole book.
 4. **The question is asked before the position is stated** — sycophancy is triggered by conveying a belief.
 5. **No counters anywhere in the chrome.** The ledger is the metric; the count is vanity.
+
+---
+
+## His second set of instructions — 2026-09-14
+
+He read a complete sample book end to end and wrote down what had to change before real reading
+starts. **`context/reader.md` §10 quotes all of it, and it is operative over anything older.** What
+it changes for you:
+
+| Changed | What you do about it |
+|---|---|
+| **Clarity over brevity, on every page he reads** — complete sentences, terms defined, an example beside every difficult idea, no length limit | Nothing to author. `/validate` reports the tells (`context/standards.md` §2b) as candidates, never as rewrites |
+| **Every book shows its release date and major editions** — `published` and `editions` in `book.json` | `new-chapters.mjs` refuses a brief without them; `audit.mjs` reports drift. The page chrome renders them — never type them into a page |
+| **The book page gains `## Author context` and `## Context then vs. context today`** — produced by `P2b` | `/scaffold` stamps the headings; `/validate` checks them after the paste (`context/book-spec.md` §6) |
+| **Two to ten actions per chapter**; commitment still one per book | `/validate` and `audit.mjs` report it; the build never refuses it |
+| **`## Dialogue` records the whole exchange** — five `###`, turns labelled `**Me:**` / `**AI:**` | `/validate` checks the five and the order (`context/chapter-spine.md` §6) |
+| **`### What real readers say` reports clusters, counts and venues** — or THIN with the number | `/validate` flags a section with no N (`context/chapter-spine.md` §3b) |
+| **Comments** — written while he reads on `npm run dev`, stored beside the page, published read-only; **a new comment starts local in the three sensitive domains** | **You never write, edit or paste one.** The dev server is the only writer (`scripts/comments-dev.mjs`) |
+| **`reader.md` is never uploaded to a web-chat Project** — settled 2026-09-14 | It stays yours to maintain; it is not context for the model (`web-chat/01-SETUP.md` §3) |
+| **Diagrams stay in the column, with Expand; Mermaid wherever it helps** | Charts need sourced numbers or an "illustrative" title (`context/source-rules.md` §3b) |
+| **The site is public and meant to be shared** — secondary to learning | `GROWTH.md` holds the open decisions. **Build none of them until he chooses** |
 
 ---
 
@@ -54,7 +76,8 @@ The five that change what you do:
 | You (Claude Code) | Not you |
 |---|---|
 | `/scaffold` a book's directory and one stub per chapter, from the agreed `book.json` | Writing what a chapter argues |
-| `/validate` — `npm run ci` after every paste, and fix what breaks | **Authoring a chapter** |
+| `/validate` — `npm run ci` after every paste, and fix what breaks | **Authoring a chapter, or a book page** |
+| Report a detached or unreadable comments file | **Writing, editing, reformatting or deleting a comment** |
 | `/progress` — read the records, **ask what is missing, then write it** | Deciding whether he understood something |
 | `/ledger` — report drift between actions and their day-30 outcomes | Writing an action, or an obstacle |
 | `/deploy` — build, probe, push, confirm live | Choosing the next book |
@@ -71,6 +94,8 @@ validate the paste instead.
 ```
 CLAUDE.md  WORKFLOW.md  DEPLOY.md         root — read every session
 GUIDE.md                                  root — the runbook. HIS reference, but match it
+GROWTH.md                                 root — the public side, and the decisions still HIS.
+                                          Nothing in it is built until he chooses
 SETUP.md                                  root — Phase 1 only. Never reopened after it passes
 reader-profile.md                         root — the cross-book ledger. YOU maintain it
 .nvmrc                                    24.18.0 — one of Cloudflare's two preinstalls
@@ -91,11 +116,21 @@ context/                                  the contract. Read what your task NAME
 scripts/                                  universe · gen-pages · new-book · new-chapters
                                           · guards · audit · contrast · measure-type
                                           · prompt-words · synth-corpus (DEV ONLY, never committed)
+                                          · book-dates (published/editions, shared by the
+                                            scaffolder and the audit)
+                                          · comments-dev (the ONLY comments writer; exists only
+                                            in `astro dev`)
 src/components/                           4 components + index.ts (`@components`)
 src/overrides/                            Starlight chrome. NOT authoring components.
                                           ThemeSelect.astro is EMPTY ON PURPOSE — it deletes
                                           Starlight's own light/dark picker. Fact 16
+                                          MarkdownContent.astro adds the comments payload and
+                                          the read-only list. PageTitle.astro shows the dates
+src/scripts/                              reader-annotations (comments, dialogue turns, diagram
+                                          Expand) · text-index · comment-editor (DEV ONLY)
 src/lib/                                  visibility · indexing · ledger
+                                          · comments (read at render) · comments-shared (the one
+                                            renderer, build and browser)
 src/pages/                                robots.txt · llms-full.txt · [...slug]/index.md
                                           · shelf · ledger · review
 src/generated/                            universe.json · nav-labels.json · book-slugs.md
@@ -111,6 +146,8 @@ src/content/docs/
                                           hint — Starlight's own carries none in <main>
   <domain>/<cluster>/<book>/              appears ONLY when a book is actually started
     index.mdx · book.json · <NN>-<chapter>.mdx
+    <chapter>.comments.json               HIS comments, written only by the dev server.
+                                          Never create, edit or delete one
 ```
 
 **Read only what your task names.** `context/` is not preloaded. Never read the whole content tree.
@@ -287,6 +324,50 @@ Each of these fails **silently**. That is why they are here and not in a checkli
     Starlight's own `--sl-sidebar-visibility` custom property directly, which
     composes with their rule instead of needing to be its sibling.
 
+22. **astro-mermaid re-renders a diagram by replacing the `<pre>`'s innerHTML, on every theme
+    change** — `astro-mermaid-integration.js:551`, fired by the `data-theme` observer at `:582`. So
+    **anything placed inside `pre.mermaid` is deleted the first time the reader changes theme.** The
+    Expand control lives in a `.rd-diagram` wrapper around the `<pre>`, and the full-screen view
+    *moves* the `<pre>` into its dialog rather than cloning the SVG, because mermaid's arrowheads and
+    `themeCSS` are scoped by the SVG's id.
+
+23. **A class that sets `display` beats the browser's `[hidden]` rule.** The UA's
+    `[hidden] { display: none }` is less specific than `.rd-btn { display: inline-flex }`, so an
+    element with `hidden` correctly set still shows. **It bit twice on 2026-09-14** — the header
+    comments button appeared on every page, and "Delete" appeared on a new comment — and was caught
+    only by a screenshot. Every class here that sets `display` on something toggled with `hidden`
+    carries a `[hidden]` override in `src/styles/annotations.css`.
+
+24. **Starlight's reset removes the margin that centres a modal `<dialog>`.** `* { margin: 0 }`,
+    `@astrojs/starlight/style/reset.css:8-10`. `showModal()` still works and the backdrop still
+    draws — **the dialog just opens pinned to the top-left corner.** `.rd-ceditor` sets
+    `margin: auto` back.
+
+25. **`astro dev` and `astro preview` detach into a daemon in Astro 7.** The launching command exits 0
+    within a second — *"Preview server running … Stop: astro preview stop"* — while the server keeps
+    running. A background task reported as "completed" is therefore not a stopped server, and a
+    probe that starts one must end with `astro dev stop` / `astro preview stop`.
+
+26. **This site never renders Mermaid with `theme: 'base'`, whatever the config says.** astro-mermaid's
+    `autoTheme` maps `data-theme` light to `default` and dark to `dark`
+    (`astro-mermaid-integration.js:485-488`), and `Head.astro` always sets `data-theme`. Measured
+    2026-09-14: sequence actor boxes painted `#ECECFF` in Day and `#1F2020` in Night — the stock
+    themes' colours. Read fact 15's "under `theme: 'base'`" with that in mind: the fix held, the stated
+    cause was wrong. Every colour that matters is set in `themeCSS` or as a complete nested
+    `themeVariables` object — **a partial nested object (`xyChart`, `radar`, `cynefin`) replaces the
+    defaults wholesale**, which was read in mermaid's code and not probed.
+
+27. **`&` in `themeCSS` silently matches nothing.** Mermaid prefixes every rule with the diagram's id,
+    and `&` resolves to that same id, so `& text` is emitted as `#mermaid-x #mermaid-x … text`. Green
+    build, rule present in the stylesheet, xychart text still at 3.20:1. The SVG root cannot be
+    selected from `themeCSS` at all — scope a rule by the diagram's own group classes.
+
+28. **Two diagram types ignore the column's width.** `xychart` hard-codes `useMaxWidth: true`
+    (`xychartDiagram-S5SC5T6Z.mjs:2080`), so it shrinks on a phone instead of scrolling; `gantt` lays
+    out to the page BODY's width — 1278px at a 1280 viewport, then scaled to 4.4px text — until
+    `useWidth` is set. Both are pinned in `astro.config.mjs`, and both were found only by measuring
+    the rendered text size.
+
 ---
 
 ## The controls
@@ -344,17 +425,23 @@ themes) and `scripts/audit.mjs` (the weekly report).
   where a claim's conditions differ; it may never conclude the claim does not apply to him. §4.
 - **The SITE is public. The repository is private.** `private: true` excludes a page from `build`
   entirely. What the repo keeps private is `reader-profile.md`, `context/books/` and the git history.
+- **Clear before short, on every page he reads.** *"The user must be able to interpret and understand
+  every sentence produced."* `context/standards.md` §2b. You author none of it; you report the tells.
 - **THE DESIGN SYSTEM IS FROZEN.** Four themes, one serif, one grid, one card, one chip, one spine,
   four components. It was built once, measured, and closed. Further UI work is logged to a deferred
   list and opened in a quarterly pass — the drafts name "building the site instead of reading" as
   *"the most sophisticated procrastination available to me"*, and that risk starts now, not later.
+  **Opened once, on 2026-09-14, by his explicit written instruction** — comments, dialogue turns,
+  diagram Expand and the book's dates, all as site chrome with no new colour and no fifth authoring
+  component — **and closed again.** `GROWTH.md` is a list of decisions, not a backlog.
 
 ---
 
 ## Commands
 
 ```bash
-npm run dev        # localhost. Drafts ARE visible here — that is what a stub is for
+npm run dev        # localhost. Drafts ARE visible here — that is what a stub is for — and it is
+                   # the ONLY place comments can be written. Astro 7 detaches it: `astro dev stop`
 npm run build      # THE VALIDATOR. Run after every paste
 npm run preview    # the built site. file:// breaks Pagefind — always use preview
 npm run check      # astro check

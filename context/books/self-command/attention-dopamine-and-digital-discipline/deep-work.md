@@ -50,7 +50,7 @@ carry the weight and the explanation layer is trimmed.
 
 | # | Chapter | Status | Clarified | Recall done | Effort | Est |
 | --- | --- | --- | --- | --- | --- | --- |
-| Intro | Naming the deep work hypothesis | stub | yes | | | 25 |
+| Intro | Depth and the information economy | stub | yes | | | 25 |
 | 1 | Deep work is valuable | stub | yes | | | 30 |
 | 2 | Deep work is rare | stub | yes | | | 35 |
 | 3 | Deep work is meaningful | stub | yes | | | 30 |
@@ -58,6 +58,7 @@ carry the weight and the explanation layer is trimmed.
 | 5 | Embrace boredom | stub | yes | | | 30 |
 | 6 | Quit social media | stub | yes | | | 35 |
 | 7 | Drain the shallows | stub | yes | | | 35 |
+| Conclusion | The power of the deep life | stub | yes | | | 18 |
 
 `#` is the book's own printed number; an Introduction or a Conclusion carries its label instead.
 `Effort` is measured minutes and stays blank until he says a number. Copying `Est`
@@ -126,3 +127,18 @@ gets asked in the book Project or gets deleted as not actually important.
   "addiction" claim and the unshown McKinsey arithmetic are fixed. Build green, audit clean.
   Still open: the brief has 8 entries and no Conclusion — whether the book has one was not
   in the pasted reply.
+- **2026-09-15** — Chapter map rebuilt from the whole table of contents (web chat
+  transcribed it into a `contents` list). The Introduction takes the book's own printed
+  title, "Depth and the information economy", replacing the invented "Naming the deep work
+  hypothesis". The Conclusion, "The power of the deep life", is added with label Conclusion,
+  from its full text: 9 chapters. All nine stubs re-scaffolded (all were empty); the seven
+  numbered stubs are byte-identical to before. MEASURED DEFECT, not yet fixed: the
+  Conclusion's part is "the-idea", so the sidebar, prev/next and the book-page grid place it
+  between Ch 3 and Ch 4. Waiting on his decision; not committed or pushed.
+- **2026-09-15** — On his instruction ("do what's recommended"): the Conclusion moved to
+  "the-rules", so it now reads Ch 7 → Conclusion in the sidebar, prev/next and the chapter grid.
+  The move went through the new `--outline`, which now re-derives `part`. The scaffolder also
+  gained the three other fixes today exposed: `contents` is checked against the chapter map, a
+  part that comes back after another part is refused, and `--add` creates only missing chapter
+  pages. Still open: the Conclusion's `argues` states web chat's judgement rather than Newport's
+  claim — to be restated before its turn.

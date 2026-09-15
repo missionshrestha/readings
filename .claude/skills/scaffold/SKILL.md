@@ -21,6 +21,10 @@ rather than hand-written.
    `editions`**, required on all three kinds since 2026-09-14. **Every refusal message the script can
    produce is reproduced in `book-spec.md` §3b**, split into BINDING (refuses, writes nothing) and
    ADVISORY (prints, proceeds) — check the brief against that table before running anything.
+4. `book.json` carries **`contents`** — the whole table of contents, line by line, each line mapped to
+   a chapter, a skip or "not a chapter" (`book-spec.md` §2). Since 2026-09-15 it is what the
+   scaffolder checks the chapter map against. A brief without it scaffolds with an advisory; say so,
+   because nothing then confirms that no section was missed.
 
 ## Steps
 
@@ -79,10 +83,22 @@ paste** — without it the grid silently drifts.
 `node scripts/new-chapters.mjs <d> <c> <b> --outline`
 
 The only way an amendment reaches a stub that already exists. It replaces the bytes **between the
-markers and no others**. If a paste destroyed a file's markers it **skips that file and names it** —
-report those. An amendment that did not reach the page is an amendment that did not happen.
+markers and no others**, and re-derives the frontmatter the brief owns — `description`, `title`,
+`chapter`, `label` and `part` — **printing every change it makes**. If a paste destroyed a file's
+markers it **skips that file and names it** — report those. An amendment that did not reach the page
+is an amendment that did not happen.
 
 **A changed release date or a new edition needs no flag** — edit `book.json` and rebuild.
+
+## When the brief gains a chapter
+
+`node scripts/new-chapters.mjs <d> <c> <b> --add`
+
+Added 2026-09-15. The default mode refuses the whole run if any chapter file exists, and `--outline`
+skips a missing file, so until then a book with pages had no way to gain one. `--add` creates **only
+the missing files**, overwrites nothing and deletes nothing. It names existing pages whose title,
+number or part no longer match the brief — run `--outline` next for those — and names any file on
+disk the brief no longer lists, which is usually a renamed slug. Report both lists.
 
 ## When the SPINE itself changes
 
@@ -122,4 +138,6 @@ written chapter gets the change from the next paste.
 - **The grid never links a draft.** A draft does not exist in `build`, and linking one fails
   validation — which is exactly how this was found.
 - Both scripts **refuse rather than overwrite**, and `new-chapters` refuses the *whole run* if any
-  target exists, so it can never half-apply. `--outline` is the single exception.
+  target exists, so it can never half-apply. Two exceptions, both narrow: `--outline` rewrites only
+  generated regions and the frontmatter the brief owns, and `--add` only creates files that do not
+  exist.

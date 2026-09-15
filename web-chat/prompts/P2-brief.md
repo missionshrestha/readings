@@ -2,7 +2,7 @@
 
 **Stage 2. Once per book, thirty minutes.** Output is `book.json`.
 
-**Length: 2406 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 2698 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
 
 **Do the inspectional pass FIRST, with the AI off.** Twenty minutes: contents, index, first and last
 chapter, skim the rest. Write your 3–5 questions **before** you paste anything. Questions written
@@ -80,7 +80,28 @@ WHAT I NEED FROM YOU
     not come out that way — a Chapter 0, or two numbering sequences —
     stop and tell me rather than guessing.
     Acknowledgements, notes, bibliography, index and "about the author"
-    are not chapters. Leave them out and do not count them.
+    are not chapters: they appear in "contents" as "not-a-chapter", and
+    they are not counted.
+
+1b · THE CONTENTS — the check on everything above
+    Transcribe the table of contents into "contents": every printed
+    line, in printed order, word for word — part headings, the
+    Introduction, the Conclusion and the back matter included. A
+    section printed on two lines (a label, then its title) is ONE row.
+    Each row gets exactly one "entry":
+      a chapter slug    the section gets a page; the slug is in
+                        "chapters"
+      "skipped"         it is in "antiChapters", under the same
+                        printed text as its "title"
+      "not-a-chapter"   part headings, dedication, epigraph,
+                        acknowledgements, notes, bibliography, index,
+                        about the author — never anything that carries
+                        argument
+    Build "chapters" FROM this list, top to bottom — never from memory
+    and never by carrying forward an earlier version of the brief. The
+    scaffolder refuses any other entry (a placeholder included), a
+    chapter missing from the list, chapters out of printed order, and a
+    numbered line whose number the site would not reproduce.
 
 2 · WHAT TO SKIP, AND WHY
     Every chapter goes in "chapters" or in "antiChapters" with a
@@ -202,6 +223,10 @@ is a refusal, not a near miss.
         "order": 1,
         "outcome": "One sentence, starting with a verb." }
     ],
+    "contents": [
+      { "printed": "one line of the table of contents, exactly as printed",
+        "entry": "a chapter slug | skipped | not-a-chapter" }
+    ],
     "chapters": [
       { "slug": "kebab-case, derived from the title, unique",
         "title": "the book's own chapter title, 9 words or fewer — for a labelled section, what it argues, never the label itself",
@@ -240,6 +265,16 @@ WHAT WILL BE REFUSED, so check it here rather than there:
   · a "label" that is empty, carries a number ("Chapter 1", "Part 2"),
     or is the same word as the title. The label only replaces the
     number; the title still says what the section argues
+  · a "contents" row whose entry is not a chapter slug, "skipped" or
+    "not-a-chapter". A placeholder is refused — ask me instead
+  · a chapter missing from "contents", or listed twice; a "skipped"
+    row with no antiChapters entry under the same printed title
+  · chapters whose "order" does not follow the printed order
+  · a numbered line ("4. Rule #1: Work Deeply") whose number the site
+    would not reproduce — a section before it is missing, or an
+    unnumbered one has no label
+  · a part that comes back after another part. Each part must be one
+    run of consecutive chapters, or the sidebar reads them out of order
   · a part slug that is not kebab-case, or a part with no "outcome"
   · "clarified" absent — it must be a deliberate true or false, not a
     default nobody looked at
@@ -449,9 +484,19 @@ A brief is not a single event. When a chapter turns out to argue something diffe
 node scripts/new-chapters.mjs <d> <c> <b> --outline
 ```
 
-**`--outline` also re-derives each page's title, number and label**, and prints every change. So an
-Introduction added to the brief after the chapters were scaffolded — with its `label` — renames the
-page titles after it back to the book's own numbers.
+**`--outline` also re-derives each page's title, number, label and part**, and prints every change.
+So an Introduction added to the brief after the chapters were scaffolded — with its `label` — renames
+the page titles after it back to the book's own numbers.
+
+**A chapter the brief gained needs a page first.** `--outline` skips a file that does not exist and
+the default run refuses when any exist, so run:
+
+```bash
+node scripts/new-chapters.mjs <d> <c> <b> --add
+```
+
+It creates only the missing files, and names every existing page that `--outline` still has to bring
+in line.
 
 **Never edit between the `OUTLINE` markers by hand** — the next `--outline` discards it silently.
 `book-spec.md` §3c has the three doors and what each refuses. **A change to `published` or `editions`

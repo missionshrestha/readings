@@ -501,6 +501,8 @@ node scripts/new-chapters.mjs <d> <c> <b>     scaffold its chapters from book.js
 node scripts/new-chapters.mjs <d> <c> <b> --refresh    after a paste
 node scripts/new-chapters.mjs <d> <c> <b> --outline    after a brief amendment
 node scripts/new-chapters.mjs <d> <c> <b> --spine       after a SPINE change
+node scripts/new-chapters.mjs <d> <c> <b> --add         after the brief gains a chapter —
+                                             creates only the missing files
 node scripts/audit.mjs                       the weekly report + all four controls
 node scripts/contrast.mjs                    104 colour pairs across four themes
 node scripts/prompt-words.mjs                every web-chat prompt against its 500-word floor

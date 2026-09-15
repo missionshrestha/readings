@@ -26,7 +26,7 @@ pasted the same day. No chapter has been read yet; chapter 1 is next.*
 | **Domain / cluster** | ⚙️ Self-Command / 1.3 · Attention, Dopamine & Digital Discipline |
 | **Gap** | execution — `book.json`, 2026-09-15 |
 | **Started** | |
-| **Chapters** | 0 of 8 written (8 stubs, 2 parts, none cut) |
+| **Chapters** | 0 of 9 written (9 stubs, 2 parts, none cut) |
 | **Next eligible** | **Now.** No book has been finished, so nothing is pending (2026-08-31) |
 | **Exit condition** | Five consecutive weeks in which, across at least three of the domains you named — skill learning, reading, exercise, building, work — a scheduled deep work block was actually run on at least 4 of that week's scheduled days, with no week during that streak dropping to zero in any of the three domains. *(`book.json`)* |
 
@@ -53,7 +53,7 @@ to make.
 
 | Book | Ch | Chapter | Clarified | Drafted | Read | Effort | Est |
 |---|---|---|---|---|---|---|---|
-| Deep Work | Intro | Naming the deep work hypothesis | yes | | | | 25 |
+| Deep Work | Intro | Depth and the information economy | yes | | | | 25 |
 | Deep Work | 1 | Deep work is valuable | yes | | | | 30 |
 | Deep Work | 2 | Deep work is rare | yes | | | | 35 |
 | Deep Work | 3 | Deep work is meaningful | yes | | | | 30 |
@@ -61,6 +61,7 @@ to make.
 | Deep Work | 5 | Embrace boredom | yes | | | | 30 |
 | Deep Work | 6 | Quit social media | yes | | | | 35 |
 | Deep Work | 7 | Drain the shallows | yes | | | | 35 |
+| Deep Work | Conclusion | The power of the deep life | yes | | | | 18 |
 
 ---
 

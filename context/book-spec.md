@@ -73,6 +73,14 @@ exactly the tier-C laundering that file exists to prevent.
       "outcome": "Say what deep work is and why it is becoming rare." }
   ],
 
+  "contents": [
+    { "printed": "Introduction / The Case for Depth", "entry": "the-case-for-depth" },
+    { "printed": "Part 1 — The Idea", "entry": "not-a-chapter" },
+    { "printed": "1. Deep Work Is Valuable", "entry": "deep-work-is-valuable" },
+    { "printed": "Rule #3 — Quit Social Media", "entry": "skipped" },
+    { "printed": "Notes", "entry": "not-a-chapter" }
+  ],
+
   "chapters": [
     { "slug": "the-case-for-depth", "title": "The case for depth", "order": 1,
       "label": "Introduction",
@@ -118,6 +126,7 @@ A populated `editions` entry has this shape:
 | root | `outsideView` | A three-line digest, filled at Stage 2 with search on. **Every citation verified yourself.** *"When it's thin, say so rather than inventing consensus."* **The long form is `## Context then vs. context today` on the book page (§6), and where the two disagree the page is the authority and the digest is rewritten to match** |
 | root | `exitCondition` | What must be TRUE for this book to be finished. Observable, not felt |
 | root | `inventory` | `read + skipped === chapters`. **Asserted.** See §3 |
+| root | `contents` | **Every line of the printed table of contents, in order, word for word** — part headings, the Introduction, the Conclusion and the back matter included. A section printed on two lines (a label, then its title) is one row. Each `{ "printed", "entry" }` carries one decision: a chapter slug; `"skipped"`, with an `antiChapters` entry under the same printed title; or `"not-a-chapter"` — part headings, dedication, epigraph, acknowledgements, notes, bibliography, index, about the author, never anything that carries argument. **`chapters` is built from it, and the scaffolder checks the two against each other** (§3b). Added 2026-09-15; a brief without it gets an advisory, not a refusal |
 | part | `outcome` | One sentence, starts with a verb. What you can do after this part |
 | chapter | `argues` | One line. What the chapter claims, not what it covers |
 | chapter | `label` | **Only on a section the book prints without a chapter number** — `Introduction`, `Prologue`, `Conclusion`, `Epilogue`, `Afterword`, or a `Foreword` by another writer — and exactly the printed word. The page is titled `Introduction · <title>` and carries no number. **Every unlabelled chapter is numbered 1, 2, 3… in `order`, counting only unlabelled chapters, so the site's "Ch 1" is the book's printed Chapter 1.** No digits, never on a numbered chapter, never equal to the title. Added 2026-09-15 |
@@ -262,6 +271,13 @@ Acknowledgements, notes, bibliography, index and about-the-author pages are not 
 counted. Before this date the only way to list an Introduction was as a numbered chapter, and doing
 so moved every chapter after it one number away from the book's own.
 
+**And the law is now checked against the book itself.** `inventory` is arithmetic the brief does
+about its own lists, so a section nobody listed passes it: Deep Work's brief balanced at 7 + 0 = 7
+with its Introduction and Conclusion missing, then at 8 + 0 = 8 with the Conclusion still missing.
+`contents` (§2) is the table of contents transcribed line by line, and the scaffolder refuses a
+chapter that is not in it, a line with no valid decision, chapters out of printed order, a printed
+chapter number the site would not reproduce, and an `inventory.chapters` that disagrees with it.
+
 `read + skipped === chapters` is **asserted by `new-chapters.mjs`, never computed for you.** A
 mismatch means a chapter was surfaced at Stage 2 and then quietly forgotten, which is exactly what
 this law exists to catch.
@@ -310,6 +326,18 @@ here so a brief can be checked against it before the script is ever run.
 | `label` present but empty, or not text | `chapter "X": "label" must be text like "Introduction" — or absent, on a numbered chapter` |
 | `label` carries a digit, a `·` or "Chapter" | `chapter "X": label "Chapter 1" carries a number — a numbered chapter has no label, and the site numbers it` |
 | `label` is the same word as the title | `chapter "X": title is just "Introduction" — the label already shows that. The title says what it argues` |
+| a part comes back after another part | `chapter "X": part "the-idea" comes back after "the-rules" — the sidebar shows each part as one block, so this chapter would be read out of order. Give it the part it is printed beside, or a part of its own` |
+| `contents` is not an array | `"contents" must be an array of { "printed", "entry" }. Spec §2` |
+| a `contents` row with no `printed` | `contents "?": no "printed" — the line exactly as the table of contents prints it` |
+| a `contents` entry that is not a slug, `skipped` or `not-a-chapter` — a placeholder included | `contents "X": entry "Y" is not a chapter slug, "skipped" or "not-a-chapter"` |
+| a `skipped` row with no `antiChapters` entry of that title | `contents "X": marked "skipped", but no antiChapters entry has that printed title` |
+| an `antiChapters` entry with no `skipped` row | `antiChapters "X": no "contents" row is marked "skipped" under that printed title` |
+| a chapter missing from `contents` | `chapter "X": not in "contents" — every chapter is a line of the table of contents` |
+| a chapter listed twice in `contents` | `chapter "X": appears 2 times in "contents" — one printed section is one row` |
+| a printed number on a labelled chapter | `contents "X": printed with the number 4, but chapter "Y" carries the label "Introduction"` |
+| a printed number the site would not reproduce | `contents "4. Rule #1: Work Deeply": printed as number 4, but the site would number "work-deeply" 5 — a section before it is missing, or an unnumbered one is missing its label` |
+| chapters out of printed order | `chapter order does not follow the table of contents: it prints "X" where "order" puts "Y"` |
+| `inventory.chapters` disagrees with `contents` | `inventory.chapters is 8 but "contents" lists 9 section(s) that are chapters or skipped` |
 | `part` not declared in `parts` | `chapter "X": part "y" is not in "parts"` |
 | bad `verdict` | `chapter "X": verdict "maybe", must be one of deep-dive, skim, skip` |
 | `verdict: "skip"` in `chapters` | `chapter "X": verdict "skip" — a skipped chapter belongs in "antiChapters", not "chapters"` |
@@ -336,6 +364,8 @@ line in context/book-spec.md that says rewrite.
 | over 15 chapters, empty `antiChapters` | `N chapters and an empty antiChapters. That is a table of contents, not a decision — but it scaffolds anyway.` |
 | total `estMinutes` over 20 hours | `estimated N hours of reading. The four-week ceiling is a signal, not a rule.` |
 | an edition with no `source` | `editions[0] has no "source". A date nobody can check is a date that drifts.` |
+| no `contents` at all | `no "contents" — the chapter map cannot be checked against the table of contents. Spec §2` |
+| a section printed without a number, on a chapter with no `label` | `contents "X": printed without a number, but "Y" has no label. Should it carry one, like "Introduction"?` |
 
 **The split is deliberate and worth stating as a principle: the brief decides how much of a book to
 read; the script does not get a veto.** A structural error makes the tree wrong and is refused. A
@@ -360,14 +390,21 @@ So there are three narrow doors, and each writes only inside a generated region:
 
 | Flag | Rewrites | Refuses |
 |---|---|---|
-| `--outline` | The `OUTLINE` region on every chapter — the brief's own words, restated on the page — and the frontmatter derived from the brief: `description`, `title`, `chapter`, `label` | A file whose `OUTLINE` markers have been deleted. Named, never skipped quietly |
+| `--outline` | The `OUTLINE` region on every chapter — the brief's own words, restated on the page — and the frontmatter derived from the brief: `description`, `title`, `chapter`, `label`, `part` | A file whose `OUTLINE` markers have been deleted. Named, never skipped quietly |
 | `--spine` | The `SPINE` region — the sub-sections of the explanation layer | **Any chapter that has been written in.** Safe means every body inside the region is still the literal `TODO` |
 | `--refresh` | The chapter grid **and the `BRIEF` region** on the book's `index.mdx` | A book that is not `kind: read`. A page with no `BRIEF` markers is named and skipped, with the two lines to paste |
+| `--add` | **No existing file.** It creates only the chapter files the brief lists that do not exist yet, then regenerates the grid | Nothing — it never overwrites and never deletes. It **names** existing pages that no longer match the brief, and files on disk the brief no longer lists |
 
-**`--outline` also re-derives each chapter's `title`, `chapter` and `label`, since 2026-09-15**, and
-prints every title it changes, old and new. An Introduction added to the brief after its chapters were
-scaffolded — with its `label` — therefore puts every page after it back on the book's own numbering,
-instead of leaving "Ch 2" on the page the book calls Chapter 1.
+**`--outline` also re-derives each chapter's `title`, `chapter`, `label` and `part`, since
+2026-09-15**, and prints every title and part it changes, old and new. An Introduction added to the
+brief after its chapters were scaffolded — with its `label` — therefore puts every page after it back
+on the book's own numbering, instead of leaving "Ch 2" on the page the book calls Chapter 1; a chapter
+moved to another part moves to that part's block in the sidebar.
+
+**`--add` exists because a book with pages could not gain one.** The default run refuses when any
+chapter file exists, and `--outline` skips a missing file. Adding Deep Work's Conclusion meant moving
+eight pages aside and scaffolding nine, which is safe only while every page is still empty. Run
+`--add`, then `--outline` if it names pages that no longer match.
 
 **`--outline` also re-derives each chapter's frontmatter `description` from `argues`**, because
 the scaffolder writes one from the other and they are one field with two homes. It prints every
@@ -454,6 +491,9 @@ the label says where the section sits in the book, and the title still has to sa
 - [ ] Every Introduction, Conclusion or other section printed without a number is in `chapters` with
       a `label` or in `antiChapters` with a reason — and no numbered chapter carries a label, so the
       site's `Ch 1` is the book's Chapter 1.
+- [ ] `contents` holds every line of the table of contents, in order, and every line has one decision,
+      never a placeholder. `chapters` was built from it, not carried forward from an earlier brief.
+- [ ] Each part is one run of consecutive chapters: no part comes back after another part.
 - [ ] `exitCondition` is observable. "Understand deep work better" is not.
 
 ---

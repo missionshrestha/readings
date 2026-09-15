@@ -34,8 +34,25 @@
       "outcome": "Run a concrete system — a scheduling philosophy, a boredom-tolerance practice, a tool-selection rule and a shallow-work budget — that turns the belief into actual deep work sessions." }
   ],
 
+  "contents": [
+    { "printed": "Introduction / Depth and the Information Economy", "entry": "depth-and-the-information-economy" },
+    { "printed": "Part 1 — The Idea", "entry": "not-a-chapter" },
+    { "printed": "1. Deep Work Is Valuable", "entry": "deep-work-is-valuable" },
+    { "printed": "2. Deep Work Is Rare", "entry": "deep-work-is-rare" },
+    { "printed": "3. Deep Work Is Meaningful", "entry": "deep-work-is-meaningful" },
+    { "printed": "Part 2 — The Rules", "entry": "not-a-chapter" },
+    { "printed": "4. Rule #1: Work Deeply", "entry": "work-deeply" },
+    { "printed": "5. Rule #2: Embrace Boredom", "entry": "embrace-boredom" },
+    { "printed": "6. Rule #3: Quit Social Media", "entry": "quit-social-media" },
+    { "printed": "7. Rule #4: Drain the Shallows", "entry": "drain-the-shallows" },
+    { "printed": "Conclusion / The Power of the Deep Life", "entry": "the-power-of-the-deep-life" },
+    { "printed": "Back Matter", "entry": "not-a-chapter" },
+    { "printed": "Notes", "entry": "not-a-chapter" },
+    { "printed": "Index", "entry": "not-a-chapter" }
+  ],
+
   "chapters": [
-    { "slug": "naming-the-deep-work-hypothesis", "title": "Naming the deep work hypothesis", "order": 1, "label": "Introduction",
+    { "slug": "depth-and-the-information-economy", "title": "Depth and the information economy", "order": 1, "label": "Introduction",
       "part": "the-idea",
       "argues": "Across eras and industries, the people who produce the hardest-to-replicate, most valuable work protect long stretches of undistracted concentration — and that capacity is becoming both rarer and more economically valuable at the same time.",
       "weightInArgument": "load-bearing", "estMinutes": 25, "verdict": "deep-dive", "clarified": true },
@@ -73,12 +90,17 @@
     { "slug": "drain-the-shallows", "title": "Drain the shallows", "order": 8,
       "part": "the-rules",
       "argues": "Shallow work cannot be eliminated, but it can and must be deliberately budgeted and minimized, because any hour not claimed in advance for something deep will default to something shallow.",
-      "weightInArgument": "load-bearing", "estMinutes": 35, "verdict": "deep-dive", "clarified": true }
+      "weightInArgument": "load-bearing", "estMinutes": 35, "verdict": "deep-dive", "clarified": true },
+
+    { "slug": "the-power-of-the-deep-life", "title": "The power of the deep life", "order": 9, "label": "Conclusion",
+      "part": "the-rules",
+      "argues": "The strongest evidence for deep work's power turns out to be autobiographical: pushed to an extreme, it roughly doubled Newport's own academic output in a single year, but the intensity required to sustain that extreme proved cognitively exhausting and, by his own account, not something even its author found sustainable.",
+      "weightInArgument": "supporting", "estMinutes": 18, "verdict": "deep-dive", "clarified": true }
   ],
 
   "antiChapters": [],
 
-  "inventory": { "chapters": 8, "read": 8, "skipped": 0 },
+  "inventory": { "chapters": 9, "read": 9, "skipped": 0 },
 
   "exitCondition": "Five consecutive weeks in which, across at least three of the domains you named — skill learning, reading, exercise, building, work — a scheduled deep work block was actually run on at least 4 of that week's scheduled days, with no week during that streak dropping to zero in any of the three domains."
 }

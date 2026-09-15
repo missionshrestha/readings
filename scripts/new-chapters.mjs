@@ -4,6 +4,8 @@
  *   node scripts/new-chapters.mjs <domain> <cluster> <book>             scaffold
  *   node scripts/new-chapters.mjs <domain> <cluster> <book> --refresh   after a paste
  *   node scripts/new-chapters.mjs <domain> <cluster> <book> --outline   after an amendment
+ *   node scripts/new-chapters.mjs <domain> <cluster> <book> --spine     after a SPINE change
+ *   node scripts/new-chapters.mjs <domain> <cluster> <book> --add       after the brief gains a chapter
  *
  * ---------------------------------------------------------------------------
  * EVERYTHING IS VALIDATED BEFORE ANY FILE IS WRITTEN
@@ -142,10 +144,12 @@ const OUTLINE_ONLY = argv.includes('--outline');
  * skipped and NAMED — never skipped quietly.
  */
 const SPINE_ONLY = argv.includes('--spine');
+/* --add creates only the chapter files that do not exist yet. See the block itself. */
+const ADD_ONLY = argv.includes('--add');
 const [domainSlug, clusterSlug, bookSlug] = argv.filter((a) => !a.startsWith('--'));
 
 if (!bookSlug) {
-	console.error('\n  usage: node scripts/new-chapters.mjs <domain> <cluster> <book> [--refresh|--outline|--spine]\n');
+	console.error('\n  usage: node scripts/new-chapters.mjs <domain> <cluster> <book> [--refresh|--outline|--spine|--add]\n');
 	process.exit(1);
 }
 
@@ -286,6 +290,105 @@ function validate(raw) {
 			fault(`${at}: weightInArgument "${c.weightInArgument}", must be one of ${WEIGHTS_IN_ARG.join(', ')}`);
 		if (typeof c.clarified !== 'boolean')
 			fault(`${at}: "clarified" must be true or false — a deliberate value, not a default nobody looked at`);
+	}
+
+	/*
+	 * A PART IS ONE BLOCK OF CONSECUTIVE CHAPTERS. Added 2026-09-15.
+	 *
+	 * The sidebar, the prev/next pair and the chapter grid all show a book one part
+	 * at a time, in the order the parts first appear. A chapter whose part already
+	 * ended is therefore read out of order. MEASURED on Deep Work: a Conclusion
+	 * (order 9) placed in "the-idea" appeared between Ch 3 and Ch 4 in all three
+	 * places, on a green build.
+	 */
+	const sortedByOrder = raw.chapters
+		.filter((c) => Number.isInteger(c.order))
+		.sort((a, b) => a.order - b.order);
+	const endedParts = new Set();
+	let openPart;
+	for (const c of sortedByOrder) {
+		const p = c.part ?? '';
+		if (p === openPart) continue;
+		if (endedParts.has(p))
+			fault(
+				`chapter "${c.slug}": part "${p || '(none)'}" comes back after "${openPart || '(none)'}" — ` +
+					'the sidebar shows each part as one block, so this chapter would be read out of order. ' +
+					'Give it the part it is printed beside, or a part of its own'
+			);
+		if (openPart !== undefined) endedParts.add(openPart);
+		openPart = p;
+	}
+
+	/*
+	 * THE TABLE OF CONTENTS, TRANSCRIBED — the check the coverage law never had.
+	 * Added 2026-09-15.
+	 *
+	 * `inventory` is arithmetic the brief does about itself, so a section nobody
+	 * listed passes it: Deep Work's brief balanced at 7 + 0 = 7 with its
+	 * Introduction and Conclusion missing, and at 8 + 0 = 8 with the Conclusion
+	 * still missing. `contents` is every printed line in order with one decision
+	 * each, so a missing section, a placeholder, or a map carried forward from an
+	 * earlier brief instead of read off the book becomes a refusal.
+	 */
+	if (raw.contents === undefined) {
+		advisory('no "contents" — the chapter map cannot be checked against the table of contents. Spec §2');
+	} else if (!Array.isArray(raw.contents)) {
+		fault('"contents" must be an array of { "printed", "entry" }. Spec §2');
+	} else {
+		const bySlug = new Map(raw.chapters.map((c) => [c.slug, c]));
+		const antiTitles = (raw.antiChapters ?? []).map((a) => String(a.title ?? '').trim());
+		const numbers = chapterNumbers(sortedByOrder);
+		const listed = new Map();
+		const tocOrder = [];
+		let skippedRows = 0;
+		for (const row of raw.contents) {
+			const printed = typeof row?.printed === 'string' ? row.printed.trim() : '';
+			const where = `contents "${printed || '?'}"`;
+			if (!printed) fault(`${where}: no "printed" — the line exactly as the table of contents prints it`);
+			const entry = row?.entry;
+			if (entry === 'not-a-chapter') continue;
+			if (entry === 'skipped') {
+				skippedRows++;
+				if (!antiTitles.includes(printed))
+					fault(`${where}: marked "skipped", but no antiChapters entry has that printed title`);
+				continue;
+			}
+			const ch = bySlug.get(entry);
+			if (!ch) {
+				fault(`${where}: entry "${entry}" is not a chapter slug, "skipped" or "not-a-chapter"`);
+				continue;
+			}
+			if (!listed.has(entry)) tocOrder.push(entry);
+			listed.set(entry, (listed.get(entry) ?? 0) + 1);
+			const m = printed.match(/^\s*(?:chapter\s+)?(\d+)\b/i);
+			if (m && ch.label)
+				fault(`${where}: printed with the number ${m[1]}, but chapter "${entry}" carries the label "${ch.label}"`);
+			else if (m && Number(m[1]) !== numbers.get(entry))
+				fault(
+					`${where}: printed as number ${m[1]}, but the site would number "${entry}" ${numbers.get(entry)} — ` +
+						'a section before it is missing, or an unnumbered one is missing its label'
+				);
+			else if (!m && !ch.label)
+				advisory(`${where}: printed without a number, but "${entry}" has no label. Should it carry one, like "Introduction"?`);
+		}
+		for (const c of raw.chapters) {
+			const n = listed.get(c.slug) ?? 0;
+			if (n === 0) fault(`chapter "${c.slug}": not in "contents" — every chapter is a line of the table of contents`);
+			else if (n > 1) fault(`chapter "${c.slug}": appears ${n} times in "contents" — one printed section is one row`);
+		}
+		for (const t of antiTitles)
+			if (!raw.contents.some((r) => r?.entry === 'skipped' && String(r.printed ?? '').trim() === t))
+				fault(`antiChapters "${t}": no "contents" row is marked "skipped" under that printed title`);
+		const bookOrder = sortedByOrder.map((c) => c.slug).filter((s) => listed.has(s));
+		const off = tocOrder.findIndex((s, i) => s !== bookOrder[i]);
+		if (off !== -1)
+			fault(
+				`chapter order does not follow the table of contents: it prints "${tocOrder[off]}" ` +
+					`where "order" puts "${bookOrder[off]}"`
+			);
+		const counted = listed.size + skippedRows;
+		if (raw.inventory && Number(raw.inventory.chapters) !== counted)
+			fault(`inventory.chapters is ${raw.inventory.chapters} but "contents" lists ${counted} section(s) that are chapters or skipped`);
 	}
 
 	// THE COVERAGE LAW. Asserted, never computed for you.
@@ -906,30 +1009,37 @@ function syncDescription(text, ch) {
 }
 
 /*
- * THE TITLE, `chapter` AND `label` ARE DERIVED TOO, since 2026-09-15.
+ * THE TITLE, `chapter`, `label` AND `part` ARE DERIVED TOO, since 2026-09-15.
  *
  * Giving an Introduction its `label` after the chapters were scaffolded changes
- * the site's number of every chapter after it — back to the book's own. This is
- * how that reaches pages that already exist: the title is re-derived from the
- * label or the number, `chapter:` is written only on a numbered chapter and
- * `label:` only on a labelled one. Every title change is PRINTED, for the same
- * reason syncDescription() prints: a hand edit discarded quietly is the same
- * defect in the other direction.
+ * the site's number of every chapter after it — back to the book's own. Moving a
+ * chapter to another part changes which block of the sidebar it sits in. This is
+ * how both reach pages that already exist: the title is re-derived from the label
+ * or the number, `chapter:` is written only on a numbered chapter, `label:` only
+ * on a labelled one, and `part:` from the brief. Every title and part change is
+ * PRINTED, for the same reason syncDescription() prints: a hand edit discarded
+ * quietly is the same defect in the other direction.
+ *
+ * The keys are written back after `cluster:` in exactly stamp()'s order, so a
+ * page brought in line by --outline is byte-identical to a freshly scaffolded one.
  */
-function syncNumbering(text, ch, number) {
+function syncDerived(text, ch, number) {
 	const fmEnd = text.indexOf('\n---', 4);
-	if (fmEnd === -1) return { text, from: null };
+	if (fmEnd === -1) return { text, from: null, partFrom: null };
 	let head = text.slice(0, fmEnd);
 	const t = head.match(/^title:[ \t]*(.+)$/m);
 	const wantTitle = `title: ${yaml(displayTitle(ch, number))}`;
 	const from = t && t[0] !== wantTitle ? t[1].trim() : null;
 	if (t) head = head.replace(t[0], wantTitle);
-	// Drop both top-level keys, then write back the one this chapter has, after `cluster:`.
-	head = head.replace(/^(?:chapter|label):[^\n]*\n?/gm, '');
-	const want = ch.label ? `label: ${yaml(String(ch.label).trim())}` : `chapter: ${number}`;
+	const p = head.match(/^part:[ \t]*(.+)$/m);
+	const wantPart = ch.part ? `part: ${yaml(ch.part)}` : null;
+	const partFrom = (p ? p[0] : null) !== wantPart ? (p ? p[1].trim() : '(none)') : null;
+	head = head.replace(/^(?:chapter|label|part):[^\n]*\n?/gm, '');
+	const want = [ch.label ? `label: ${yaml(String(ch.label).trim())}` : `chapter: ${number}`];
+	if (wantPart) want.push(wantPart);
 	const c = head.match(/^cluster:[^\n]*$/m);
-	head = c ? head.replace(c[0], `${c[0]}\n${want}`) : `${head}\n${want}`;
-	return { text: head + text.slice(fmEnd), from };
+	head = c ? head.replace(c[0], `${c[0]}\n${want.join('\n')}`) : `${head}\n${want.join('\n')}`;
+	return { text: head + text.slice(fmEnd), from, partFrom };
 }
 
 if (OUTLINE_ONLY) {
@@ -938,19 +1048,29 @@ if (OUTLINE_ONLY) {
 	const missing = [];
 	const described = [];
 	const retitled = [];
+	const moved = [];
 	for (const ch of chapters) {
 		const file = join(bookDir, `${ch.slug}.mdx`);
-		if (!existsSync(file)) { missing.push(`${ch.slug}.mdx (no such file)`); continue; }
+		if (!existsSync(file)) { missing.push(`${ch.slug}.mdx (no such file — --add creates it)`); continue; }
 		let text = readFileSync(file, 'utf8');
 		const number = numbers.get(ch.slug);
 		const a = replaceRegion(text, OUTLINE_START, OUTLINE_END, outlineBlock(ch, raw, partBySlug.get(ch.part), number));
 		if (a === null) { missing.push(`${ch.slug}.mdx (OUTLINE markers gone)`); continue; }
 		const d = syncDescription(a, ch);
 		if (d.from !== null) described.push({ slug: ch.slug, from: d.from, to: yaml(ch.argues) });
-		const n = syncNumbering(d.text, ch, number);
+		const n = syncDerived(d.text, ch, number);
 		if (n.from !== null) retitled.push({ slug: ch.slug, from: n.from, to: yaml(displayTitle(ch, number)) });
+		if (n.partFrom !== null) moved.push({ slug: ch.slug, from: n.partFrom, to: ch.part ? yaml(ch.part) : '(none)' });
 		writeFileSync(file, n.text);
 		rewritten++;
+	}
+	if (moved.length) {
+		console.log(`\n  part re-derived from the brief in ${moved.length} file(s):`);
+		for (const m of moved) {
+			console.log(`    · ${m.slug}.mdx`);
+			console.log(`        was  ${m.from}`);
+			console.log(`        now  ${m.to}`);
+		}
 	}
 	console.log(`\n  --outline: rewrote the generated region in ${rewritten} file(s)\n`);
 	if (described.length) {
@@ -982,6 +1102,58 @@ if (OUTLINE_ONLY) {
 	process.exit(0);
 }
 
+/*
+ * --add CREATES ONLY THE CHAPTER FILES THAT DO NOT EXIST YET. Added 2026-09-15.
+ *
+ * The default run refuses when any target exists, and --outline skips a file
+ * that is missing, so a book with pages on disk had no way to gain one.
+ * MEASURED on Deep Work: adding its Conclusion meant moving all eight existing
+ * pages aside and scaffolding nine — safe only because none had been written in.
+ * After the first paste that route is closed.
+ *
+ * It never overwrites and never deletes. An existing page whose title, number or
+ * part no longer matches the brief is NAMED, with the command that fixes it; a
+ * file on disk that the brief no longer lists — usually a renamed slug — is named
+ * too, and left where it is.
+ */
+if (ADD_ONLY) {
+	const numbers = chapterNumbers(chapters);
+	const created = [];
+	const drifted = [];
+	for (const ch of chapters) {
+		const file = join(bookDir, `${ch.slug}.mdx`);
+		const number = numbers.get(ch.slug);
+		if (!existsSync(file)) {
+			writeFileSync(file, stamp(template, ch, raw, partBySlug.get(ch.part), number));
+			created.push(ch.slug);
+			continue;
+		}
+		const d = syncDerived(readFileSync(file, 'utf8'), ch, number);
+		if (d.from !== null || d.partFrom !== null) drifted.push(ch.slug);
+	}
+	const known = new Set(chapters.map((c) => c.slug));
+	const orphans = readdirSync(bookDir).filter(
+		(f) => f.endsWith('.mdx') && f !== 'index.mdx' && !f.startsWith('_') && !known.has(f.replace(/\.mdx$/, ''))
+	);
+	const how = writeIndexGrid(raw, readChapterFrontmatter(bookDir));
+	console.log(`\n  --add: created ${created.length} chapter file(s)`);
+	for (const s of created) console.log(`    + ${s}.mdx`);
+	console.log('');
+	if (drifted.length) {
+		console.log('  These existing pages no longer match the brief (title, number or part):');
+		for (const s of drifted) console.log(`    · ${s}.mdx`);
+		console.log('\n  Run --outline to bring them in line. It prints every change it makes.\n');
+	}
+	if (orphans.length) {
+		console.log('  On disk but not in book.json — renamed or removed from the brief? NOTHING was deleted:');
+		for (const f of orphans) console.log(`    · ${f}`);
+		console.log('');
+	}
+	console.log(`  index grid: ${how}`);
+	console.log(`  brief region on index.mdx: ${writeIndexBrief(raw)}\n`);
+	process.exit(0);
+}
+
 // All-or-nothing.
 const targets = chapters.map((ch) => join(bookDir, `${ch.slug}.mdx`));
 const existing = targets.filter((t) => existsSync(t));
@@ -989,7 +1161,8 @@ if (existing.length) {
 	console.error(`\n  ${existing.length} chapter file(s) already exist. The WHOLE run is refused,`);
 	console.error('  so it cannot half-apply and leave the book in a state nobody can reason about.\n');
 	for (const e of existing) console.error(`    · ${e.replace(ROOT + '/', '')}`);
-	console.error('\n  To push an amended book.json into stubs that already exist, use --outline.\n');
+	console.error('\n  To push an amended book.json into stubs that already exist, use --outline.');
+	console.error('  To create only the chapters the brief gained, use --add.\n');
 	process.exit(1);
 }
 

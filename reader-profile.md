@@ -17,18 +17,18 @@ because he asked for one, or because something was read and the record is behind
 
 ## Currently reading
 
-*Nothing yet. `Deep Work` is scaffolded but its `book.json` is a placeholder — the Stage 2 brief has
-not been run.*
+*`Deep Work` was scaffolded from its Stage 2 brief on 2026-09-15, and its book page (`P2b`) was
+pasted the same day. No chapter has been read yet; chapter 1 is next.*
 
 | | |
 |---|---|
-| **Book** | |
-| **Domain / cluster** | |
-| **Gap** | knowledge or execution — asked at Stage 0, before anything else |
+| **Book** | Deep Work — Cal Newport |
+| **Domain / cluster** | ⚙️ Self-Command / 1.3 · Attention, Dopamine & Digital Discipline |
+| **Gap** | execution — `book.json`, 2026-09-15 |
 | **Started** | |
-| **Chapters** | |
+| **Chapters** | 0 of 7 written (7 stubs, 2 parts, none cut) |
 | **Next eligible** | **Now.** No book has been finished, so nothing is pending (2026-08-31) |
-| **Exit condition** | |
+| **Exit condition** | Five consecutive weeks in which, across at least three of the domains you named — skill learning, reading, exercise, building, work — a scheduled deep work block was actually run on at least 4 of that week's scheduled days, with no week during that streak dropping to zero in any of the three domains. *(`book.json`)* |
 
 **Reading rate, from the interview of 2026-08-31 — an observation, never a cap.**
 **30 min/day on weekdays, 60 min/day on weekends.** He was explicit that chapter length is not
@@ -53,7 +53,13 @@ to make.
 
 | Book | Ch | Chapter | Clarified | Drafted | Read | Effort | Est |
 |---|---|---|---|---|---|---|---|
-| | | | | | | | |
+| Deep Work | 1 | Deep Work Is Valuable | no | | | | 30 |
+| Deep Work | 2 | Deep Work Is Rare | no | | | | 35 |
+| Deep Work | 3 | Deep Work Is Meaningful | no | | | | 30 |
+| Deep Work | 4 | Rule #1: Work Deeply | no | | | | 40 |
+| Deep Work | 5 | Rule #2: Embrace Boredom | no | | | | 30 |
+| Deep Work | 6 | Rule #3: Quit Social Media | no | | | | 35 |
+| Deep Work | 7 | Rule #4: Drain the Shallows | no | | | | 35 |
 
 ---
 

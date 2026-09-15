@@ -59,7 +59,9 @@ actions:
 
 | Field | Rule |
 |---|---|
-| `title` | **The only field Starlight requires.** Becomes the H1 — never write a `#` in the body |
+| `title` | **The only field Starlight requires.** Becomes the H1 — never write a `#` in the body. Scaffolded from `book.json` as `Ch N · <title>`, or `Introduction · <title>` for a section the book prints without a number — never retyped |
+| `chapter` | The book's own printed chapter number, so `Ch 1` is the book's Chapter 1. **Absent on a labelled chapter** |
+| `label` | Only on a section the book prints without a number — `Introduction`, `Conclusion`, `Prologue`… From `book.json`'s `label` (`book-spec.md` §2). `sidebar.order` still places it in the book |
 | `domain` `cluster` `book` | **Must match the directory.** The build refuses otherwise — the path is the truth |
 | `clarified` | `false` means `## The clarified chapter` is **absent**, not empty |
 | `gap` | `knowledge` or `execution`. Comes from `book.json`, and it changes what the chapter owes |

@@ -72,7 +72,10 @@ const readingFields = z.object({
 	domain: z.string().optional().catch(undefined),
 	cluster: z.string().optional().catch(undefined),
 	part: z.string().optional().catch(undefined),
+	/** The book's own printed chapter number. ABSENT on a labelled chapter. */
 	chapter: z.number().optional().catch(undefined),
+	/** Introduction | Conclusion | Prologue … — a section the book prints unnumbered. book-spec.md §2. */
+	label: z.string().optional().catch(undefined),
 
 	// --- what kind of thing it is
 	/** read | reference | lifelong — decides the page shape. */

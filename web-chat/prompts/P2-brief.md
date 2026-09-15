@@ -2,7 +2,7 @@
 
 **Stage 2. Once per book, thirty minutes.** Output is `book.json`.
 
-**Length: 2129 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
+**Length: 2406 words.** `node scripts/prompt-words.mjs` measures it; `--stamp` writes it back.
 
 **Do the inspectional pass FIRST, with the AI off.** Twenty minutes: contents, index, first and last
 chapter, skim the rest. Write your 3–5 questions **before** you paste anything. Questions written
@@ -65,10 +65,29 @@ WHAT I NEED FROM YOU
     to make a book look manageable. An estimate that turns out to be
     wrong is data about the estimate.
 
+    SECTIONS THE BOOK PRINTS WITHOUT A NUMBER are part of the chapter
+    map too: an Introduction, a Prologue, a Conclusion, an Epilogue,
+    an Afterword, and a foreword by another writer. Each gets an entry
+    with every field above, plus:
+      label   exactly the word the book prints — "Introduction",
+              "Conclusion", "Prologue", "Epilogue", "Afterword",
+              "Foreword"
+    Its title is NOT that word. It says what the section argues, like
+    any other title, and the site shows "Introduction · <title>".
+    Numbered chapters carry NO label. The site numbers them 1, 2, 3…
+    counting only the unlabelled chapters, in "order", so its "Ch 1"
+    is the book's printed Chapter 1. If the book's own numbering would
+    not come out that way — a Chapter 0, or two numbering sequences —
+    stop and tell me rather than guessing.
+    Acknowledgements, notes, bibliography, index and "about the author"
+    are not chapters. Leave them out and do not count them.
+
 2 · WHAT TO SKIP, AND WHY
     Every chapter goes in "chapters" or in "antiChapters" with a
     REASON FOR ME SPECIFICALLY. There is no third bucket, and silence
-    is not a decision.
+    is not a decision. An Introduction or a Conclusion counts exactly
+    like a chapter: in "chapters" with its label, or in "antiChapters"
+    under its printed name with a reason.
 
     A reason for me is "I already do not use social media, so this
     would be confirmation rather than change". A reason in general is
@@ -185,8 +204,9 @@ is a refusal, not a near miss.
     ],
     "chapters": [
       { "slug": "kebab-case, derived from the title, unique",
-        "title": "the book's own chapter title, 9 words or fewer",
+        "title": "the book's own chapter title, 9 words or fewer — for a labelled section, what it argues, never the label itself",
         "order": 1,
+        "label": "ONLY on a section printed without a number: Introduction | Conclusion | Prologue | Epilogue | Afterword | Foreword. Omit the key on a numbered chapter",
         "part": "a slug that appears in parts[]",
         "argues": "one line, a CLAIM someone could disagree with",
         "weightInArgument": "load-bearing | supporting | illustrative",
@@ -204,15 +224,22 @@ is a refusal, not a near miss.
 DO THIS ARITHMETIC BEFORE YOU EMIT, AND SHOW IT TO ME:
   inventory.read    === chapters.length
   inventory.skipped === antiChapters.length
-  read + skipped    === inventory.chapters, the book's real total
+  read + skipped    === inventory.chapters, the book's real total,
+                        counting every labelled section (Introduction,
+                        Conclusion…) as a chapter
 
 WHAT WILL BE REFUSED, so check it here rather than there:
   · a chapter with verdict "skip" inside "chapters" — a skipped
     chapter belongs in "antiChapters", and this is the single most
     common refusal
   · "order" not an integer, not unique, or not starting at 1. It is
-    global across the book, never per part
+    global across the book, never per part, and it counts labelled
+    sections too: an Introduction is order 1, the book's Chapter 1 is
+    order 2
   · a chapter "part" that is not a slug in "parts"
+  · a "label" that is empty, carries a number ("Chapter 1", "Part 2"),
+    or is the same word as the title. The label only replaces the
+    number; the title still says what the section argues
   · a part slug that is not kebab-case, or a part with no "outcome"
   · "clarified" absent — it must be a deliberate true or false, not a
     default nobody looked at
@@ -421,6 +448,10 @@ A brief is not a single event. When a chapter turns out to argue something diffe
 ```bash
 node scripts/new-chapters.mjs <d> <c> <b> --outline
 ```
+
+**`--outline` also re-derives each page's title, number and label**, and prints every change. So an
+Introduction added to the brief after the chapters were scaffolded — with its `label` — renames the
+page titles after it back to the book's own numbers.
 
 **Never edit between the `OUTLINE` markers by hand** — the next `--outline` discards it silently.
 `book-spec.md` §3c has the three doors and what each refuses. **A change to `published` or `editions`

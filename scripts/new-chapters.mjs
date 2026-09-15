@@ -92,6 +92,35 @@ const safeComment = (s) =>
 
 const yaml = (v) => JSON.stringify(String(v));
 
+/*
+ * FRONT AND BACK MATTER IS A CHAPTER WITH A LABEL. Added 2026-09-15.
+ *
+ * A book is not only its numbered chapters. An Introduction, a Prologue, a
+ * Conclusion or an Afterword carries argument too, and the coverage law needs
+ * every one of them in "chapters" or "antiChapters". Until this date the only
+ * way to list one was as a numbered chapter, so adding Deep Work's Introduction
+ * made it "Ch 1" and pushed the book's own Chapter 1 to "Ch 2" — and every
+ * "Chapter 1" in a review, in web chat and on the book page then pointed one
+ * page off.
+ *
+ * So a chapter MAY carry `label`. A labelled chapter is titled
+ * "Introduction · <title>" and has no number. Every unlabelled chapter is
+ * numbered 1, 2, 3… counting only unlabelled chapters, in `order`, so the
+ * site's numbers ARE the book's printed numbers. `order` itself is unchanged:
+ * the position in the sidebar, counting every entry.
+ */
+function chapterNumbers(chapters) {
+	const numbers = new Map();
+	let n = 0;
+	for (const c of [...chapters].sort((a, b) => a.order - b.order))
+		numbers.set(c.slug, c.label ? null : ++n);
+	return numbers;
+}
+
+/** "Ch 1 · Deep work is valuable", or "Introduction · <title>" for a labelled chapter. */
+const displayTitle = (ch, number) =>
+	ch.label ? `${String(ch.label).trim()} · ${ch.title}` : `Ch ${number} · ${ch.title}`;
+
 /* -------------------------------------------------------------------------- */
 
 const argv = process.argv.slice(2);
@@ -237,6 +266,16 @@ function validate(raw) {
 		else if (orders.has(c.order)) fault(`${at}: order ${c.order} repeats`);
 		else orders.add(c.order);
 		if (!c.title) fault(`${at}: no title`);
+		// A label replaces the NUMBER, never the title. See chapterNumbers().
+		if (c.label !== undefined) {
+			const label = typeof c.label === 'string' ? c.label.trim() : '';
+			if (!label)
+				fault(`${at}: "label" must be text like "Introduction" — or absent, on a numbered chapter`);
+			else if (/\d|·/.test(label) || /^ch(apter)?\b/i.test(label))
+				fault(`${at}: label "${label}" carries a number — a numbered chapter has no label, and the site numbers it`);
+			else if (c.title && String(c.title).trim().toLowerCase() === label.toLowerCase())
+				fault(`${at}: title is just "${c.title}" — the label already shows that. The title says what it argues`);
+		}
 		if (!c.argues) fault(`${at}: no "argues" — one line, a CLAIM rather than a topic`);
 		if (c.part && !partSlugs.has(c.part)) fault(`${at}: part "${c.part}" is not in "parts"`);
 		if (c.verdict && !VERDICTS.includes(c.verdict))
@@ -343,7 +382,7 @@ function briefBlock(book) {
 	return out.join('\n');
 }
 
-function outlineBlock(ch, book, part) {
+function outlineBlock(ch, book, part, number) {
 	/*
 	 * NEVER WRITE A LITERAL "hash hash space Heading" INSIDE THIS COMMENT.
 	 * stamp() removes the clarified section by indexOf on the heading text, and
@@ -356,7 +395,7 @@ function outlineBlock(ch, book, part) {
 		'{/* THE BRIEF DECIDED THIS. Generation fills prose into it, and never invents it.',
 		'',
 		`   book        ${safeComment(book.title)}${book.author ? ` — ${safeComment(book.author)}` : ''}`,
-		`   chapter     ${ch.order} · ${safeComment(ch.title)}`,
+		`   chapter     ${safeComment(displayTitle(ch, number))}   (position ${ch.order} in the book)`,
 		part
 			? `   part        ${safeComment(part.title)} — ${safeComment(part.outcome)}`
 			: '   part        (none)',
@@ -446,24 +485,22 @@ function spineBlock() {
 	return out.join('\n');
 }
 
-function stamp(template, ch, book, part) {
+function stamp(template, ch, book, part, number) {
 	const end = template.indexOf('\n---', 4);
 	let body = template.slice(end + 4);
 
 	const lines = [
 		'---',
-		`title: ${yaml(`Ch ${ch.order} · ${ch.title}`)}`,
+		`title: ${yaml(displayTitle(ch, number))}`,
 		`description: ${yaml(ch.argues)}`,
 		'sidebar:',
 		`  order: ${ch.order}`,
 		`book: ${book.slug}`,
 	];
 	if (book.author) lines.push(`author: ${yaml(book.author)}`);
-	lines.push(
-		`domain: ${domainSlug}`,
-		`cluster: ${clusterSlug}`,
-		`chapter: ${ch.order}`
-	);
+	lines.push(`domain: ${domainSlug}`, `cluster: ${clusterSlug}`);
+	// The printed number or the label, never both. See chapterNumbers().
+	lines.push(ch.label ? `label: ${yaml(String(ch.label).trim())}` : `chapter: ${number}`);
 	if (ch.part) lines.push(`part: ${yaml(ch.part)}`);
 	lines.push(
 		`kind: ${book.kind}`,
@@ -483,7 +520,7 @@ function stamp(template, ch, book, part) {
 	if (ch.weightInArgument) lines.push(`# weightInArgument: ${ch.weightInArgument}`);
 	lines.push('---');
 
-	body = replaceRegion(body, OUTLINE_START, OUTLINE_END, outlineBlock(ch, book, part)) ?? body;
+	body = replaceRegion(body, OUTLINE_START, OUTLINE_END, outlineBlock(ch, book, part, number)) ?? body;
 	body = replaceRegion(body, SPINE_START, SPINE_END, spineBlock()) ?? body;
 
 	/*
@@ -565,10 +602,13 @@ function chaptersBlock(book, onDisk) {
 		 * scripts/universe.mjs, which fixes the drawer and the pagination pair —
 		 * they have to agree, or the card and the sidebar entry for one chapter
 		 * disagree on its own name.
+		 *
+		 * A LABEL COUNTS AS A NUMBER, since 2026-09-15: "Introduction · …" is
+		 * the second alternative, or its card read "1. Introduction · …".
 		 */
-		const SELF_NUMBERED = /^(?:ch(?:apter)?\.?\s*)?\d+\s*[·.:—–-]/i;
+		const SELF_LABELLED = /^(?:(?:ch(?:apter)?\.?\s*)?\d+\s*[·.:—–-]|[^·\n]{1,40}\s·\s)/i;
 		const cardTitle = (c) =>
-			Number.isFinite(c.order) && !SELF_NUMBERED.test(c.title)
+			Number.isFinite(c.order) && !SELF_LABELLED.test(c.title)
 				? `${c.order}. ${c.title}`
 				: c.title;
 		for (const c of items) {
@@ -865,19 +905,51 @@ function syncDescription(text, ch) {
 	return { text: head.replace(m[0], want) + text.slice(fmEnd), from: m[1].trim() };
 }
 
+/*
+ * THE TITLE, `chapter` AND `label` ARE DERIVED TOO, since 2026-09-15.
+ *
+ * Giving an Introduction its `label` after the chapters were scaffolded changes
+ * the site's number of every chapter after it — back to the book's own. This is
+ * how that reaches pages that already exist: the title is re-derived from the
+ * label or the number, `chapter:` is written only on a numbered chapter and
+ * `label:` only on a labelled one. Every title change is PRINTED, for the same
+ * reason syncDescription() prints: a hand edit discarded quietly is the same
+ * defect in the other direction.
+ */
+function syncNumbering(text, ch, number) {
+	const fmEnd = text.indexOf('\n---', 4);
+	if (fmEnd === -1) return { text, from: null };
+	let head = text.slice(0, fmEnd);
+	const t = head.match(/^title:[ \t]*(.+)$/m);
+	const wantTitle = `title: ${yaml(displayTitle(ch, number))}`;
+	const from = t && t[0] !== wantTitle ? t[1].trim() : null;
+	if (t) head = head.replace(t[0], wantTitle);
+	// Drop both top-level keys, then write back the one this chapter has, after `cluster:`.
+	head = head.replace(/^(?:chapter|label):[^\n]*\n?/gm, '');
+	const want = ch.label ? `label: ${yaml(String(ch.label).trim())}` : `chapter: ${number}`;
+	const c = head.match(/^cluster:[^\n]*$/m);
+	head = c ? head.replace(c[0], `${c[0]}\n${want}`) : `${head}\n${want}`;
+	return { text: head + text.slice(fmEnd), from };
+}
+
 if (OUTLINE_ONLY) {
+	const numbers = chapterNumbers(chapters);
 	let rewritten = 0;
 	const missing = [];
 	const described = [];
+	const retitled = [];
 	for (const ch of chapters) {
 		const file = join(bookDir, `${ch.slug}.mdx`);
 		if (!existsSync(file)) { missing.push(`${ch.slug}.mdx (no such file)`); continue; }
 		let text = readFileSync(file, 'utf8');
-		const a = replaceRegion(text, OUTLINE_START, OUTLINE_END, outlineBlock(ch, raw, partBySlug.get(ch.part)));
+		const number = numbers.get(ch.slug);
+		const a = replaceRegion(text, OUTLINE_START, OUTLINE_END, outlineBlock(ch, raw, partBySlug.get(ch.part), number));
 		if (a === null) { missing.push(`${ch.slug}.mdx (OUTLINE markers gone)`); continue; }
 		const d = syncDescription(a, ch);
 		if (d.from !== null) described.push({ slug: ch.slug, from: d.from, to: yaml(ch.argues) });
-		writeFileSync(file, d.text);
+		const n = syncNumbering(d.text, ch, number);
+		if (n.from !== null) retitled.push({ slug: ch.slug, from: n.from, to: yaml(displayTitle(ch, number)) });
+		writeFileSync(file, n.text);
 		rewritten++;
 	}
 	console.log(`\n  --outline: rewrote the generated region in ${rewritten} file(s)\n`);
@@ -887,6 +959,15 @@ if (OUTLINE_ONLY) {
 			console.log(`    · ${d.slug}.mdx`);
 			console.log(`        was  ${d.from}`);
 			console.log(`        now  ${d.to}`);
+		}
+		console.log('');
+	}
+	if (retitled.length) {
+		console.log(`  title re-derived from the label or the book's numbering in ${retitled.length} file(s):`);
+		for (const r of retitled) {
+			console.log(`    · ${r.slug}.mdx`);
+			console.log(`        was  ${r.from}`);
+			console.log(`        now  ${r.to}`);
 		}
 		console.log('');
 	}
@@ -912,8 +993,12 @@ if (existing.length) {
 	process.exit(1);
 }
 
+const numbers = chapterNumbers(chapters);
 for (const ch of chapters)
-	writeFileSync(join(bookDir, `${ch.slug}.mdx`), stamp(template, ch, raw, partBySlug.get(ch.part)));
+	writeFileSync(
+		join(bookDir, `${ch.slug}.mdx`),
+		stamp(template, ch, raw, partBySlug.get(ch.part), numbers.get(ch.slug))
+	);
 
 const how = writeIndexGrid(raw, readChapterFrontmatter(bookDir));
 const howBrief = writeIndexBrief(raw);

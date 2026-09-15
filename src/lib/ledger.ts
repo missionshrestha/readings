@@ -30,7 +30,10 @@ export interface LedgerRow extends Action {
 	book: string;
 	/** The book's real title, from its index page. What a reader is shown. */
 	bookTitle: string;
+	/** The book's printed chapter number. Absent on an Introduction or a Conclusion. */
 	chapter?: number;
+	/** sidebar.order — reading order, labelled chapters included. The sort key. */
+	order?: number;
 	chapterTitle: string;
 	href: string;
 }
@@ -83,6 +86,7 @@ export async function ledger(): Promise<LedgerRow[]> {
 			book?: string;
 			title?: string;
 			chapter?: number;
+			sidebar?: { order?: number };
 		};
 		if (!d.actions?.length) continue;
 		for (const a of d.actions)
@@ -91,12 +95,20 @@ export async function ledger(): Promise<LedgerRow[]> {
 				book: d.book ?? '',
 				bookTitle: bookTitleFor(String(entry.id)),
 				chapter: d.chapter,
+				order: d.sidebar?.order,
 				chapterTitle: entry.data.title,
 				href: `/${entry.id}/`,
 			});
 	}
+	/*
+	 * SORTED BY READING ORDER, NOT BY CHAPTER NUMBER, since 2026-09-15.
+	 * An Introduction or a Conclusion carries a label and no `chapter`, so sorting
+	 * on `chapter ?? 0` put a Conclusion's actions BEFORE Chapter 1's.
+	 * `sidebar.order` counts every entry, labelled or not.
+	 */
+	const LAST = Number.MAX_SAFE_INTEGER;
 	return rows.sort(
-		(a, b) => a.book.localeCompare(b.book) || (a.chapter ?? 0) - (b.chapter ?? 0)
+		(a, b) => a.book.localeCompare(b.book) || (a.order ?? LAST) - (b.order ?? LAST)
 	);
 }
 

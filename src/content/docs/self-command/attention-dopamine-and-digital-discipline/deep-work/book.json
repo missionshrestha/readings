@@ -22,9 +22,9 @@
   ],
 
   "outsideView": {
-    "replication": "Not an empirical research program. Its main empirical anchor is Sophie Leroy's 2009 attention-residue study — real, but a single lab, one task-switching paradigm, since extended (Leroy & Glomb, 2018) rather than independently replicated at scale. Not on the standing failed-replication list, but the book leans on it more heavily than a single study supports.",
-    "critics": "The recurring, independent objection across multiple reviews: Newport writes from a tenured academic's unusual control over his own schedule, and prescriptions like blocking four uninterrupted hours don't obviously transfer to work structured around other people's availability — collaborative, hourly, or caregiving-constrained roles.",
-    "agedBadly": "Chapter 6's method for social media — a rational per-platform cost/benefit calculation — assumes tools chosen for a clear benefit. Newport has since said this doesn't match engagement-optimized platforms like TikTok, and has written that the underlying attention problem has gotten worse, not better, since 2016."
+    "replication": "Two anchors, both narrower than the book implies. Leroy's 2009 attention residue study — the lingering, unfinished focus that follows you into the next task — is real but single-study, extended by later researchers rather than independently replicated. More significant: Chapter 1's account of why deep concentration builds skill leans on Ericsson's deliberate-practice research, which is the same underlying claim popularized as the '10,000-hour rule.' A 2014 meta-analysis (Macnamara, Hambrick & Oswald, Psychological Science) found deliberate practice explains under 1% of performance variance in professional occupations — the population this book targets — versus 18-26% in games, music, and sports. This matches the standing concern about the 10,000-hour rule: materially overstated relative to what the research supports. Ericsson disputed the meta-analysis's methodology, so treat this as contested, not settled.",
+    "critics": "The strongest specific critique is Kelly Dombroski's 2018 review: nearly all the book's worked examples are men, and its category of 'shallow work' quietly absorbs most of the caregiving and administrative labor that made those men's uninterrupted hours possible. Her example: Carl Jung's opening story never mentions that his wife, Emma Jung, managed their household and five children while he worked in his tower. This is a critique of who the book's advice was built to work for, not a claim that deep work itself is a bad idea.",
+    "agedBadly": "Chapter 6's method for social media — a rational per-platform cost/benefit test — assumes a platform chosen for one clear, statable benefit. That fits 2016's mostly follow-based feeds better than today's algorithmically driven, engagement-optimized platforms like TikTok. According to a secondary, unverified summary of a 2026 video, Newport has since moved toward describing social media as closer to an addiction than a rational choice; his 2019 book and GQ interview already show a harder line than this chapter does."
   },
 
   "parts": [
@@ -35,45 +35,51 @@
   ],
 
   "chapters": [
-    { "slug": "deep-work-is-valuable", "title": "Deep Work Is Valuable", "order": 1,
+    { "slug": "depth-is-becoming-rare-and-valuable", "title": "Depth is becoming rare and valuable", "order": 1,
+      "label": "Introduction",
+      "part": "the-idea",
+      "argues": "Across history and today, the people who produce the hardest-to-replicate, most valuable work are the ones who deliberately protect long stretches of undistracted concentration — a capacity that is becoming both rarer and more economically valuable at the same time.",
+      "weightInArgument": "load-bearing", "estMinutes": 25, "verdict": "deep-dive", "clarified": true },
+
+    { "slug": "deep-work-is-valuable", "title": "Deep work is valuable", "order": 2,
       "part": "the-idea",
       "argues": "The two abilities that make a knowledge worker valuable today — quickly mastering hard things and producing at an elite level — both depend on the capacity for deep work.",
-      "weightInArgument": "load-bearing", "estMinutes": 30, "verdict": "deep-dive", "clarified": false },
+      "weightInArgument": "load-bearing", "estMinutes": 30, "verdict": "deep-dive", "clarified": true },
 
-    { "slug": "deep-work-is-rare", "title": "Deep Work Is Rare", "order": 2,
+    { "slug": "deep-work-is-rare", "title": "Deep work is rare", "order": 3,
       "part": "the-idea",
       "argues": "Even though depth is valuable, modern knowledge-work culture — open offices, constant connectivity, an 'any benefit' approach to new tools — is structurally organized against it, because busyness substitutes for a real measure of productivity that most knowledge work lacks.",
-      "weightInArgument": "load-bearing", "estMinutes": 35, "verdict": "deep-dive", "clarified": false },
+      "weightInArgument": "load-bearing", "estMinutes": 35, "verdict": "deep-dive", "clarified": true },
 
-    { "slug": "deep-work-is-meaningful", "title": "Deep Work Is Meaningful", "order": 3,
+    { "slug": "deep-work-is-meaningful", "title": "Deep work is meaningful", "order": 4,
       "part": "the-idea",
       "argues": "Beyond its economic payoff, deep work produces a felt sense of meaning — through flow and a craftsman's relationship to a skill — that shallow busyness structurally cannot.",
-      "weightInArgument": "supporting", "estMinutes": 30, "verdict": "skim", "clarified": false },
+      "weightInArgument": "supporting", "estMinutes": 30, "verdict": "skim", "clarified": true },
 
-    { "slug": "rule-1-work-deeply", "title": "Rule #1: Work Deeply", "order": 4,
+    { "slug": "work-deeply", "title": "Work deeply", "order": 5,
       "part": "the-rules",
       "argues": "Depth cannot be produced by willpower in the moment; it requires choosing in advance a scheduling philosophy and a set of rituals that remove the decision of whether and how to go deep from the moment itself.",
-      "weightInArgument": "load-bearing", "estMinutes": 40, "verdict": "deep-dive", "clarified": false },
+      "weightInArgument": "load-bearing", "estMinutes": 40, "verdict": "deep-dive", "clarified": true },
 
-    { "slug": "rule-2-embrace-boredom", "title": "Rule #2: Embrace Boredom", "order": 5,
+    { "slug": "embrace-boredom", "title": "Embrace boredom", "order": 6,
       "part": "the-rules",
       "argues": "The capacity to concentrate is trainable and also erodible: habitually reaching for stimulation the moment a task gets effortful teaches your brain to expect novelty, which undermines your ability to concentrate even when you intend to.",
-      "weightInArgument": "load-bearing", "estMinutes": 30, "verdict": "deep-dive", "clarified": false },
+      "weightInArgument": "load-bearing", "estMinutes": 30, "verdict": "deep-dive", "clarified": true },
 
-    { "slug": "rule-3-quit-social-media", "title": "Rule #3: Quit Social Media", "order": 6,
+    { "slug": "quit-social-media", "title": "Quit social media", "order": 7,
       "part": "the-rules",
       "argues": "Tools should be judged by whether they provide substantial net benefit to things you actually value, not by whether they provide any benefit at all — and by that stricter test, most people's social media use fails.",
-      "weightInArgument": "supporting", "estMinutes": 35, "verdict": "skim", "clarified": false },
+      "weightInArgument": "supporting", "estMinutes": 35, "verdict": "skim", "clarified": true },
 
-    { "slug": "rule-4-drain-the-shallows", "title": "Rule #4: Drain the Shallows", "order": 7,
+    { "slug": "drain-the-shallows", "title": "Drain the shallows", "order": 8,
       "part": "the-rules",
       "argues": "Shallow work cannot be eliminated, but it can and must be deliberately budgeted and minimized, because any hour not claimed in advance for something deep will default to something shallow.",
-      "weightInArgument": "load-bearing", "estMinutes": 35, "verdict": "deep-dive", "clarified": false }
+      "weightInArgument": "load-bearing", "estMinutes": 35, "verdict": "deep-dive", "clarified": true }
   ],
 
   "antiChapters": [],
 
-  "inventory": { "chapters": 7, "read": 7, "skipped": 0 },
+  "inventory": { "chapters": 8, "read": 8, "skipped": 0 },
 
   "exitCondition": "Five consecutive weeks in which, across at least three of the domains you named — skill learning, reading, exercise, building, work — a scheduled deep work block was actually run on at least 4 of that week's scheduled days, with no week during that streak dropping to zero in any of the three domains."
 }

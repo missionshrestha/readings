@@ -26,7 +26,7 @@ pasted the same day. No chapter has been read yet; chapter 1 is next.*
 | **Domain / cluster** | ⚙️ Self-Command / 1.3 · Attention, Dopamine & Digital Discipline |
 | **Gap** | execution — `book.json`, 2026-09-15 |
 | **Started** | |
-| **Chapters** | 0 of 7 written (7 stubs, 2 parts, none cut) |
+| **Chapters** | 0 of 8 written (8 stubs, 2 parts, none cut) |
 | **Next eligible** | **Now.** No book has been finished, so nothing is pending (2026-08-31) |
 | **Exit condition** | Five consecutive weeks in which, across at least three of the domains you named — skill learning, reading, exercise, building, work — a scheduled deep work block was actually run on at least 4 of that week's scheduled days, with no week during that streak dropping to zero in any of the three domains. *(`book.json`)* |
 
@@ -53,13 +53,14 @@ to make.
 
 | Book | Ch | Chapter | Clarified | Drafted | Read | Effort | Est |
 |---|---|---|---|---|---|---|---|
-| Deep Work | 1 | Deep Work Is Valuable | no | | | | 30 |
-| Deep Work | 2 | Deep Work Is Rare | no | | | | 35 |
-| Deep Work | 3 | Deep Work Is Meaningful | no | | | | 30 |
-| Deep Work | 4 | Rule #1: Work Deeply | no | | | | 40 |
-| Deep Work | 5 | Rule #2: Embrace Boredom | no | | | | 30 |
-| Deep Work | 6 | Rule #3: Quit Social Media | no | | | | 35 |
-| Deep Work | 7 | Rule #4: Drain the Shallows | no | | | | 35 |
+| Deep Work | Intro | Depth is becoming rare and valuable | yes | | | | 25 |
+| Deep Work | 1 | Deep work is valuable | yes | | | | 30 |
+| Deep Work | 2 | Deep work is rare | yes | | | | 35 |
+| Deep Work | 3 | Deep work is meaningful | yes | | | | 30 |
+| Deep Work | 4 | Work deeply | yes | | | | 40 |
+| Deep Work | 5 | Embrace boredom | yes | | | | 30 |
+| Deep Work | 6 | Quit social media | yes | | | | 35 |
+| Deep Work | 7 | Drain the shallows | yes | | | | 35 |
 
 ---
 

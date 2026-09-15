@@ -17,7 +17,7 @@ writing what a chapter argues, stop: that is the output, not yours.
 | **Domain** | ⚙️ Self-Command | A life area. 16. A page. **Never a generation target** |
 | **Cluster** | 1.3 · Attention, Dopamine & Digital Discipline | A question several books answer. 85. A page |
 | **Book** | Deep Work | **One package.** One directory, one web-chat Project. 293 catalogued |
-| **Chapter** | Ch 2 · Deep work is rare | **The unit of work. Always the generation target.** One page, one cycle |
+| **Chapter** | Ch 2 · Deep work is rare — or Introduction · … | **The unit of work. Always the generation target.** One page, one cycle. A section the book prints without a number (an Introduction, a Conclusion) is a chapter with a `label` — `context/book-spec.md` §2 |
 | **Section** | The explanation layer | One fixed `##` on a chapter page. **Never a page** |
 | **Sub-section** | Where the author was standing | One of the **ten** fixed `###` inside the explanation layer |
 | **Action** | `dw-02-timeblock` | One IF–THEN leaf. Structured data. Rolls up to the ledger |

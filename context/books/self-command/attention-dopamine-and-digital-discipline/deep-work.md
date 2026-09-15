@@ -50,14 +50,16 @@ carry the weight and the explanation layer is trimmed.
 
 | # | Chapter | Status | Clarified | Recall done | Effort | Est |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Deep Work Is Valuable | stub | no | | | 30 |
-| 2 | Deep Work Is Rare | stub | no | | | 35 |
-| 3 | Deep Work Is Meaningful | stub | no | | | 30 |
-| 4 | Rule #1: Work Deeply | stub | no | | | 40 |
-| 5 | Rule #2: Embrace Boredom | stub | no | | | 30 |
-| 6 | Rule #3: Quit Social Media | stub | no | | | 35 |
-| 7 | Rule #4: Drain the Shallows | stub | no | | | 35 |
+| Intro | Depth is becoming rare and valuable | stub | yes | | | 25 |
+| 1 | Deep work is valuable | stub | yes | | | 30 |
+| 2 | Deep work is rare | stub | yes | | | 35 |
+| 3 | Deep work is meaningful | stub | yes | | | 30 |
+| 4 | Work deeply | stub | yes | | | 40 |
+| 5 | Embrace boredom | stub | yes | | | 30 |
+| 6 | Quit social media | stub | yes | | | 35 |
+| 7 | Drain the shallows | stub | yes | | | 35 |
 
+`#` is the book's own printed number; an Introduction or a Conclusion carries its label instead.
 `Effort` is measured minutes and stays blank until he says a number. Copying `Est`
 into it destroys the only comparison the column exists to make.
 
@@ -97,3 +99,23 @@ gets asked in the book Project or gets deleted as not actually important.
   `## Context then vs. context today`, `## Sources`). Build green, audit clean. Source and
   clarity findings reported, not edited. `book.json` `outsideView` now disagrees with the page
   (tenure, TikTok) and waits on his amendment.
+- **2026-09-15** — Brief amended on his instruction ("do what's recommended"):
+  `clarified: true` on all seven, because the book is new to him and he put understanding
+  ahead of length; titles in sentence case without the "Rule #N:" prefix, and slugs renamed
+  to match (`work-deeply`, `embrace-boredom`, `quit-social-media`, `drain-the-shallows`)
+  before any chapter was written; `outsideView.replication` replaced with the web-chat
+  wording. `critics` and `agedBadly` still disagree with the page and wait on web chat.
+  Stubs re-scaffolded; build green, audit clean.
+- **2026-09-15** — He chose to give the Introduction its own page rather than read it
+  alone. Web chat's amended brief adds it as chapter 1, "Depth is becoming rare and
+  valuable" (the others move down one; slugs unchanged), 8 chapters, and rewrites all three
+  `outsideView` lines. The brief has no Conclusion entry and no skip for one — unresolved.
+  Corrected `P2b` sections pasted; build green, audit clean. Remaining findings reported,
+  not edited: the page's "Chapter 1"/"Chapter 6" use the book's numbering, which no longer
+  matches the site's; the page cites this repository's source-rules; the "addiction" claim
+  still has no source row.
+- **2026-09-15** — On his instruction the site now follows the book's own numbering. A
+  section printed without a number carries a `label` in `book.json`; the Introduction is
+  labelled, so the pages read "Introduction · …" and then Ch 1–7, matching the book, the
+  reviews and the book page's own "Chapter 1"/"Chapter 6" (that finding is resolved). The
+  Conclusion still needs its entry from web chat (the full regeneration prompt was given).

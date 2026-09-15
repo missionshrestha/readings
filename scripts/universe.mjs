@@ -554,11 +554,18 @@ export function bookSidebar(docsRoot = join(ROOT, 'src', 'content', 'docs')) {
 				 * The prefix stays for a title that carries no number of its own,
 				 * which is what it was for: order is what makes a flat list scannable
 				 * when the titles do not say it.
+				 *
+				 * A LABEL COUNTS AS A NUMBER, since 2026-09-15. An Introduction or a
+				 * Conclusion is titled "Introduction · …" (chapterNumbers() in
+				 * scripts/new-chapters.mjs), and without the second alternative below
+				 * it rendered "1. Introduction · …" — a position number on the one
+				 * entry the book deliberately leaves unnumbered. Same regex as the
+				 * chapter grid in new-chapters.mjs; the two must agree.
 				 */
-				const SELF_NUMBERED = /^(?:ch(?:apter)?\.?\s*)?\d+\s*[·.:—–-]/i;
+				const SELF_LABELLED = /^(?:(?:ch(?:apter)?\.?\s*)?\d+\s*[·.:—–-]|[^·\n]{1,40}\s·\s)/i;
 				const numbered = (ch) => ({
 					label:
-						Number.isFinite(ch.order) && !SELF_NUMBERED.test(ch.title)
+						Number.isFinite(ch.order) && !SELF_LABELLED.test(ch.title)
 							? `${ch.order}. ${ch.title}`
 							: ch.title,
 					link: `${base}/${ch.slug}/`,

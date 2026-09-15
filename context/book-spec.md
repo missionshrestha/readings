@@ -74,7 +74,13 @@ exactly the tier-C laundering that file exists to prevent.
   ],
 
   "chapters": [
-    { "slug": "deep-work-is-valuable", "title": "Deep work is valuable", "order": 1,
+    { "slug": "the-case-for-depth", "title": "The case for depth", "order": 1,
+      "label": "Introduction",
+      "part": "the-idea",
+      "argues": "The people who produce the most valuable work protect long stretches of undistracted focus.",
+      "weightInArgument": "supporting",
+      "estMinutes": 20, "verdict": "skim", "clarified": false },
+    { "slug": "deep-work-is-valuable", "title": "Deep work is valuable", "order": 2,
       "part": "the-idea",
       "argues": "The two abilities that make a knowledge worker valuable both require depth.",
       "weightInArgument": "load-bearing",
@@ -114,12 +120,14 @@ A populated `editions` entry has this shape:
 | root | `inventory` | `read + skipped === chapters`. **Asserted.** See §3 |
 | part | `outcome` | One sentence, starts with a verb. What you can do after this part |
 | chapter | `argues` | One line. What the chapter claims, not what it covers |
+| chapter | `label` | **Only on a section the book prints without a chapter number** — `Introduction`, `Prologue`, `Conclusion`, `Epilogue`, `Afterword`, or a `Foreword` by another writer — and exactly the printed word. The page is titled `Introduction · <title>` and carries no number. **Every unlabelled chapter is numbered 1, 2, 3… in `order`, counting only unlabelled chapters, so the site's "Ch 1" is the book's printed Chapter 1.** No digits, never on a numbered chapter, never equal to the title. Added 2026-09-15 |
 | chapter | `weightInArgument` | `load-bearing` · `supporting` · `illustrative`. Decides how much of the budget it earns |
 | chapter | `verdict` | `deep-dive` · `skim` · `skip`. A `skip` chapter belongs in `antiChapters`, not here |
 | chapter | `clarified` | `false` means `## The clarified chapter` is **omitted** and READ I is the original |
 | root | `kind` | `read` · `reference` · `lifelong`. `reference` and `lifelong` carry no `chapters` and no `inventory` |
 
-**`order` is global within the book and starts at 1.** The sidebar is flat within its part group and
+**`order` is global within the book, starts at 1, and counts labelled chapters too** — an
+Introduction is `order: 1` and the book's Chapter 1 is `order: 2`, titled `Ch 1`. The sidebar is flat within its part group and
 `sidebar.order` comes straight from it.
 
 ---
@@ -247,6 +255,13 @@ instinct off them, and is the only place those notes could live. `reconciliation
 > **Every chapter the book has appears exactly once: in `chapters`, or in `antiChapters` with a
 > reason. There is no third bucket, and silence is not a decision.**
 
+**Front and back matter counts, since 2026-09-15.** An Introduction, a Prologue, a Conclusion, an
+Epilogue, an Afterword and a foreword by another writer are chapters for this law. In `chapters` each
+carries a `label` (§2); in `antiChapters` it is listed under its printed name, with a reason.
+Acknowledgements, notes, bibliography, index and about-the-author pages are not chapters and are not
+counted. Before this date the only way to list an Introduction was as a numbered chapter, and doing
+so moved every chapter after it one number away from the book's own.
+
 `read + skipped === chapters` is **asserted by `new-chapters.mjs`, never computed for you.** A
 mismatch means a chapter was surfaced at Stage 2 and then quietly forgotten, which is exactly what
 this law exists to catch.
@@ -292,6 +307,9 @@ here so a brief can be checked against it before the script is ever run.
 | `order` repeats | `chapter "X": order 3 repeats` |
 | chapter has no title | `chapter "X": no title` |
 | chapter has no `argues` | `chapter "X": no "argues" — one line, a CLAIM rather than a topic` |
+| `label` present but empty, or not text | `chapter "X": "label" must be text like "Introduction" — or absent, on a numbered chapter` |
+| `label` carries a digit, a `·` or "Chapter" | `chapter "X": label "Chapter 1" carries a number — a numbered chapter has no label, and the site numbers it` |
+| `label` is the same word as the title | `chapter "X": title is just "Introduction" — the label already shows that. The title says what it argues` |
 | `part` not declared in `parts` | `chapter "X": part "y" is not in "parts"` |
 | bad `verdict` | `chapter "X": verdict "maybe", must be one of deep-dive, skim, skip` |
 | `verdict: "skip"` in `chapters` | `chapter "X": verdict "skip" — a skipped chapter belongs in "antiChapters", not "chapters"` |
@@ -342,9 +360,14 @@ So there are three narrow doors, and each writes only inside a generated region:
 
 | Flag | Rewrites | Refuses |
 |---|---|---|
-| `--outline` | The `OUTLINE` region on every chapter — the brief's own words, restated on the page | A file whose `OUTLINE` markers have been deleted. Named, never skipped quietly |
+| `--outline` | The `OUTLINE` region on every chapter — the brief's own words, restated on the page — and the frontmatter derived from the brief: `description`, `title`, `chapter`, `label` | A file whose `OUTLINE` markers have been deleted. Named, never skipped quietly |
 | `--spine` | The `SPINE` region — the sub-sections of the explanation layer | **Any chapter that has been written in.** Safe means every body inside the region is still the literal `TODO` |
 | `--refresh` | The chapter grid **and the `BRIEF` region** on the book's `index.mdx` | A book that is not `kind: read`. A page with no `BRIEF` markers is named and skipped, with the two lines to paste |
+
+**`--outline` also re-derives each chapter's `title`, `chapter` and `label`, since 2026-09-15**, and
+prints every title it changes, old and new. An Introduction added to the brief after its chapters were
+scaffolded — with its `label` — therefore puts every page after it back on the book's own numbering,
+instead of leaving "Ch 2" on the page the book calls Chapter 1.
 
 **`--outline` also re-derives each chapter's frontmatter `description` from `argues`**, because
 the scaffolder writes one from the other and they are one field with two homes. It prints every
@@ -405,8 +428,13 @@ most one em dash · no trailing punctuation, no emoji · slugs are kebab-case, d
 and **permanent** — renaming one after the page exists breaks every inbound link, silently resets
 its review card, and **detaches every comment anchored to it**.
 
+**The prefix is not part of the title.** The scaffolder writes `Ch 1 · ` in front of a numbered
+chapter and `Introduction · ` in front of a labelled one (§2, `label`). The brief's `title` carries
+neither.
+
 **Banned:** `Introduction`, `Understanding X`, `Advanced X`, `Miscellaneous`, `Tips and tricks`, and
-any title that restates its parent.
+any title that restates its parent. **`Introduction` is banned as a TITLE and correct as a `label`**:
+the label says where the section sits in the book, and the title still has to say what is inside it.
 
 ---
 
@@ -423,6 +451,9 @@ any title that restates its parent.
 - [ ] Every chapter has `argues`, and it is a claim rather than a topic.
 - [ ] `clarified` is a deliberate value on every chapter, not a default nobody looked at.
 - [ ] Every slug is unique within the book, kebab-case, derived from the title.
+- [ ] Every Introduction, Conclusion or other section printed without a number is in `chapters` with
+      a `label` or in `antiChapters` with a reason — and no numbered chapter carries a label, so the
+      site's `Ch 1` is the book's Chapter 1.
 - [ ] `exitCondition` is observable. "Understand deep work better" is not.
 
 ---

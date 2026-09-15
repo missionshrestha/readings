@@ -50,7 +50,7 @@ carry the weight and the explanation layer is trimmed.
 
 | # | Chapter | Status | Clarified | Recall done | Effort | Est |
 | --- | --- | --- | --- | --- | --- | --- |
-| Intro | Depth is becoming rare and valuable | stub | yes | | | 25 |
+| Intro | Naming the deep work hypothesis | stub | yes | | | 25 |
 | 1 | Deep work is valuable | stub | yes | | | 30 |
 | 2 | Deep work is rare | stub | yes | | | 35 |
 | 3 | Deep work is meaningful | stub | yes | | | 30 |
@@ -119,3 +119,10 @@ gets asked in the book Project or gets deleted as not actually important.
   labelled, so the pages read "Introduction · …" and then Ch 1–7, matching the book, the
   reviews and the book page's own "Chapter 1"/"Chapter 6" (that finding is resolved). The
   Conclusion still needs its entry from web chat (the full regeneration prompt was given).
+- **2026-09-15** — Web chat's regeneration applied. The Introduction is retitled "Naming the
+  deep work hypothesis" (slug `naming-the-deep-work-hypothesis`; the empty stub was renamed,
+  then `--outline` re-derived its title and description). All three `outsideView` lines
+  rewritten. Third `P2b` version pasted: the repository reference, the unsourced
+  "addiction" claim and the unshown McKinsey arithmetic are fixed. Build green, audit clean.
+  Still open: the brief has 8 entries and no Conclusion — whether the book has one was not
+  in the pasted reply.

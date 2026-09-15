@@ -53,7 +53,7 @@ to make.
 
 | Book | Ch | Chapter | Clarified | Drafted | Read | Effort | Est |
 |---|---|---|---|---|---|---|---|
-| Deep Work | Intro | Depth is becoming rare and valuable | yes | | | | 25 |
+| Deep Work | Intro | Naming the deep work hypothesis | yes | | | | 25 |
 | Deep Work | 1 | Deep work is valuable | yes | | | | 30 |
 | Deep Work | 2 | Deep work is rare | yes | | | | 35 |
 | Deep Work | 3 | Deep work is meaningful | yes | | | | 30 |
